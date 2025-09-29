@@ -43,262 +43,321 @@ import {
   Download,
   Upload,
   RefreshCw,
-  MoreHorizontal
+  MoreHorizontal,
+  Brain,
+  User,
+  Bot,
+  Sparkles,
+  Rocket,
+  Eye,
+  Heart,
+  MessageCircle,
+  Lightbulb,
+  Cpu,
+  Network,
+  Layers,
+  Workflow
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SidebarItem {
   id: string;
   label: string;
-  icon: React.ComponentType<any>;
-  status?: 'success' | 'warning' | 'error' | 'info';
+  icon: any;
+  href?: string;
   badge?: string;
-  count?: number;
+  badgeColor?: string;
+  children?: SidebarItem[];
   isNew?: boolean;
+  isRevolutionary?: boolean;
 }
 
-type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings';
+type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation';
 
 interface DashboardSidebarProps {
-  items: SidebarItem[];
   currentView: ViewType;
   onViewChange: (view: ViewType) => void;
-  userProfile: any;
-  onSignOut: () => void;
-  isCollapsed?: boolean;
-  onToggle?: () => void;
+  collapsed: boolean;
+  onToggleCollapse: () => void;
 }
 
-export const DashboardSidebar = ({
-  items,
-  currentView,
-  onViewChange,
-  userProfile,
-  onSignOut,
-  isCollapsed = false,
-  onToggle,
-}: DashboardSidebarProps) => {
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+export const DashboardSidebar = ({ currentView, onViewChange, collapsed, onToggleCollapse }: DashboardSidebarProps) => {
+  const [expandedItems, setExpandedItems] = useState<string[]>(['core']);
 
-  const getRoleBadgeVariant = (role: string) => {
-    switch (role) {
-      case 'owner':
-        return 'default';
-      case 'manager':
-        return 'secondary';
-      case 'employee':
-        return 'outline';
-      default:
-        return 'outline';
+  const sidebarItems: SidebarItem[] = [
+    {
+      id: 'core',
+      label: 'Core Operations',
+      icon: Building2,
+      children: [
+        {
+          id: 'overview',
+          label: 'Dashboard',
+          icon: Home,
+          href: '/dashboard'
+        },
+        {
+          id: 'stores',
+          label: 'Stores',
+          icon: Store,
+          badge: '3',
+          badgeColor: 'bg-blue-100 text-blue-800'
+        },
+        {
+          id: 'employees',
+          label: 'Employees',
+          icon: Users,
+          badge: '8',
+          badgeColor: 'bg-green-100 text-green-800'
+        },
+        {
+          id: 'inventory',
+          label: 'Inventory',
+          icon: Package,
+          badge: '12',
+          badgeColor: 'bg-yellow-100 text-yellow-800'
+        }
+      ]
+    },
+    {
+      id: 'revolutionary',
+      label: '🚀 Revolutionary Features',
+      icon: Rocket,
+      isRevolutionary: true,
+      children: [
+        {
+          id: 'ai-insights',
+          label: 'AI Business Intelligence',
+          icon: Brain,
+          badge: 'NEW',
+          badgeColor: 'bg-purple-100 text-purple-800',
+          isNew: true
+        },
+        {
+          id: 'customer-360',
+          label: 'Customer 360° View',
+          icon: Eye,
+          badge: 'BETA',
+          badgeColor: 'bg-pink-100 text-pink-800',
+          isNew: true
+        },
+        {
+          id: 'automation',
+          label: 'Smart Automation',
+          icon: Zap,
+          badge: 'AI',
+          badgeColor: 'bg-orange-100 text-orange-800',
+          isNew: true
+        }
+      ]
+    },
+    {
+      id: 'analytics',
+      label: 'Analytics & Intelligence',
+      icon: BarChart3,
+      children: [
+        {
+          id: 'reports',
+          label: 'Reports',
+          icon: FileText
+        },
+        {
+          id: 'alerts',
+          label: 'Alerts',
+          icon: AlertTriangle,
+          badge: '3',
+          badgeColor: 'bg-red-100 text-red-800'
+        }
+      ]
+    },
+    {
+      id: 'advanced',
+      label: 'Advanced Features',
+      icon: Layers,
+      children: [
+        {
+          id: 'settings',
+          label: 'Settings',
+          icon: Settings
+        }
+      ]
     }
+  ];
+
+  const toggleExpanded = (itemId: string) => {
+    setExpandedItems(prev => 
+      prev.includes(itemId) 
+        ? prev.filter(id => id !== itemId)
+        : [...prev, itemId]
+    );
   };
 
-  const getStatusColor = (status?: string) => {
-    switch (status) {
-      case 'success':
-        return 'bg-green-500';
-      case 'warning':
-        return 'bg-yellow-500';
-      case 'error':
-        return 'bg-red-500';
-      case 'info':
-        return 'bg-blue-500';
-      default:
-        return 'bg-gray-400';
-    }
-  };
-
-  const getStatusGlow = (status?: string) => {
-    switch (status) {
-      case 'success':
-        return 'shadow-green-500/50';
-      case 'warning':
-        return 'shadow-yellow-500/50';
-      case 'error':
-        return 'shadow-red-500/50';
-      case 'info':
-        return 'shadow-blue-500/50';
-      default:
-        return 'shadow-gray-500/50';
+  const handleItemClick = (itemId: string) => {
+    if (itemId === 'ai-insights' || itemId === 'customer-360' || itemId === 'automation') {
+      onViewChange(itemId as ViewType);
+    } else {
+      onViewChange(itemId as ViewType);
     }
   };
 
   return (
     <div className={cn(
-      "sidebar-ultra-professional",
-      isCollapsed ? 'w-16' : 'w-72',
-      "transition-all duration-500 ease-in-out",
-      "bg-white border-r border-gray-200/60",
-      "shadow-2xl shadow-gray-900/5"
+      "flex flex-col h-full bg-white border-r border-gray-200 transition-all duration-300",
+      collapsed ? "w-16" : "w-64"
     )}>
-      {/* Ultra Professional Header */}
-      <div className="p-6 border-b border-gray-200/60 bg-gradient-to-r from-white to-gray-50/30">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500 via-green-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25">
-              <Building2 className="w-7 h-7 text-white" />
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        {!collapsed && (
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <Building2 className="h-5 w-5 text-white" />
             </div>
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
+            <div>
+              <h1 className="text-lg font-bold text-gray-900">WaveLength</h1>
+              <p className="text-xs text-gray-500">Communications</p>
+            </div>
           </div>
-          {!isCollapsed && (
-            <div className="flex-1">
-              <h1 className="font-bold text-xl text-gray-900 tracking-tight">WaveLength Communications</h1>
-              <p className="text-sm text-gray-600 font-medium">Management Portal</p>
-              <div className="flex items-center gap-2 mt-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-xs text-green-600 font-semibold">System Online</span>
-              </div>
-            </div>
-          )}
-        </div>
+        )}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onToggleCollapse}
+          className="p-2"
+        >
+          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </Button>
       </div>
 
-      {/* Advanced Navigation */}
-      <nav className="flex-1 p-4 space-y-1">
-        {items.map(({ id, label, icon: Icon, status, badge, count, isNew }) => (
-          <div key={id} className="relative group">
-            <Button
-              variant="ghost"
-              className={cn(
-                "w-full justify-start gap-4 h-14 text-left transition-all duration-300 group-hover:scale-[1.02]",
-                "rounded-xl border border-transparent",
-                "hover:border-gray-200 hover:shadow-lg hover:shadow-gray-900/5",
-                currentView === id 
-                  ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/25 border-green-200" 
-                  : "text-gray-700 hover:bg-gray-50/80 hover:text-gray-900"
-              )}
-              onClick={() => onViewChange(id as ViewType)}
-              onMouseEnter={() => setHoveredItem(id)}
-              onMouseLeave={() => setHoveredItem(null)}
-            >
-              <div className="relative">
-                <Icon className={cn(
-                  "w-5 h-5 transition-all duration-300",
-                  currentView === id ? "text-white" : "text-gray-600 group-hover:text-gray-900"
-                )} />
-                {status && (
-                  <div className={cn(
-                    "absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white shadow-lg",
-                    getStatusColor(status),
-                    getStatusGlow(status)
-                  )}></div>
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+        {sidebarItems.map((item) => (
+          <div key={item.id}>
+            {item.children ? (
+              <div>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "w-full justify-start text-left font-medium",
+                    collapsed ? "px-2" : "px-3",
+                    item.isRevolutionary && "bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200"
+                  )}
+                  onClick={() => toggleExpanded(item.id)}
+                >
+                  <item.icon className={cn("h-4 w-4", collapsed ? "mx-auto" : "mr-2")} />
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1">{item.label}</span>
+                      {expandedItems.includes(item.id) ? (
+                        <ChevronLeft className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )}
+                    </>
+                  )}
+                </Button>
+                
+                {expandedItems.includes(item.id) && !collapsed && (
+                  <div className="ml-4 mt-1 space-y-1">
+                    {item.children.map((child) => (
+                      <Button
+                        key={child.id}
+                        variant={currentView === child.id ? "default" : "ghost"}
+                        className={cn(
+                          "w-full justify-start text-left",
+                          child.isNew && "bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200"
+                        )}
+                        onClick={() => handleItemClick(child.id)}
+                      >
+                        <child.icon className="h-4 w-4 mr-2" />
+                        <span className="flex-1">{child.label}</span>
+                        {child.badge && (
+                          <Badge 
+                            variant="secondary" 
+                            className={cn(
+                              "ml-2 text-xs",
+                              child.badgeColor
+                            )}
+                          >
+                            {child.badge}
+                          </Badge>
+                        )}
+                      </Button>
+                    ))}
+                  </div>
                 )}
               </div>
-              
-              {!isCollapsed && (
-                <div className="flex-1 flex items-center justify-between">
-                  <span className="font-semibold text-sm">{label}</span>
-                  <div className="flex items-center gap-2">
-                    {isNew && (
-                      <Badge variant="destructive" className="text-xs px-2 py-0.5 animate-pulse">
-                        NEW
+            ) : (
+              <Button
+                variant={currentView === item.id ? "default" : "ghost"}
+                className={cn(
+                  "w-full justify-start text-left",
+                  collapsed ? "px-2" : "px-3"
+                )}
+                onClick={() => handleItemClick(item.id)}
+              >
+                <item.icon className={cn("h-4 w-4", collapsed ? "mx-auto" : "mr-2")} />
+                {!collapsed && (
+                  <>
+                    <span className="flex-1">{item.label}</span>
+                    {item.badge && (
+                      <Badge 
+                        variant="secondary" 
+                        className={cn(
+                          "ml-2 text-xs",
+                          item.badgeColor
+                        )}
+                      >
+                        {item.badge}
                       </Badge>
                     )}
-                    {badge && (
-                      <Badge variant="outline" className="text-xs px-2 py-0.5">
-                        {badge}
-                      </Badge>
-                    )}
-                    {count !== undefined && (
-                      <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600">
-                        {count}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              )}
-            </Button>
-            
-            {/* Hover Tooltip for Collapsed State */}
-            {isCollapsed && hoveredItem === id && (
-              <div className="absolute left-16 top-1/2 -translate-y-1/2 z-50">
-                <div className="bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-xl whitespace-nowrap">
-                  {label}
-                  {status && (
-                    <div className={cn(
-                      "w-2 h-2 rounded-full ml-2 inline-block",
-                      getStatusColor(status)
-                    )}></div>
-                  )}
-                </div>
-              </div>
+                  </>
+                )}
+              </Button>
             )}
           </div>
         ))}
       </nav>
 
-      <Separator className="mx-4 bg-gray-200/60" />
-
-      {/* Quick Actions */}
-      {!isCollapsed && (
-        <div className="p-4">
-          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Quick Actions</h3>
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" size="sm" className="h-8 text-xs">
-              <Plus className="w-3 h-3 mr-1" />
-              Add Store
-            </Button>
-            <Button variant="outline" size="sm" className="h-8 text-xs">
-              <Upload className="w-3 h-3 mr-1" />
-              Import
+      {/* Revolutionary Features Banner */}
+      {!collapsed && (
+        <div className="p-4 border-t border-gray-200">
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-3 text-white">
+            <div className="flex items-center space-x-2 mb-2">
+              <Sparkles className="h-4 w-4" />
+              <span className="text-sm font-semibold">Revolutionary Features</span>
+            </div>
+            <p className="text-xs opacity-90">
+              Experience the future of retail with AI-powered insights, automation, and customer intelligence.
+            </p>
+            <Button 
+              size="sm" 
+              variant="secondary" 
+              className="mt-2 w-full text-xs"
+              onClick={() => onViewChange('ai-insights')}
+            >
+              Explore Now
             </Button>
           </div>
         </div>
       )}
 
-      <Separator className="mx-4 bg-gray-200/60" />
-
-      {/* Ultra Professional User Profile */}
-      <div className="p-4 bg-gradient-to-r from-gray-50/50 to-white">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="relative">
-            <Avatar className="w-12 h-12 border-2 border-gray-200 shadow-lg">
-              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-lg">
-                {userProfile?.full_name?.charAt(0) || userProfile?.email?.charAt(0) || 'U'}
-              </AvatarFallback>
-            </Avatar>
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-lg"></div>
-          </div>
-          {!isCollapsed && (
+      {/* Footer */}
+      <div className="p-4 border-t border-gray-200">
+        <div className="flex items-center space-x-3">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback>U</AvatarFallback>
+          </Avatar>
+          {!collapsed && (
             <div className="flex-1">
-              <p className="text-sm font-bold text-gray-900">{userProfile?.full_name || userProfile?.email}</p>
-              <div className="flex items-center gap-2">
-                <Badge variant={getRoleBadgeVariant(userProfile?.role)} className="text-xs px-2 py-0.5">
-                  {userProfile?.role || 'User'}
-                </Badge>
-                <div className="flex items-center gap-1">
-                  <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                  <span className="text-xs text-gray-600 font-medium">4.8</span>
-                </div>
-              </div>
+              <p className="text-sm font-medium text-gray-900">Admin User</p>
+              <p className="text-xs text-gray-500">admin@wavelength.com</p>
             </div>
           )}
-        </div>
-        
-        <div className="space-y-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full gap-2 bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-all duration-300 h-10"
-            onClick={onSignOut}
-          >
-            <LogOut className="w-4 h-4" />
-            {!isCollapsed && "Sign Out"}
+          <Button variant="ghost" size="sm" className="p-2">
+            <LogOut className="h-4 w-4" />
           </Button>
-          
-          {!isCollapsed && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full gap-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all duration-300 h-8"
-            >
-              <Settings className="w-4 h-4" />
-              Settings
-            </Button>
-          )}
         </div>
       </div>
     </div>
   );
 };
- 

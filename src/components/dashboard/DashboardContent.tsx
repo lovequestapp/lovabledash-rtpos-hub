@@ -5,8 +5,11 @@ import { InventoryView } from "./views/InventoryView";
 import { ReportsView } from "./views/ReportsView";
 import { AlertsView } from "./views/AlertsView";
 import { SettingsView } from "./views/SettingsView";
+import { AIInsightsView } from "./views/AIInsightsView";
+import { Customer360View } from "./views/Customer360View";
+import { AutomationView } from "./views/AutomationView";
 
-type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings';
+type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation';
 
 interface DashboardContentProps {
   currentView: ViewType;
@@ -31,6 +34,12 @@ export const DashboardContent = ({ currentView, userProfile, onViewChange }: Das
         return <AlertsView />;
       case 'settings':
         return <SettingsView />;
+      case 'ai-insights':
+        return <AIInsightsView onViewChange={onViewChange} />;
+      case 'customer-360':
+        return <Customer360View onViewChange={onViewChange} />;
+      case 'automation':
+        return <AutomationView onViewChange={onViewChange} />;
       default:
         return <OverviewDashboard userProfile={userProfile} onViewChange={onViewChange} />;
     }

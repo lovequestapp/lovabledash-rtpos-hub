@@ -20,7 +20,7 @@ import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardContent } from "./DashboardContent";
 import { WaveLengthAI } from "../ai/WaveLengthAI";
 
-type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings';
+type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation';
 
 export const DashboardLayout = () => {
   const [currentView, setCurrentView] = useState<ViewType>('overview');
