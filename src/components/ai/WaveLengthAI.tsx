@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { 
   Bot, 
@@ -13,7 +12,6 @@ import {
   Minimize2, 
   Maximize2,
   Camera,
-  Eye,
   Brain,
   Zap,
   MessageSquare,
@@ -319,13 +317,15 @@ export const WaveLengthAI = () => {
     {
       id: '1',
       type: 'ai',
-      content: "Hello! I'm your AI assistant with advanced screen reading capabilities. I can analyze your dashboard, provide insights, and help you navigate your business data. Try asking me to analyze your current screen!",
+      content: "Hello! I'm your WaveLength Communications AI Assistant. I can help you analyze your business data, provide insights, manage your operations, and answer any questions about your dashboard. How can I assist you today?",
       timestamp: new Date(),
       suggestions: [
         "Analyze my current screen",
-        "Show me inventory insights",
-        "What are my top performing employees?",
-        "Generate a sales report"
+        "Show me business insights",
+        "What are my top performing stores?",
+        "Generate a sales report",
+        "Help me with inventory management",
+        "Analyze customer data"
       ]
     }
   ]);
@@ -334,7 +334,6 @@ export const WaveLengthAI = () => {
   const [isScreenReading, setIsScreenReading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [screenAnalysis, setScreenAnalysis] = useState<ScreenAnalysis | null>(null);
-  const [activeTab, setActiveTab] = useState("chat");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -360,7 +359,7 @@ export const WaveLengthAI = () => {
     setInputValue("");
     setIsProcessing(true);
 
-    // Simulate AI response with advanced screen reading
+    // Simulate AI response with advanced business intelligence
     setTimeout(() => {
       const aiResponse = generateAIResponse(content);
       setMessages(prev => [...prev, aiResponse]);
@@ -371,13 +370,13 @@ export const WaveLengthAI = () => {
   const generateAIResponse = (userInput: string): Message => {
     const responses = {
       "analyze my current screen": {
-        content: "I've analyzed your current screen and found several key insights:",
+        content: "I've analyzed your current screen and found several key insights for WaveLength Communications:",
         screenData: {
           elements: [
             {
               id: "dashboard-header",
               type: "text",
-              content: "Dashboard Overview",
+              content: "WaveLength Communications Dashboard",
               position: { x: 0, y: 0, width: 1200, height: 60 },
               attributes: { fontSize: "24px", fontWeight: "bold" },
               accessibility: {
@@ -423,48 +422,77 @@ export const WaveLengthAI = () => {
               actionable: true
             }
           ],
-          analysis: "Your dashboard shows strong performance with $12,450 in today's revenue. However, there's a critical inventory alert for iPhone 15 Pro with only 3 units remaining. The layout is well-organized with clear visual hierarchy and good accessibility features.",
+          analysis: "Your WaveLength Communications dashboard shows strong performance with $12,450 in today's revenue. However, there's a critical inventory alert for iPhone 15 Pro with only 3 units remaining. The layout is well-organized with clear visual hierarchy and excellent accessibility features.",
           insights: [
-            "Revenue is 15% above daily target",
-            "Inventory needs immediate attention",
+            "Revenue is 15% above daily target for WaveLength Communications",
+            "Inventory needs immediate attention for iPhone 15 Pro",
             "Dashboard accessibility score: 95/100",
-            "User engagement metrics are optimal"
+            "User engagement metrics are optimal across all stores"
           ],
           recommendations: [
-            "Restock iPhone 15 Pro immediately",
-            "Consider increasing inventory buffer",
-            "Review sales velocity for high-demand items",
-            "Implement automated reorder alerts"
+            "Restock iPhone 15 Pro immediately to avoid stockouts",
+            "Consider increasing inventory buffer for high-demand items",
+            "Review sales velocity for popular products",
+            "Implement automated reorder alerts for WaveLength Communications"
           ]
         }
       },
-      "show me inventory insights": {
-        content: "Based on your current inventory data, here are the key insights:",
+      "show me business insights": {
+        content: "Here are your key business insights for WaveLength Communications:",
         suggestions: [
-          "Analyze low stock items",
-          "Show inventory turnover rates",
-          "Identify best-selling products",
-          "Generate restock recommendations"
+          "Analyze revenue trends",
+          "Review inventory performance",
+          "Check employee productivity",
+          "Generate customer insights"
         ]
       },
-      "what are my top performing employees": {
-        content: "Your top performing employees this month are:",
+      "what are my top performing stores": {
+        content: "Your top performing WaveLength Communications stores this month are:",
         suggestions: [
-          "View detailed performance metrics",
-          "Analyze sales trends",
-          "Generate performance reports",
-          "Set up employee recognition"
+          "View detailed store metrics",
+          "Analyze store performance trends",
+          "Generate store comparison reports",
+          "Set up store performance alerts"
+        ]
+      },
+      "generate a sales report": {
+        content: "I'll generate a comprehensive sales report for WaveLength Communications:",
+        suggestions: [
+          "Download PDF report",
+          "Email report to stakeholders",
+          "Schedule automated reports",
+          "Create custom report templates"
+        ]
+      },
+      "help me with inventory management": {
+        content: "I can help you optimize your WaveLength Communications inventory management:",
+        suggestions: [
+          "Analyze stock levels",
+          "Identify reorder points",
+          "Review inventory turnover",
+          "Set up automated alerts"
+        ]
+      },
+      "analyze customer data": {
+        content: "Let me analyze your WaveLength Communications customer data:",
+        suggestions: [
+          "View customer segments",
+          "Analyze purchase patterns",
+          "Identify high-value customers",
+          "Generate customer insights"
         ]
       }
     };
 
     const response = responses[userInput.toLowerCase()] || {
-      content: "I understand you're asking about: " + userInput + ". Let me analyze your current screen to provide the most relevant information.",
+      content: "I understand you're asking about: " + userInput + ". As your WaveLength Communications AI Assistant, I can help you with business analysis, inventory management, sales insights, customer data, and much more. What specific aspect would you like me to focus on?",
       suggestions: [
         "Analyze my current screen",
-        "Show me dashboard insights",
-        "Generate a report",
-        "Help me navigate"
+        "Show me business insights",
+        "Generate a sales report",
+        "Help me with inventory",
+        "Analyze customer data",
+        "Review store performance"
       ]
     };
 
@@ -482,7 +510,7 @@ export const WaveLengthAI = () => {
     setIsScreenReading(true);
     toast({ 
       title: "Advanced Screen Analysis", 
-      description: "I'm using AI vision to analyze your screen with 99.7% accuracy..." 
+      description: "I'm using AI vision to analyze your WaveLength Communications dashboard with 99.7% accuracy..." 
     });
     
     // Simulate advanced screen reading with detailed analysis
@@ -496,7 +524,7 @@ export const WaveLengthAI = () => {
           {
             id: "main-nav",
             type: "navigation",
-            content: "Dashboard Navigation",
+            content: "WaveLength Communications Navigation",
             position: { x: 0, y: 0, width: 250, height: 100 },
             attributes: { backgroundColor: "#1f2937", color: "white" },
             accessibility: {
@@ -547,7 +575,7 @@ export const WaveLengthAI = () => {
           navigation: ["Overview", "Stores", "Employees", "Inventory", "Reports", "Alerts", "Settings"],
           mainContent: "Dashboard metrics and charts",
           sidebar: "Navigation menu with 7 items",
-          header: "Company branding and user controls",
+          header: "WaveLength Communications branding and user controls",
           footer: "System status and version info"
         },
         accessibility: {
@@ -561,7 +589,7 @@ export const WaveLengthAI = () => {
           usability: 92
         },
         insights: {
-          userIntent: "Monitoring business performance and managing operations",
+          userIntent: "Monitoring WaveLength Communications business performance and managing operations",
           suggestedActions: [
             "Restock iPhone 15 Pro immediately",
             "Review sales performance trends",
@@ -587,7 +615,7 @@ export const WaveLengthAI = () => {
       const analysisMessage: Message = {
         id: Date.now().toString(),
         type: 'ai',
-        content: "I've completed a comprehensive screen analysis with 99.7% accuracy. Your dashboard shows excellent performance with $12,450 in today's revenue (+15% growth), but there's a critical inventory alert that needs immediate attention.",
+        content: "I've completed a comprehensive screen analysis with 99.7% accuracy for your WaveLength Communications dashboard. Your business shows excellent performance with $12,450 in today's revenue (+15% growth), but there's a critical inventory alert that needs immediate attention.",
         timestamp: new Date(),
         screenData: {
           elements: detailedAnalysis.elements,
@@ -635,10 +663,10 @@ export const WaveLengthAI = () => {
               <Bot className="w-6 h-6" />
               <div>
                 <CardTitle className="text-lg font-bold">
-                  {isScreenReading ? "Analyzing Screen..." : isListening ? "Listening..." : "AI Assistant"}
+                  WaveLength AI Assistant
                 </CardTitle>
                 <CardDescription className="text-green-100">
-                  Advanced screen reading with 99.7% accuracy
+                  {isScreenReading ? "Analyzing screen..." : isListening ? "Listening..." : "Your intelligent business assistant"}
                 </CardDescription>
               </div>
             </div>
@@ -665,233 +693,120 @@ export const WaveLengthAI = () => {
 
         {!isMinimized && (
           <CardContent className="p-0 h-full">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="chat">Chat</TabsTrigger>
-                <TabsTrigger value="screen">Screen</TabsTrigger>
-                <TabsTrigger value="insights">Insights</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="chat" className="h-[calc(100%-3rem)] p-4">
-                <ScrollArea className="h-[400px] pr-4">
-                  <div className="space-y-4">
-                    {messages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div
-                          className={`max-w-[80%] p-3 rounded-lg ${
-                            message.type === 'user'
-                              ? 'bg-green-500 text-white'
-                              : 'bg-gray-100 text-gray-900'
-                          }`}
-                        >
-                          <p className="text-sm">{message.content}</p>
-                          <p className="text-xs opacity-70 mt-1">
-                            {formatTime(message.timestamp)}
-                          </p>
-                          
-                          {message.suggestions && (
-                            <div className="mt-2 space-y-1">
-                              {message.suggestions.map((suggestion, index) => (
-                                <Button
-                                  key={index}
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleSuggestionClick(suggestion)}
-                                  className="mr-2 mb-1 text-xs"
-                                >
-                                  {suggestion}
-                                </Button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                    
-                    {isProcessing && (
-                      <div className="flex justify-start">
-                        <div className="bg-gray-100 p-3 rounded-lg">
-                          <div className="flex items-center space-x-2">
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            <span className="text-sm">AI is thinking...</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    
-                    <div ref={messagesEndRef} />
-                  </div>
-                </ScrollArea>
-
-                <div className="flex space-x-2 mt-4">
-                  <Input
-                    ref={inputRef}
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputValue)}
-                    placeholder="Ask me anything about your dashboard..."
-                    className="flex-1"
-                    disabled={isProcessing}
-                  />
-                  <Button
-                    onClick={() => handleSendMessage(inputValue)}
-                    disabled={isProcessing || !inputValue.trim()}
-                    className="bg-green-500 hover:bg-green-600"
-                  >
-                    <Send className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    onClick={handleScreenCapture}
-                    disabled={isScreenReading}
-                    variant="outline"
-                    className="border-green-500 text-green-500 hover:bg-green-50"
-                  >
-                    {isScreenReading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Camera className="w-4 h-4" />
-                    )}
-                  </Button>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="screen" className="h-[calc(100%-3rem)] p-4">
+            <div className="h-[calc(100%-3rem)] p-4">
+              <ScrollArea className="h-[400px] pr-4">
                 <div className="space-y-4">
-                  <div className="text-center">
-                    <Button
-                      onClick={handleScreenCapture}
-                      disabled={isScreenReading}
-                      className="w-full bg-green-500 hover:bg-green-600 text-white"
+                  {messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                      {isScreenReading ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Analyzing Screen...
-                        </>
-                      ) : (
-                        <>
-                          <Camera className="w-4 h-4 mr-2" />
-                          Analyze Current Screen
-                        </>
-                      )}
-                    </Button>
-                  </div>
-
-                  {screenAnalysis && (
-                    <div className="space-y-4">
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-lg">Screen Analysis</CardTitle>
-                          <CardDescription>
-                            Page: {screenAnalysis.pageTitle} | View: {screenAnalysis.currentView}
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <h4 className="font-medium">Accessibility Score</h4>
-                              <div className="flex items-center space-x-2">
-                                <Progress value={screenAnalysis.accessibility.score} className="flex-1" />
-                                <span className="text-sm font-medium">{screenAnalysis.accessibility.score}/100</span>
-                              </div>
-                            </div>
-                            <div>
-                              <h4 className="font-medium">Performance</h4>
-                              <div className="text-sm space-y-1">
-                                <div>Load Time: {screenAnalysis.performance.loadTime}s</div>
-                                <div>Responsiveness: {screenAnalysis.performance.responsiveness}%</div>
-                                <div>Usability: {screenAnalysis.performance.usability}%</div>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-lg">Detected Elements</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-2">
-                            {screenAnalysis.elements.map((element, index) => (
-                              <div key={index} className="p-2 border rounded-lg">
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <div className="font-medium">{element.content}</div>
-                                    <div className="text-sm text-gray-500">
-                                      {element.type} • {element.importance} priority
-                                    </div>
-                                  </div>
-                                  <Badge variant={element.actionable ? "default" : "secondary"}>
-                                    {element.actionable ? "Actionable" : "Info"}
-                                  </Badge>
-                                </div>
-                              </div>
+                      <div
+                        className={`max-w-[80%] p-3 rounded-lg ${
+                          message.type === 'user'
+                            ? 'bg-green-500 text-white'
+                            : 'bg-gray-100 text-gray-900'
+                        }`}
+                      >
+                        <p className="text-sm">{message.content}</p>
+                        <p className="text-xs opacity-70 mt-1">
+                          {formatTime(message.timestamp)}
+                        </p>
+                        
+                        {message.suggestions && (
+                          <div className="mt-2 space-y-1">
+                            {message.suggestions.map((suggestion, index) => (
+                              <Button
+                                key={index}
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleSuggestionClick(suggestion)}
+                                className="mr-2 mb-1 text-xs"
+                              >
+                                {suggestion}
+                              </Button>
                             ))}
                           </div>
-                        </CardContent>
-                      </Card>
+                        )}
+
+                        {message.screenData && (
+                          <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <Brain className="w-4 h-4 text-blue-600" />
+                              <span className="text-sm font-medium text-blue-800">Screen Analysis</span>
+                            </div>
+                            <p className="text-xs text-blue-700 mb-2">{message.screenData.analysis}</p>
+                            
+                            <div className="grid grid-cols-2 gap-2 mb-2">
+                              <div>
+                                <h4 className="text-xs font-medium text-blue-800">Insights</h4>
+                                <ul className="text-xs text-blue-700 space-y-1">
+                                  {message.screenData.insights.slice(0, 2).map((insight, index) => (
+                                    <li key={index}>• {insight}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div>
+                                <h4 className="text-xs font-medium text-blue-800">Recommendations</h4>
+                                <ul className="text-xs text-blue-700 space-y-1">
+                                  {message.screenData.recommendations.slice(0, 2).map((rec, index) => (
+                                    <li key={index}>• {rec}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {isProcessing && (
+                    <div className="flex justify-start">
+                      <div className="bg-gray-100 p-3 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span className="text-sm">AI is thinking...</span>
+                        </div>
+                      </div>
                     </div>
                   )}
+                  
+                  <div ref={messagesEndRef} />
                 </div>
-              </TabsContent>
+              </ScrollArea>
 
-              <TabsContent value="insights" className="h-[calc(100%-3rem)] p-4">
-                <div className="space-y-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">AI Insights</CardTitle>
-                      <CardDescription>
-                        Intelligent analysis of your dashboard
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="p-3 bg-green-50 rounded-lg">
-                          <div className="flex items-center space-x-2">
-                            <TrendingUp className="w-4 h-4 text-green-600" />
-                            <span className="font-medium">Revenue Growth</span>
-                          </div>
-                          <p className="text-sm text-gray-600 mt-1">+15% above target</p>
-                        </div>
-                        <div className="p-3 bg-yellow-50 rounded-lg">
-                          <div className="flex items-center space-x-2">
-                            <AlertTriangle className="w-4 h-4 text-yellow-600" />
-                            <span className="font-medium">Inventory Alert</span>
-                          </div>
-                          <p className="text-sm text-gray-600 mt-1">iPhone 15 Pro low stock</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Recommendations</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-sm">Restock iPhone 15 Pro immediately</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-sm">Review sales performance trends</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-sm">Implement automated alerts</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-            </Tabs>
+              <div className="flex space-x-2 mt-4">
+                <Input
+                  ref={inputRef}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputValue)}
+                  placeholder="Ask me anything about your business..."
+                  className="flex-1"
+                  disabled={isProcessing}
+                />
+                <Button
+                  onClick={() => handleSendMessage(inputValue)}
+                  disabled={isProcessing || !inputValue.trim()}
+                  className="bg-green-500 hover:bg-green-600"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+                <Button
+                  onClick={handleScreenCapture}
+                  disabled={isScreenReading}
+                  variant="outline"
+                  className="border-green-500 text-green-500 hover:bg-green-50"
+                >
+                  {isScreenReading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Camera className="w-4 h-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
           </CardContent>
         )}
       </Card>
