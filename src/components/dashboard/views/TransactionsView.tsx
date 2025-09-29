@@ -573,11 +573,11 @@ export const TransactionsView = ({ onViewChange }: TransactionsViewProps) => {
     .map(txn => ({ id: txn!.storeId, name: txn!.storeName }));
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Transaction Monitor</h2>
+          <h1 className="text-3xl font-bold tracking-tight">Transaction Monitor</h1>
           <p className="text-muted-foreground">
             Real-time transaction monitoring across all stores
           </p>

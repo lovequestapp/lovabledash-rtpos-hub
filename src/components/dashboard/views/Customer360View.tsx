@@ -320,11 +320,11 @@ export const Customer360View = ({ onViewChange }: Customer360ViewProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Customer 360° Intelligence</h2>
+          <h1 className="text-3xl font-bold tracking-tight">Customer 360° Intelligence</h1>
           <p className="text-muted-foreground">
             Complete customer insights, predictions, and personalized experiences
           </p>
@@ -661,7 +661,7 @@ export const Customer360View = ({ onViewChange }: Customer360ViewProps) => {
                               <MessageCircle className="h-4 w-4 text-blue-600" />
                             </div>
                             <div className="flex-1">
-                              <div className="flex items-center justify-between">
+                              <div className="flex items-center justify-between mb-6">
                                 <span className="font-medium">{interaction.type}</span>
                                 <span className="text-sm text-muted-foreground">
                                   {new Date(interaction.timestamp).toLocaleDateString()}
@@ -698,7 +698,7 @@ export const Customer360View = ({ onViewChange }: Customer360ViewProps) => {
                               <Badge variant="outline">{rec.confidence}% confidence</Badge>
                             </div>
                             <p className="text-sm text-muted-foreground mb-2">{rec.reason}</p>
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between mb-6">
                               <span className="text-sm font-medium">Expected Value: ${rec.expectedValue}</span>
                               <Button size="sm">Recommend</Button>
                             </div>

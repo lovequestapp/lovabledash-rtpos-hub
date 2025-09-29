@@ -590,11 +590,11 @@ export const AnomalyDetectorView = ({ onViewChange }: AnomalyDetectorViewProps) 
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">AI Anomaly Detector</h2>
+          <h1 className="text-3xl font-bold tracking-tight">AI Anomaly Detector</h1>
           <p className="text-muted-foreground">
             Advanced fraud detection, time clock monitoring, and discrepancy analysis
           </p>
@@ -947,7 +947,7 @@ export const AnomalyDetectorView = ({ onViewChange }: AnomalyDetectorViewProps) 
                               <Clock className="h-4 w-4 text-blue-600" />
                             </div>
                             <div className="flex-1">
-                              <div className="flex items-center justify-between">
+                              <div className="flex items-center justify-between mb-6">
                                 <span className="font-medium">{event.event}</span>
                                 <span className="text-sm text-muted-foreground">
                                   {new Date(event.timestamp).toLocaleString()}

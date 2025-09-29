@@ -460,11 +460,11 @@ export const InventoryView = ({ onViewChange }: InventoryViewProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Advanced Inventory Management</h2>
+          <h1 className="text-3xl font-bold tracking-tight">Advanced Inventory Management</h1>
           <p className="text-muted-foreground">
             Comprehensive inventory tracking, lifecycle management, and loss prevention
           </p>
@@ -832,7 +832,7 @@ export const InventoryView = ({ onViewChange }: InventoryViewProps) => {
             </div>
 
             {/* Sort and View Controls */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="w-[150px]">

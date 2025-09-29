@@ -678,11 +678,11 @@ export const AIInsightsView = ({ onViewChange }: AIInsightsViewProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">AI Business Intelligence</h2>
+          <h1 className="text-3xl font-bold tracking-tight">AI Business Intelligence</h1>
           <p className="text-muted-foreground">
             Revolutionary AI-powered insights, predictions, and recommendations
           </p>
