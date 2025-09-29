@@ -288,7 +288,7 @@ export const EmployeesView = ({ onViewChange }: EmployeesViewProps) => {
 
   // Filtering and sorting logic
   const filteredAndSortedEmployees = useMemo(() => {
-    let filtered = employees.filter(employee => {
+    const filtered = employees.filter(employee => {
       const matchesSearch = employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            employee.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            employee.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
