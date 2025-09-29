@@ -99,7 +99,7 @@ import {
   Hash,
   AtSign,
   Percent,
-  Hash as HashIcon
+  Hash as HashIcon,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
