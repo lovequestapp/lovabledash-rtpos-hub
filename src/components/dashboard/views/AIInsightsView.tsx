@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -925,7 +925,7 @@ export const AIInsightsView = ({ onViewChange }: AIInsightsViewProps) => {
             <CardHeader>
               <div className="flex items-center space-x-4">
                 <div className="p-2 bg-blue-100 rounded-lg">
-                  {React.createElement(getInsightIcon(selectedInsight.type), { className: "h-6 w-6 text-blue-600" })}
+                  <Icon className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
                   <CardTitle>{selectedInsight.title}</CardTitle>

@@ -23,7 +23,7 @@ import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardContent } from "./DashboardContent";
 import { WaveLengthAI } from "../ai/WaveLengthAI";
 
-type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation';
+type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation' | 'transactions';
 
 export const DashboardLayout = () => {
   const [currentView, setCurrentView] = useState<ViewType>('overview');
@@ -118,6 +118,7 @@ export const DashboardLayout = () => {
     { id: 'ai-insights', label: 'AI Insights', icon: Brain, isNew: true },
     { id: 'customer-360', label: 'Customer 360°', icon: Eye, isNew: true },
     { id: 'automation', label: 'Automation', icon: Zap, isNew: true },
+    { id: 'transactions', label: 'Transactions', icon: CreditCard, isNew: true },
   ];
 
   return (

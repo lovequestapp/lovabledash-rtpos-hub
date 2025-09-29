@@ -36,7 +36,7 @@ import { cn } from "@/lib/utils";
 
 interface OverviewDashboardProps {
   userProfile: any;
-  onViewChange: (view: 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings') => void;
+  onViewChange: (view: 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'transactions') => void;
 }
 
 export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboardProps) => {
@@ -58,6 +58,10 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
     lowStockItems: 12,
     activeAlerts: 3,
     totalTransactions: 47,
+    todayTransactions: 23,
+    pendingTransactions: 3,
+    failedTransactions: 1,
+    averageTransactionValue: 60.58,
     avgTicket: 60.58,
     weeklyGrowth: 12.5,
     monthlyGrowth: 8.3,
