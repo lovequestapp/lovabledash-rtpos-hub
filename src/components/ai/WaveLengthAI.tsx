@@ -83,9 +83,50 @@ export const WaveLengthAI = ({ onScreenCapture }: WaveLengthAIProps) => {
   }, [messages]);
 
   const callOpenAI = async (userMessage: string, conversationHistory: Message[]) => {
-    // For now, return a mock response to avoid API key issues
-    // This will be replaced with actual OpenAI integration once deployment works
-    return "I'm WaveLength AI, your intelligent assistant! I can help you with inventory management, employee tracking, fraud detection, and business analytics. How can I assist you today?";
+    try {
+      // Get API key from environment - this will be available in Netlify
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      
+      if (!apiKey) {
+        return "I apologize, but my AI services are not properly configured. Please contact your administrator to set up the OpenAI API key in the environment variables.";
+      }
+
+      const systemPrompt = `You are WaveLength AI, an intelligent assistant for WaveLength Communications, a multi-store management platform. You help with inventory management, employee tracking, fraud detection, and business analytics. Be helpful, professional, and provide actionable insights.`;
+
+      const messages = [
+        { role: "system", content: systemPrompt },
+        ...conversationHistory.slice(-10).map(msg => ({
+          role: msg.type === 'user' ? 'user' : 'assistant',
+          content: msg.content
+        })),
+        { role: "user", content: userMessage }
+      ];
+
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4",
+          messages: messages,
+          max_tokens: 1000,
+          temperature: 0.7,
+          stream: false
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error('OpenAI API Error:', error);
+      return "I apologize, but I'm having trouble connecting to my AI services right now. Please try again in a moment, or feel free to ask me about inventory management, employee tracking, or fraud detection.";
+    }
   };
 
   const handleSendMessage = async (content: string) => {
