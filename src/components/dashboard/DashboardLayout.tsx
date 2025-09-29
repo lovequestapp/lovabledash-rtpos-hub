@@ -111,6 +111,7 @@ export const DashboardLayout = () => {
   const sidebarItems = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'stores', label: 'Stores', icon: Store },
+    { id: 'transactions', label: 'Transactions', icon: CreditCard, isNew: true },
     { id: 'employees', label: 'Employees', icon: Users },
     { id: 'inventory', label: 'Inventory', icon: Package },
     { id: 'reports', label: 'Reports', icon: TrendingUp },
@@ -119,7 +120,6 @@ export const DashboardLayout = () => {
     { id: 'ai-insights', label: 'AI Insights', icon: Brain, isNew: true },
     { id: 'customer-360', label: 'Customer 360°', icon: Eye, isNew: true },
     { id: 'automation', label: 'Automation', icon: Zap, isNew: true },
-    { id: 'transactions', label: 'Transactions', icon: CreditCard, isNew: true },
   ];
 
   return (

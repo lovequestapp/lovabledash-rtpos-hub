@@ -70,7 +70,8 @@ import {
   BarChart3,
   PieChart,
   LineChart,
-  Gift
+  Gift,
+  Calculator
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -731,131 +732,434 @@ export const TransactionsView = ({ onViewChange }: TransactionsViewProps) => {
         ))}
       </div>
 
-      {/* Transaction Detail Modal */}
+      {/* Advanced Transaction Detail Modal */}
       {selectedTransaction && (
         <Dialog open={!!selectedTransaction} onOpenChange={() => setSelectedTransaction(null)}>
-          <DialogContent className="dialog-glass max-w-4xl">
-            <DialogHeader>
-              <DialogTitle className="flex items-center space-x-2">
-                <Receipt className="w-5 h-5" />
-                <span>Transaction Details - {selectedTransaction.id}</span>
-              </DialogTitle>
-              <DialogDescription>
-                Complete transaction information and line items
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-6">
-              {/* Transaction Overview */}
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Customer Information</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center space-x-2">
-                        <User className="w-4 h-4" />
-                        <span>{selectedTransaction.customerName}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Mail className="w-4 h-4" />
-                        <span>{selectedTransaction.customerEmail}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Phone className="w-4 h-4" />
-                        <span>{selectedTransaction.customerPhone}</span>
-                      </div>
-                    </div>
+          <DialogContent className="dialog-glass max-w-6xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader className="sticky top-0 bg-background/95 backdrop-blur-xl z-10 pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                    <Receipt className="w-6 h-6 text-blue-500" />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2">Store & Employee</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center space-x-2">
-                        <Store className="w-4 h-4" />
-                        <span>{selectedTransaction.storeName}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <User className="w-4 h-4" />
-                        <span>{selectedTransaction.employeeName}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <MapPin className="w-4 h-4" />
-                        <span>{selectedTransaction.location.address}, {selectedTransaction.location.city}</span>
-                      </div>
-                    </div>
+                    <DialogTitle className="text-2xl font-bold">
+                      Transaction Details - {selectedTransaction.id}
+                    </DialogTitle>
+                    <DialogDescription className="text-sm mt-1">
+                      {formatDate(selectedTransaction.timestamp)} • {selectedTransaction.storeName}
+                    </DialogDescription>
                   </div>
                 </div>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Payment Details</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center space-x-2">
-                        {getMethodIcon(selectedTransaction.paymentMethod)}
-                        <span className="capitalize">{selectedTransaction.paymentMethod}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Badge className={getStatusColor(selectedTransaction.paymentStatus)}>
-                          {selectedTransaction.paymentStatus}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Receipt className="w-4 h-4" />
-                        <span>{selectedTransaction.receiptNumber}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-2">Transaction Summary</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>Subtotal:</span>
-                        <span>{formatCurrency(selectedTransaction.total - selectedTransaction.tax + selectedTransaction.discount - selectedTransaction.tip)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Tax:</span>
-                        <span>{formatCurrency(selectedTransaction.tax)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Discount:</span>
-                        <span>-{formatCurrency(selectedTransaction.discount)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Tip:</span>
-                        <span>{formatCurrency(selectedTransaction.tip)}</span>
-                      </div>
-                      <div className="flex justify-between font-semibold border-t pt-2">
-                        <span>Total:</span>
-                        <span>{formatCurrency(selectedTransaction.total)}</span>
-                      </div>
-                    </div>
-                  </div>
+                <div className="flex items-center space-x-2">
+                  <Badge className={getStatusColor(selectedTransaction.paymentStatus)} variant="outline">
+                    {selectedTransaction.paymentStatus}
+                  </Badge>
+                  <Button variant="outline" size="sm" className="btn-glass">
+                    <Download className="w-4 h-4 mr-2" />
+                    Export
+                  </Button>
+                  <Button variant="outline" size="sm" className="btn-glass">
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy ID
+                  </Button>
                 </div>
               </div>
+            </DialogHeader>
 
-              {/* Line Items */}
-              <div>
-                <h4 className="font-semibold mb-4">Line Items</h4>
-                <div className="space-y-2">
-                  {selectedTransaction.items.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between p-3 border border-white/20 rounded-lg bg-white/5">
-                      <div className="flex items-center space-x-4">
+            <Tabs defaultValue="overview" className="w-full">
+              <TabsList className="grid w-full grid-cols-5 mb-6">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="items">Line Items ({selectedTransaction.items.length})</TabsTrigger>
+                <TabsTrigger value="customer">Customer</TabsTrigger>
+                <TabsTrigger value="payment">Payment</TabsTrigger>
+                <TabsTrigger value="metadata">Metadata</TabsTrigger>
+              </TabsList>
+
+              {/* Overview Tab */}
+              <TabsContent value="overview" className="space-y-6">
+                {/* Transaction Summary Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <Card className="card-premium">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
                         <div>
-                          <div className="font-medium">{item.productName}</div>
-                          <div className="text-sm text-muted-foreground">{item.sku}</div>
+                          <p className="text-sm text-muted-foreground">Total Amount</p>
+                          <p className="text-2xl font-bold">{formatCurrency(selectedTransaction.total)}</p>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {item.quantity} × {formatCurrency(item.unitPrice)}
-                        </div>
+                        <DollarSign className="w-8 h-8 text-green-500" />
                       </div>
-                      <div className="text-right">
-                        <div className="font-semibold">{formatCurrency(item.totalPrice)}</div>
-                        <div className="text-sm text-muted-foreground">
-                          Tax: {formatCurrency(item.tax)} | Discount: {formatCurrency(item.discount)}
+                    </CardContent>
+                  </Card>
+                  <Card className="card-premium">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Items</p>
+                          <p className="text-2xl font-bold">{selectedTransaction.items.length}</p>
                         </div>
+                        <Package className="w-8 h-8 text-blue-500" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="card-premium">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Tax</p>
+                          <p className="text-2xl font-bold">{formatCurrency(selectedTransaction.tax)}</p>
+                        </div>
+                        <Receipt className="w-8 h-8 text-purple-500" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="card-premium">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Risk Score</p>
+                          <p className="text-2xl font-bold">{selectedTransaction.riskScore.toFixed(0)}%</p>
+                        </div>
+                        <Shield className={`w-8 h-8 ${selectedTransaction.riskScore > 70 ? 'text-red-500' : 'text-green-500'}`} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Store & Employee Info */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card className="card-premium">
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-2">
+                        <Store className="w-5 h-5" />
+                        <span>Store Information</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Store Name:</span>
+                        <span className="font-medium">{selectedTransaction.storeName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Store ID:</span>
+                        <span className="font-medium">{selectedTransaction.storeId}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Terminal:</span>
+                        <span className="font-medium">{selectedTransaction.terminalId}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Location:</span>
+                        <span className="font-medium text-right">{selectedTransaction.location.address}, {selectedTransaction.location.city}, {selectedTransaction.location.state} {selectedTransaction.location.zipCode}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="card-premium">
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-2">
+                        <User className="w-5 h-5" />
+                        <span>Employee Information</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Employee Name:</span>
+                        <span className="font-medium">{selectedTransaction.employeeName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Employee ID:</span>
+                        <span className="font-medium">{selectedTransaction.employeeId}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Receipt Number:</span>
+                        <span className="font-medium">{selectedTransaction.receiptNumber}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-muted-foreground">Timestamp:</span>
+                        <span className="font-medium">{formatDate(selectedTransaction.timestamp)}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Price Breakdown */}
+                <Card className="card-premium">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Calculator className="w-5 h-5" />
+                      <span>Price Breakdown</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                        <span className="text-muted-foreground">Subtotal</span>
+                        <span className="font-semibold">{formatCurrency(selectedTransaction.total - selectedTransaction.tax + selectedTransaction.discount - selectedTransaction.tip)}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-green-500/10 rounded-lg">
+                        <span className="text-muted-foreground flex items-center space-x-2">
+                          <Tag className="w-4 h-4" />
+                          <span>Discount</span>
+                        </span>
+                        <span className="font-semibold text-green-500">-{formatCurrency(selectedTransaction.discount)}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-blue-500/10 rounded-lg">
+                        <span className="text-muted-foreground flex items-center space-x-2">
+                          <Receipt className="w-4 h-4" />
+                          <span>Tax (8%)</span>
+                        </span>
+                        <span className="font-semibold">{formatCurrency(selectedTransaction.tax)}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 bg-purple-500/10 rounded-lg">
+                        <span className="text-muted-foreground flex items-center space-x-2">
+                          <Heart className="w-4 h-4" />
+                          <span>Tip</span>
+                        </span>
+                        <span className="font-semibold">{formatCurrency(selectedTransaction.tip)}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg border-2 border-blue-500/30">
+                        <span className="font-bold text-lg">Grand Total</span>
+                        <span className="font-bold text-2xl text-blue-500">{formatCurrency(selectedTransaction.total)}</span>
                       </div>
                     </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Line Items Tab */}
+              <TabsContent value="items" className="space-y-4">
+                <div className="space-y-3">
+                  {selectedTransaction.items.map((item, index) => (
+                    <Card key={item.id} className="card-premium hover:shadow-xl transition-all duration-300">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
+                              <Package className="w-6 h-6 text-blue-500" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-lg">{item.productName}</h4>
+                              <p className="text-sm text-muted-foreground">SKU: {item.sku} • Category: {item.category}</p>
+                              <div className="flex items-center space-x-4 mt-2">
+                                <Badge variant="outline" className="badge-glass">
+                                  Qty: {item.quantity}
+                                </Badge>
+                                <Badge variant="outline" className="badge-glass">
+                                  {formatCurrency(item.unitPrice)} each
+                                </Badge>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-blue-500">{formatCurrency(item.totalPrice)}</div>
+                            <div className="text-sm text-muted-foreground mt-1">
+                              Tax: {formatCurrency(item.tax)}
+                            </div>
+                            {item.discount > 0 && (
+                              <div className="text-sm text-green-500 mt-1">
+                                Discount: -{formatCurrency(item.discount)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        {item.attributes && (
+                          <div className="mt-3 pt-3 border-t border-white/10">
+                            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                              <span>Attributes:</span>
+                              {Object.entries(item.attributes).map(([key, value]) => (
+                                <Badge key={key} variant="secondary" className="badge-glass">
+                                  {key}: {value as string}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
-              </div>
-            </div>
+              </TabsContent>
+
+              {/* Customer Tab */}
+              <TabsContent value="customer" className="space-y-6">
+                <Card className="card-premium">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <User className="w-5 h-5" />
+                      <span>Customer Profile</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center space-x-4">
+                      <Avatar className="w-16 h-16">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-500 text-white text-xl">
+                          {selectedTransaction.customerName.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h3 className="text-xl font-bold">{selectedTransaction.customerName}</h3>
+                        <p className="text-sm text-muted-foreground">Customer ID: {selectedTransaction.customerId}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                      <div className="p-4 bg-white/5 rounded-lg">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <Mail className="w-4 h-4 text-blue-500" />
+                          <span className="text-sm text-muted-foreground">Email</span>
+                        </div>
+                        <p className="font-medium">{selectedTransaction.customerEmail}</p>
+                      </div>
+                      <div className="p-4 bg-white/5 rounded-lg">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <Phone className="w-4 h-4 text-green-500" />
+                          <span className="text-sm text-muted-foreground">Phone</span>
+                        </div>
+                        <p className="font-medium">{selectedTransaction.customerPhone}</p>
+                      </div>
+                    </div>
+                    {selectedTransaction.tags.length > 0 && (
+                      <div className="pt-4 border-t border-white/10">
+                        <h4 className="text-sm font-semibold mb-2">Customer Tags</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedTransaction.tags.map((tag, index) => (
+                            <Badge key={index} className="badge-glass">
+                              <Star className="w-3 h-3 mr-1" />
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Payment Tab */}
+              <TabsContent value="payment" className="space-y-6">
+                <Card className="card-premium">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <CreditCard className="w-5 h-5" />
+                      <span>Payment Information</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg border border-blue-500/20">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-muted-foreground">Payment Method</span>
+                          {getMethodIcon(selectedTransaction.paymentMethod)}
+                        </div>
+                        <p className="text-lg font-bold capitalize">{selectedTransaction.paymentMethod.replace('_', ' ')}</p>
+                      </div>
+                      <div className="p-4 bg-gradient-to-br from-green-500/10 to-blue-500/10 rounded-lg border border-green-500/20">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-muted-foreground">Status</span>
+                          {selectedTransaction.paymentStatus === 'completed' ? (
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                          ) : (
+                            <Clock className="w-5 h-5 text-yellow-500" />
+                          )}
+                        </div>
+                        <p className="text-lg font-bold capitalize">{selectedTransaction.paymentStatus}</p>
+                      </div>
+                    </div>
+                    <div className="p-4 bg-white/5 rounded-lg">
+                      <h4 className="font-semibold mb-3">Transaction Security</h4>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">Risk Score</span>
+                          <div className="flex items-center space-x-2">
+                            <Progress value={selectedTransaction.riskScore} className="w-32" />
+                            <span className="font-semibold">{selectedTransaction.riskScore.toFixed(0)}%</span>
+                          </div>
+                        </div>
+                        {selectedTransaction.fraudFlags.length > 0 && (
+                          <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <AlertTriangle className="w-4 h-4 text-red-500" />
+                              <span className="font-semibold text-red-500">Fraud Flags Detected</span>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedTransaction.fraudFlags.map((flag, index) => (
+                                <Badge key={index} variant="destructive" className="badge-glass">
+                                  {flag}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Metadata Tab */}
+              <TabsContent value="metadata" className="space-y-6">
+                <Card className="card-premium">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Monitor className="w-5 h-5" />
+                      <span>Device & Browser Information</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-3 bg-white/5 rounded-lg">
+                        <span className="text-sm text-muted-foreground">Device Type</span>
+                        <div className="flex items-center space-x-2 mt-1">
+                          {getDeviceIcon(selectedTransaction.metadata.deviceType)}
+                          <span className="font-medium capitalize">{selectedTransaction.metadata.deviceType}</span>
+                        </div>
+                      </div>
+                      <div className="p-3 bg-white/5 rounded-lg">
+                        <span className="text-sm text-muted-foreground">Browser</span>
+                        <p className="font-medium mt-1">{selectedTransaction.metadata.browser}</p>
+                      </div>
+                      <div className="p-3 bg-white/5 rounded-lg">
+                        <span className="text-sm text-muted-foreground">Operating System</span>
+                        <p className="font-medium mt-1">{selectedTransaction.metadata.os}</p>
+                      </div>
+                      <div className="p-3 bg-white/5 rounded-lg">
+                        <span className="text-sm text-muted-foreground">IP Address</span>
+                        <p className="font-medium mt-1">{selectedTransaction.metadata.ipAddress}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="card-premium">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <BarChart3 className="w-5 h-5" />
+                      <span>Marketing Information</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="p-3 bg-white/5 rounded-lg">
+                        <span className="text-sm text-muted-foreground">Source</span>
+                        <p className="font-medium mt-1 capitalize">{selectedTransaction.metadata.source}</p>
+                      </div>
+                      <div className="p-3 bg-white/5 rounded-lg">
+                        <span className="text-sm text-muted-foreground">Medium</span>
+                        <p className="font-medium mt-1 capitalize">{selectedTransaction.metadata.medium}</p>
+                      </div>
+                      <div className="p-3 bg-white/5 rounded-lg">
+                        <span className="text-sm text-muted-foreground">Campaign</span>
+                        <p className="font-medium mt-1">{selectedTransaction.metadata.campaign}</p>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <span className="text-sm text-muted-foreground">Referrer</span>
+                      <p className="font-medium mt-1 text-blue-500">{selectedTransaction.metadata.referrer}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </DialogContent>
         </Dialog>
       )}
