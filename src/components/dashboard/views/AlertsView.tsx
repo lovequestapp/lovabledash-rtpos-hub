@@ -26,9 +26,18 @@ import {
   XCircle,
   Settings,
   Edit,
-  Trash2
+  Trash2,
+  Shield,
+  Brain,
+  Eye,
+  Zap
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { AnomalyDetectorView } from "./AnomalyDetectorView";
+
+interface AlertsViewProps {
+  onViewChange?: (view: string) => void;
+}
 
 const mockAlerts = [
   {
@@ -51,340 +60,390 @@ const mockAlerts = [
   },
   {
     id: "2",
-    type: "revenue",
-    title: "Revenue Anomaly Detected",
-    message: "Daily revenue 35% below baseline at Suburban Plaza",
+    type: "employee",
+    title: "Time Clock Anomaly",
+    message: "Unusual clock-in pattern detected for John Smith",
     severity: "medium",
-    store: "Suburban Plaza",
-    storeCode: "SP004",
+    store: "Downtown Store",
+    storeCode: "DT001",
     createdAt: "2024-01-15 09:15 AM",
     status: "read",
     acknowledged: true,
     details: {
-      currentRevenue: 1250,
-      baselineRevenue: 1920,
-      deviation: -35
+      employee: "John Smith",
+      pattern: "Exact timing patterns detected",
+      riskScore: 72
     }
   },
   {
     id: "3",
-    type: "inventory",
-    title: "Out of Stock",
-    message: "USB-C 20W Fast Charger is out of stock at Suburban Plaza",
+    type: "fraud",
+    title: "Suspicious Transaction",
+    message: "Multiple high-value transactions detected from same customer",
     severity: "critical",
-    store: "Suburban Plaza",
-    storeCode: "SP004", 
-    createdAt: "2024-01-15 08:45 AM",
-    status: "read",
+    store: "Downtown Store",
+    storeCode: "DT001",
+    createdAt: "2024-01-15 14:30 PM",
+    status: "unread",
     acknowledged: false,
     details: {
-      item: "USB-C 20W Fast Charger",
-      currentStock: 0,
-      sku: "CHRG-USBC-20W"
+      customer: "Customer #12345",
+      amount: 12500,
+      transactions: 3,
+      timeframe: "2 hours"
     }
   },
   {
     id: "4",
     type: "system",
-    title: "Sync Failure",
-    message: "Failed to sync data from RT-POS system",
-    severity: "medium",
-    store: "All Stores",
-    storeCode: "ALL",
-    createdAt: "2024-01-15 07:20 AM",
-    status: "read",
-    acknowledged: true,
-    details: {
-      error: "Connection timeout",
-      lastSuccessfulSync: "2024-01-14 11:30 PM"
-    }
-  },
-  {
-    id: "5",
-    type: "employee",
-    title: "Performance Alert",
-    message: "Employee sales below target at Downtown Location",
+    title: "System Performance",
+    message: "POS system response time exceeded threshold",
     severity: "low",
-    store: "Downtown Location",
-    storeCode: "DT001",
-    createdAt: "2024-01-14 06:30 PM",
-    status: "read",
+    store: "Mall Kiosk",
+    storeCode: "MK002",
+    createdAt: "2024-01-15 11:45 AM",
+    status: "resolved",
     acknowledged: true,
     details: {
-      employee: "Emily Davis",
-      currentSales: 850,
-      target: 1200,
-      deficit: -29
+      system: "POS Terminal #3",
+      responseTime: "4.2s",
+      threshold: "3.0s"
     }
   }
 ];
 
-const alertRules = [
-  {
-    id: "1",
-    name: "Low Stock Alert",
-    type: "inventory",
-    description: "Trigger when inventory falls below reorder level",
-    isActive: true,
-    stores: ["all"],
-    threshold: "reorder_level",
-    notifications: ["email", "dashboard"]
-  },
-  {
-    id: "2", 
-    name: "Revenue Anomaly",
-    type: "revenue",
-    description: "Detect unusual revenue patterns",
-    isActive: true,
-    stores: ["all"],
-    threshold: "30%",
-    notifications: ["email", "sms", "dashboard"]
-  },
-  {
-    id: "3",
-    name: "System Sync Failure",
-    type: "system",
-    description: "Alert when data sync fails",
-    isActive: true,
-    stores: ["all"],
-    threshold: "immediate",
-    notifications: ["email", "dashboard"]
-  },
-  {
-    id: "4",
-    name: "High Value Transaction", 
-    type: "transaction",
-    description: "Flag transactions above threshold",
-    isActive: false,
-    stores: ["all"],
-    threshold: "$5000",
-    notifications: ["email"]
-  }
-];
-
-export const AlertsView = () => {
+export const AlertsView = ({ onViewChange }: AlertsViewProps) => {
   const [alerts, setAlerts] = useState(mockAlerts);
-  const [rules, setRules] = useState(alertRules);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
   const [filterSeverity, setFilterSeverity] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [isRuleDialogOpen, setIsRuleDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [newAlert, setNewAlert] = useState({
+    type: "",
+    title: "",
+    message: "",
+    severity: "medium",
+    store: "",
+    details: ""
+  });
 
   const filteredAlerts = alerts.filter(alert => {
     const matchesSearch = alert.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         alert.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         alert.store.toLowerCase().includes(searchTerm.toLowerCase());
+                         alert.message.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === "all" || alert.type === filterType;
     const matchesSeverity = filterSeverity === "all" || alert.severity === filterSeverity;
     const matchesStatus = filterStatus === "all" || alert.status === filterStatus;
     
-    return matchesSearch && matchesSeverity && matchesStatus;
+    return matchesSearch && matchesType && matchesSeverity && matchesStatus;
   });
 
-  const handleAcknowledgeAlert = (alertId: string) => {
-    setAlerts(prev => prev.map(alert => 
-      alert.id === alertId 
-        ? { ...alert, acknowledged: true, status: "read" }
-        : alert
-    ));
-    toast({
-      title: "Alert Acknowledged",
-      description: "Alert has been marked as acknowledged.",
-    });
+  const stats = {
+    total: alerts.length,
+    unread: alerts.filter(a => a.status === 'unread').length,
+    critical: alerts.filter(a => a.severity === 'critical').length,
+    acknowledged: alerts.filter(a => a.acknowledged).length
   };
 
-  const handleCreateRule = () => {
-    toast({
-      title: "Alert Rule Created",
-      description: "New alert rule has been created successfully.",
-    });
-    setIsRuleDialogOpen(false);
-  };
-
-  const getSeverityBadge = (severity: string) => {
+  const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case "critical":
-        return <Badge variant="destructive">Critical</Badge>;
-      case "high":
-        return <Badge variant="destructive" className="bg-red-600">High</Badge>;
-      case "medium":
-        return <Badge variant="secondary" className="bg-yellow-500">Medium</Badge>;
-      case "low":
-        return <Badge variant="outline">Low</Badge>;
-      default:
-        return <Badge variant="outline">{severity}</Badge>;
+      case 'critical': return 'bg-red-100 text-red-800';
+      case 'high': return 'bg-orange-100 text-orange-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'unread': return 'bg-blue-100 text-blue-800';
+      case 'read': return 'bg-gray-100 text-gray-800';
+      case 'resolved': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case "inventory":
-        return <Package className="w-4 h-4" />;
-      case "revenue":
-        return <DollarSign className="w-4 h-4" />;
-      case "system":
-        return <Settings className="w-4 h-4" />;
-      case "employee":
-        return <TrendingDown className="w-4 h-4" />;
-      default:
-        return <AlertTriangle className="w-4 h-4" />;
+      case 'inventory': return Package;
+      case 'employee': return Bell;
+      case 'fraud': return Shield;
+      case 'system': return Settings;
+      default: return AlertTriangle;
     }
   };
 
-  const unreadCount = alerts.filter(alert => alert.status === "unread").length;
-  const criticalCount = alerts.filter(alert => alert.severity === "critical").length;
-  const acknowledgedCount = alerts.filter(alert => alert.acknowledged).length;
+  const handleAcknowledge = (alertId: string) => {
+    setAlerts(prev => prev.map(alert => 
+      alert.id === alertId 
+        ? { ...alert, status: 'read', acknowledged: true }
+        : alert
+    ));
+    
+    toast({
+      title: "Alert Acknowledged",
+      description: "Alert has been marked as acknowledged"
+    });
+  };
+
+  const handleResolve = (alertId: string) => {
+    setAlerts(prev => prev.map(alert => 
+      alert.id === alertId 
+        ? { ...alert, status: 'resolved', acknowledged: true }
+        : alert
+    ));
+    
+    toast({
+      title: "Alert Resolved",
+      description: "Alert has been marked as resolved"
+    });
+  };
+
+  const handleCreateAlert = () => {
+    if (!newAlert.title || !newAlert.message) {
+      toast({
+        title: "Error",
+        description: "Title and message are required",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const alert = {
+      id: Date.now().toString(),
+      ...newAlert,
+      createdAt: new Date().toLocaleString(),
+      status: "unread",
+      acknowledged: false,
+      details: { note: newAlert.details }
+    };
+
+    setAlerts([...alerts, alert]);
+    setNewAlert({
+      type: "",
+      title: "",
+      message: "",
+      severity: "medium",
+      store: "",
+      details: ""
+    });
+    setIsCreateDialogOpen(false);
+    
+    toast({
+      title: "Alert Created",
+      description: "New alert has been created successfully"
+    });
+  };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Alert Management</h1>
+          <h2 className="text-3xl font-bold tracking-tight">Alerts & Monitoring</h2>
           <p className="text-muted-foreground">
-            Monitor and manage system alerts and notifications
+            Comprehensive alert management and anomaly detection
           </p>
         </div>
-        
-        <Dialog open={isRuleDialogOpen} onOpenChange={setIsRuleDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="w-4 h-4" />
-              Create Rule
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Create Alert Rule</DialogTitle>
-              <DialogDescription>
-                Set up a new alert rule to monitor your operations.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="ruleName">Rule Name</Label>
-                <Input id="ruleName" placeholder="Enter rule name" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="ruleType">Alert Type</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="inventory">Inventory</SelectItem>
-                    <SelectItem value="revenue">Revenue</SelectItem>
-                    <SelectItem value="system">System</SelectItem>
-                    <SelectItem value="employee">Employee</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea id="description" placeholder="Describe when this alert should trigger" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="threshold">Threshold</Label>
-                <Input id="threshold" placeholder="e.g., 30%, $1000, 5 units" />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setIsRuleDialogOpen(false)}>
-                Cancel
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" size="sm">
+            <Settings className="h-4 w-4 mr-2" />
+            Settings
+          </Button>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Alert
               </Button>
-              <Button onClick={handleCreateRule}>Create Rule</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create New Alert</DialogTitle>
+                <DialogDescription>
+                  Create a custom alert for monitoring
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="type">Alert Type</Label>
+                  <Select value={newAlert.type} onValueChange={(value) => setNewAlert({...newAlert, type: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select alert type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="inventory">Inventory</SelectItem>
+                      <SelectItem value="employee">Employee</SelectItem>
+                      <SelectItem value="system">System</SelectItem>
+                      <SelectItem value="fraud">Fraud</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="title">Title</Label>
+                  <Input
+                    id="title"
+                    value={newAlert.title}
+                    onChange={(e) => setNewAlert({...newAlert, title: e.target.value})}
+                    placeholder="Enter alert title"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="message">Message</Label>
+                  <Textarea
+                    id="message"
+                    value={newAlert.message}
+                    onChange={(e) => setNewAlert({...newAlert, message: e.target.value})}
+                    placeholder="Enter alert message"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="severity">Severity</Label>
+                  <Select value={newAlert.severity} onValueChange={(value) => setNewAlert({...newAlert, severity: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                      <SelectItem value="critical">Critical</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="store">Store</Label>
+                  <Input
+                    id="store"
+                    value={newAlert.store}
+                    onChange={(e) => setNewAlert({...newAlert, store: e.target.value})}
+                    placeholder="Enter store name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="details">Additional Details</Label>
+                  <Textarea
+                    id="details"
+                    value={newAlert.details}
+                    onChange={(e) => setNewAlert({...newAlert, details: e.target.value})}
+                    placeholder="Enter additional details"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleCreateAlert}>
+                  Create Alert
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* Alert Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Alerts</CardTitle>
             <Bell className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{alerts.length}</div>
+            <div className="text-2xl font-bold">{stats.total}</div>
             <p className="text-xs text-muted-foreground">
-              Active notifications
+              {stats.unread} unread alerts
             </p>
           </CardContent>
         </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Unread</CardTitle>
-            <Mail className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{unreadCount}</div>
-            <p className="text-xs text-muted-foreground">
-              Need attention
-            </p>
-          </CardContent>
-        </Card>
-        
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Critical</CardTitle>
-            <XCircle className="h-4 w-4 text-muted-foreground" />
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{criticalCount}</div>
+            <div className="text-2xl font-bold">{stats.critical}</div>
             <p className="text-xs text-muted-foreground">
-              Urgent action required
+              Require immediate attention
             </p>
           </CardContent>
         </Card>
-        
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Acknowledged</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{acknowledgedCount}</div>
+            <div className="text-2xl font-bold">{stats.acknowledged}</div>
             <p className="text-xs text-muted-foreground">
-              Being handled
+              {((stats.acknowledged / stats.total) * 100).toFixed(0)}% response rate
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Unread</CardTitle>
+            <Bell className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.unread}</div>
+            <p className="text-xs text-muted-foreground">
+              Need attention
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Alert Management Tabs */}
-      <Tabs defaultValue="alerts" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="alerts">Active Alerts</TabsTrigger>
-          <TabsTrigger value="rules">Alert Rules</TabsTrigger>
-          <TabsTrigger value="settings">Notification Settings</TabsTrigger>
+      {/* Tabs for different alert types */}
+      <Tabs defaultValue="alerts" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="alerts">Alerts</TabsTrigger>
+          <TabsTrigger value="anomaly-detector">AI Anomaly Detector</TabsTrigger>
+          <TabsTrigger value="monitoring">Real-time Monitoring</TabsTrigger>
         </TabsList>
-
+        
         <TabsContent value="alerts" className="space-y-4">
+          {/* Filters */}
           <Card>
             <CardHeader>
-              <CardTitle>Alert Dashboard</CardTitle>
+              <CardTitle>Alert Management</CardTitle>
               <CardDescription>
-                Monitor and respond to system alerts
+                Monitor and manage all system alerts
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="relative flex-1 max-w-sm">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    placeholder="Search alerts..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
+              <div className="flex flex-wrap gap-4">
+                <div className="flex-1 min-w-[200px]">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      placeholder="Search alerts..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
                 </div>
+                <Select value={filterType} onValueChange={setFilterType}>
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue placeholder="Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="inventory">Inventory</SelectItem>
+                    <SelectItem value="employee">Employee</SelectItem>
+                    <SelectItem value="fraud">Fraud</SelectItem>
+                    <SelectItem value="system">System</SelectItem>
+                  </SelectContent>
+                </Select>
                 <Select value={filterSeverity} onValueChange={setFilterSeverity}>
-                  <SelectTrigger className="w-[140px]">
+                  <SelectTrigger className="w-[150px]">
                     <SelectValue placeholder="Severity" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Severities</SelectItem>
+                    <SelectItem value="all">All Severity</SelectItem>
                     <SelectItem value="critical">Critical</SelectItem>
                     <SelectItem value="high">High</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
@@ -392,214 +451,178 @@ export const AlertsView = () => {
                   </SelectContent>
                 </Select>
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className="w-[120px]">
+                  <SelectTrigger className="w-[150px]">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
                     <SelectItem value="unread">Unread</SelectItem>
                     <SelectItem value="read">Read</SelectItem>
+                    <SelectItem value="resolved">Resolved</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+            </CardContent>
+          </Card>
 
-              {/* Alerts List */}
-              <div className="space-y-4">
-                {filteredAlerts.map((alert) => (
-                  <div 
-                    key={alert.id} 
-                    className={`border rounded-lg p-4 ${alert.status === 'unread' ? 'bg-blue-50 border-blue-200' : ''}`}
-                  >
+          {/* Alerts List */}
+          <div className="space-y-4">
+            {filteredAlerts.map((alert) => {
+              const TypeIcon = getTypeIcon(alert.type);
+              return (
+                <Card key={alert.id} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
                     <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3">
-                        <div className="mt-1">
-                          {getTypeIcon(alert.type)}
+                      <div className="flex items-start space-x-4">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                          <TypeIcon className="h-6 w-6 text-blue-600" />
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-medium">{alert.title}</h3>
-                            {getSeverityBadge(alert.severity)}
-                            {alert.status === 'unread' && (
-                              <Badge variant="default" className="bg-blue-500">New</Badge>
-                            )}
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <h3 className="text-lg font-semibold">{alert.title}</h3>
+                            <Badge className={getSeverityColor(alert.severity)}>
+                              {alert.severity}
+                            </Badge>
+                            <Badge className={getStatusColor(alert.status)}>
+                              {alert.status}
+                            </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">{alert.message}</p>
-                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {alert.createdAt}
+                          <p className="text-muted-foreground">{alert.message}</p>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div>
+                              <span className="text-muted-foreground">Store:</span>
+                              <div className="font-medium">{alert.store}</div>
                             </div>
-                            <div>Store: {alert.store}</div>
-                            {alert.acknowledged && (
-                              <div className="flex items-center gap-1 text-green-600">
-                                <CheckCircle className="w-3 h-3" />
-                                Acknowledged
+                            <div>
+                              <span className="text-muted-foreground">Created:</span>
+                              <div className="font-medium">{alert.createdAt}</div>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Type:</span>
+                              <div className="font-medium">{alert.type}</div>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Acknowledged:</span>
+                              <div className="font-medium">
+                                {alert.acknowledged ? (
+                                  <span className="text-green-600">Yes</span>
+                                ) : (
+                                  <span className="text-red-600">No</span>
+                                )}
                               </div>
-                            )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center space-x-2">
                         {!alert.acknowledged && (
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleAcknowledgeAlert(alert.id)}
+                          <Button
+                            size="sm"
+                            onClick={() => handleAcknowledge(alert.id)}
                           >
+                            <CheckCircle className="h-4 w-4 mr-1" />
                             Acknowledge
                           </Button>
                         )}
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="w-4 h-4" />
+                        {alert.status !== 'resolved' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleResolve(alert.id)}
+                          >
+                            <XCircle className="h-4 w-4 mr-1" />
+                            Resolve
+                          </Button>
+                        )}
+                        <Button variant="outline" size="sm">
+                          <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
-                    
-                    {/* Alert Details */}
-                    {alert.details && (
-                      <div className="mt-3 pt-3 border-t border-gray-200">
-                        <div className="text-sm space-y-1">
-                          {Object.entries(alert.details).map(([key, value]) => (
-                            <div key={key} className="flex justify-between">
-                              <span className="text-muted-foreground capitalize">
-                                {key.replace(/([A-Z])/g, ' $1').toLowerCase()}:
-                              </span>
-                              <span className="font-medium">{String(value)}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </TabsContent>
-
-        <TabsContent value="rules" className="space-y-4">
+        
+        <TabsContent value="anomaly-detector">
+          <AnomalyDetectorView onViewChange={onViewChange} />
+        </TabsContent>
+        
+        <TabsContent value="monitoring" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Alert Rules</CardTitle>
+              <CardTitle>Real-time Monitoring Dashboard</CardTitle>
               <CardDescription>
-                Configure when and how alerts are triggered
+                Live monitoring of all system activities and potential issues
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Rule Name</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Threshold</TableHead>
-                    <TableHead>Notifications</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="w-[70px]">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {rules.map((rule) => (
-                    <TableRow key={rule.id}>
-                      <TableCell className="font-medium">{rule.name}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {getTypeIcon(rule.type)}
-                          <span className="capitalize">{rule.type}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="max-w-xs truncate">{rule.description}</TableCell>
-                      <TableCell>{rule.threshold}</TableCell>
-                      <TableCell>
-                        <div className="flex gap-1">
-                          {rule.notifications.map((notif) => (
-                            <Badge key={notif} variant="outline" className="text-xs">
-                              {notif}
-                            </Badge>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Switch checked={rule.isActive} />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="sm">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="settings" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notification Settings</CardTitle>
-              <CardDescription>
-                Configure how you receive alert notifications
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">Email Notifications</h4>
-                    <p className="text-sm text-muted-foreground">Receive alerts via email</p>
-                  </div>
-                  <Switch defaultChecked />
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">SMS Notifications</h4>
-                    <p className="text-sm text-muted-foreground">Receive critical alerts via SMS</p>
-                  </div>
-                  <Switch defaultChecked />
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">Dashboard Notifications</h4>
-                    <p className="text-sm text-muted-foreground">Show alerts in dashboard</p>
-                  </div>
-                  <Switch defaultChecked />
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">Slack Integration</h4>
-                    <p className="text-sm text-muted-foreground">Send alerts to Slack channel</p>
-                  </div>
-                  <Switch />
-                </div>
-              </div>
-
-              <div className="space-y-4 pt-4 border-t">
-                <h4 className="font-medium">Contact Information</h4>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="admin@sswireless.com" />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" placeholder="(214) 555-0123" />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="slack">Slack Webhook URL</Label>
-                    <Input id="slack" placeholder="https://hooks.slack.com/..." />
-                  </div>
-                </div>
-                <Button>Save Settings</Button>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">System Health</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>POS Systems</span>
+                        <Badge className="bg-green-100 text-green-800">Online</Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Database</span>
+                        <Badge className="bg-green-100 text-green-800">Healthy</Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>API Services</span>
+                        <Badge className="bg-green-100 text-green-800">Active</Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Transaction Monitoring</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Active Transactions</span>
+                        <span className="font-medium">12</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Avg Response Time</span>
+                        <span className="font-medium">1.2s</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Success Rate</span>
+                        <span className="font-medium">99.8%</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Security Status</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Threat Level</span>
+                        <Badge className="bg-green-100 text-green-800">Low</Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Active Sessions</span>
+                        <span className="font-medium">8</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Last Scan</span>
+                        <span className="font-medium">2 min ago</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </CardContent>
           </Card>
