@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardContent } from "./DashboardContent";
+import { WaveLengthAI } from "../ai/WaveLengthAI";
 
 type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings';
 
@@ -177,6 +178,9 @@ export const DashboardLayout = () => {
           <DashboardContent currentView={currentView} userProfile={userProfile} onViewChange={handleViewChange} />
         </div>
       </main>
+      
+      {/* WaveLength AI Assistant */}
+      <WaveLengthAI />
     </div>
   );
 };
