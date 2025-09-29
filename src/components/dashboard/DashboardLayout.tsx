@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { 
   LayoutDashboard, 
   Store, 
@@ -11,7 +12,9 @@ import {
   AlertTriangle, 
   Settings, 
   LogOut,
-  Building2
+  Building2,
+  Menu,
+  X
 } from "lucide-react";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardContent } from "./DashboardContent";
@@ -22,6 +25,9 @@ export const DashboardLayout = () => {
   const [currentView, setCurrentView] = useState<ViewType>('overview');
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     getUserProfile();
@@ -45,17 +51,21 @@ export const DashboardLayout = () => {
           .eq('id', user.id)
           .single();
 
-        setUserProfile(profile);
+        if (profile) {
+          setUserProfile(profile);
+        }
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      toast({
-        title: "Profile Error",
-        description: "Failed to load user profile",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleViewChange = (view: ViewType) => {
+    setCurrentView(view);
+    if (isMobile) {
+      setIsSidebarOpen(false);
     }
   };
 
@@ -63,24 +73,31 @@ export const DashboardLayout = () => {
     try {
       await supabase.auth.signOut();
       toast({
-        title: "Signed Out",
-        description: "You have been successfully signed out",
+        title: "Signed out successfully",
+        description: "You have been signed out of your account.",
       });
     } catch (error) {
+      console.error('Error signing out:', error);
       toast({
-        title: "Sign Out Failed",
-        description: "Failed to sign out",
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
         variant: "destructive",
       });
     }
   };
 
+  const handleToggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading dashboard...</p>
+      <div className="flex h-screen bg-background">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading dashboard...</p>
+          </div>
         </div>
       </div>
     );
@@ -98,17 +115,66 @@ export const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen bg-background">
-      <DashboardSidebar
-        items={sidebarItems}
-        currentView={currentView}
-        onViewChange={setCurrentView}
-        userProfile={userProfile}
-        onSignOut={handleSignOut}
-      />
+      {/* Mobile Header */}
+      {isMobile && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-white text-black px-4 py-3 flex items-center justify-between border-b border-gray-200 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+              <Building2 className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h1 className="font-semibold text-sm">S & S Wireless</h1>
+              <p className="text-xs text-gray-600 capitalize">{currentView}</p>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="text-black hover:bg-gray-100"
+          >
+            {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </Button>
+        </div>
+      )}
+
+      {/* Sidebar Overlay for Mobile */}
+      {isMobile && isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`${
+        isMobile 
+          ? `fixed left-0 top-0 bottom-0 z-50 transform transition-transform duration-300 ${
+              isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            }`
+          : 'relative'
+      }`}>
+        <DashboardSidebar
+          items={sidebarItems}
+          currentView={currentView}
+          onViewChange={handleViewChange}
+          userProfile={userProfile}
+          onSignOut={handleSignOut}
+          isCollapsed={isCollapsed}
+          onToggle={handleToggleSidebar}
+        />
+      </div>
       
-      <main className="flex-1 overflow-hidden">
+      {/* Main Content */}
+      <main className={`flex-1 overflow-hidden ${
+        isMobile 
+          ? 'pt-16' 
+          : isCollapsed 
+            ? 'ml-16' 
+            : ''
+      } transition-all duration-300`}>
         <div className="h-full overflow-y-auto">
-          <DashboardContent currentView={currentView} userProfile={userProfile} />
+          <DashboardContent currentView={currentView} userProfile={userProfile} onViewChange={handleViewChange} />
         </div>
       </main>
     </div>

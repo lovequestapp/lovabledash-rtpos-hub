@@ -111,45 +111,56 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cream-50 via-background to-sage-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cream-50 via-background to-sage-50 p-4 safe-area-top safe-area-bottom">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-navy-800 rounded-3xl mb-6 shadow-luxury">
-            <Building2 className="w-10 h-10 text-primary-foreground" />
+        <div className="text-center mb-6 md:mb-8 animate-fade-in">
+          <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary to-navy-800 rounded-2xl md:rounded-3xl mb-4 md:mb-6 shadow-luxury">
+            <Building2 className="w-8 h-8 md:w-10 md:h-10 text-primary-foreground" />
           </div>
-          <h1 className="text-4xl font-serif font-bold tracking-tight text-foreground mb-2">S & S Wireless</h1>
-          <p className="text-muted-foreground text-lg font-light">
+          <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight text-foreground mb-2">S & S Wireless</h1>
+          <p className="text-muted-foreground text-base md:text-lg font-light">
             Multi-store management platform
           </p>
         </div>
 
         <Card className="luxury-card border-border/30 shadow-premium backdrop-blur-xl animate-slide-up">
-          <CardHeader className="space-y-1 pb-6 text-center">
-            <CardTitle className="text-2xl font-serif text-foreground">Welcome</CardTitle>
-            <CardDescription className="text-center text-muted-foreground">
+          <CardHeader className="space-y-1 pb-4 md:pb-6 text-center">
+            <CardTitle className="text-xl md:text-2xl font-serif text-foreground">Welcome</CardTitle>
+            <CardDescription className="text-center text-muted-foreground text-sm md:text-base">
               Access your sophisticated store management dashboard
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Temporary bypass button */}
-            <div className="mb-6 p-4 bg-gradient-to-r from-sage-50 to-cream-50 rounded-xl border border-sage-200/50">
+          <CardContent className="space-y-4 md:space-y-6">
+            {/* Temporary bypass button - Mobile optimized */}
+            <div className="p-3 md:p-4 bg-gradient-to-r from-sage-50 to-cream-50 rounded-xl border border-sage-200/50">
               <p className="text-sm text-sage-700 mb-3 font-medium">Development Access:</p>
               <Button 
                 variant="outline" 
-                className="w-full sophisticated-border hover:bg-sage-50 hover:text-sage-800 transition-all duration-300" 
+                className="w-full sophisticated-border hover:bg-sage-50 hover:text-sage-800 transition-all duration-300 mobile-button" 
                 onClick={onBypassLogin}
               >
                 Continue as Demo User
               </Button>
             </div>
+            
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-sage-50 border border-sage-200/50">
-                <TabsTrigger value="signin" className="data-[state=active]:bg-white data-[state=active]:text-primary">Access Account</TabsTrigger>
-                <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-primary">Create Account</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 bg-sage-50 border border-sage-200/50 h-12">
+                <TabsTrigger 
+                  value="signin" 
+                  className="data-[state=active]:bg-white data-[state=active]:text-primary text-sm mobile-touch-target"
+                >
+                  Access Account
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="signup" 
+                  className="data-[state=active]:bg-white data-[state=active]:text-primary text-sm mobile-touch-target"
+                >
+                  Create Account
+                </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="signin" className="space-y-4">
-                <form onSubmit={handleSignIn} className="space-y-5">
+              <TabsContent value="signin" className="space-y-4 md:space-y-5 mt-4 md:mt-6">
+                <form onSubmit={handleSignIn} className="space-y-4 md:space-y-5">
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium text-foreground">Email Address</Label>
                     <Input
@@ -160,7 +171,9 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       disabled={loading}
-                      className="h-12 sophisticated-border focus:ring-accent focus:border-accent"
+                      className="h-12 md:h-12 sophisticated-border focus:ring-accent focus:border-accent mobile-input"
+                      autoComplete="email"
+                      inputMode="email"
                     />
                   </div>
                   <div className="space-y-2">
@@ -173,31 +186,36 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       disabled={loading}
-                      className="h-12 sophisticated-border focus:ring-accent focus:border-accent"
+                      className="h-12 md:h-12 sophisticated-border focus:ring-accent focus:border-accent mobile-input"
+                      autoComplete="current-password"
                     />
                   </div>
-                  <Button type="submit" className="w-full h-12 premium-button" disabled={loading}>
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 md:h-12 premium-button focus-ring" 
+                    disabled={loading}
+                  >
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Access Dashboard
                   </Button>
                 </form>
                 
-                <div className="mt-6 text-center">
+                <div className="mt-4 md:mt-6 text-center">
                   <Button
                     variant="link"
                     onClick={handleMagicLink}
                     disabled={loading || !email}
-                    className="text-sm text-muted-foreground hover:text-accent transition-colors"
+                    className="text-sm text-muted-foreground hover:text-accent transition-colors mobile-touch-target"
                   >
                     Send magic link instead
                   </Button>
                 </div>
               </TabsContent>
 
-              <TabsContent value="signup">
+              <TabsContent value="signup" className="mt-4 md:mt-6">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email" className="text-sm font-medium text-foreground">Email</Label>
                     <Input
                       id="signup-email"
                       type="email"
@@ -206,10 +224,13 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       disabled={loading}
+                      className="h-12 sophisticated-border focus:ring-accent focus:border-accent mobile-input"
+                      autoComplete="email"
+                      inputMode="email"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="signup-password" className="text-sm font-medium text-foreground">Password</Label>
                     <Input
                       id="signup-password"
                       type="password"
@@ -219,9 +240,15 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
                       required
                       disabled={loading}
                       minLength={6}
+                      className="h-12 sophisticated-border focus:ring-accent focus:border-accent mobile-input"
+                      autoComplete="new-password"
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 premium-button focus-ring" 
+                    disabled={loading}
+                  >
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Create Account
                   </Button>

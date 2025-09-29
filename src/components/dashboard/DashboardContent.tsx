@@ -11,27 +11,28 @@ type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 
 interface DashboardContentProps {
   currentView: ViewType;
   userProfile: any;
+  onViewChange: (view: ViewType) => void;
 }
 
-export const DashboardContent = ({ currentView, userProfile }: DashboardContentProps) => {
+export const DashboardContent = ({ currentView, userProfile, onViewChange }: DashboardContentProps) => {
   const renderView = () => {
     switch (currentView) {
       case 'overview':
-        return <OverviewDashboard userProfile={userProfile} />;
+        return <OverviewDashboard userProfile={userProfile} onViewChange={onViewChange} />;
       case 'stores':
         return <StoresView />;
       case 'employees':
-        return <EmployeesView />;
+        return <EmployeesView onViewChange={onViewChange} />;
       case 'inventory':
         return <InventoryView />;
       case 'reports':
-        return <ReportsView />;
+        return <ReportsView onViewChange={onViewChange} />;
       case 'alerts':
         return <AlertsView />;
       case 'settings':
         return <SettingsView />;
       default:
-        return <OverviewDashboard userProfile={userProfile} />;
+        return <OverviewDashboard userProfile={userProfile} onViewChange={onViewChange} />;
     }
   };
 

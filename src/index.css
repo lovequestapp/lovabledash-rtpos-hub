@@ -2,101 +2,127 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Ultra Professional Design System */
+/* Black, White, Gray with Vibrant Green/Yellow/Red Accents */
 
 @layer base {
   :root {
-    /* Old Money Light Theme - Sophisticated Navy & Cream */
-    --background: 253 244 240; /* Warm cream */
-    --foreground: 222 47% 11%; /* Deep navy */
+    /* Ultra Professional Theme - Black, White, Gray */
+    --background: 0 0% 100%; /* Pure white */
+    --foreground: 0 0% 4%; /* Deep black */
 
     --card: 0 0% 100%; /* Pure white */
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 0 0% 4%;
 
-    --primary: 222 47% 11%; /* Deep navy */
-    --primary-foreground: 30 67% 98%; /* Cream white */
+    --primary: 0 0% 4%; /* Deep black */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 138 15% 94%; /* Sage green */
-    --secondary-foreground: 147 13% 27%;
+    --secondary: 0 0% 95%; /* Very light gray */
+    --secondary-foreground: 0 0% 4%;
 
-    --muted: 30 40% 90%; /* Light cream */
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 96%; /* Light gray */
+    --muted-foreground: 0 0% 40%; /* Medium gray */
 
-    --accent: 38 92% 50%; /* Elegant gold */
-    --accent-foreground: 222 47% 11%;
+    --accent: 142 76% 36%; /* Vibrant green */
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 30 67% 98%;
+    --destructive: 0 84% 60%; /* Vibrant red */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 30 25% 85%; /* Soft cream border */
-    --input: 30 30% 85%;
-    --ring: 38 92% 50%; /* Gold focus ring */
+    --warning: 45 93% 47%; /* Vibrant yellow */
+    --warning-foreground: 0 0% 4%;
 
-    --radius: 0.75rem; /* More generous radius */
+    --success: 142 76% 36%; /* Vibrant green */
+    --success-foreground: 0 0% 100%;
 
-    /* Sidebar - Rich navy theme */
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 30 67% 98%;
-    --sidebar-primary: 38 92% 50%; /* Gold accent */
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 30 67% 98%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 38 92% 50%;
+    --border: 0 0% 88%; /* Light gray border */
+    --input: 0 0% 96%; /* Light gray input */
+    --ring: 142 76% 36%; /* Green focus ring */
 
-    /* Custom gradients and effects */
-    --gradient-primary: linear-gradient(135deg, hsl(222, 47%, 11%), hsl(217, 33%, 17%));
-    --gradient-gold: linear-gradient(135deg, hsl(38, 92%, 50%), hsl(43, 96%, 56%));
-    --gradient-sage: linear-gradient(135deg, hsl(138, 15%, 94%), hsl(140, 13%, 88%));
+    --radius: 0.5rem;
+
+    /* Ultra Professional Sidebar - Clean White */
+    --sidebar-background: 0 0% 100%; /* Pure white */
+    --sidebar-foreground: 0 0% 4%; /* Deep black */
+    --sidebar-primary: 142 76% 36%; /* Green accent */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%; /* Light gray hover */
+    --sidebar-accent-foreground: 0 0% 4%;
+    --sidebar-border: 0 0% 88%; /* Light gray border */
+    --sidebar-ring: 142 76% 36%;
+
+    /* Status Colors */
+    --status-success: 142 76% 36%; /* Green */
+    --status-warning: 45 93% 47%; /* Yellow */
+    --status-error: 0 84% 60%; /* Red */
+    --status-info: 217 91% 60%; /* Blue */
+
+    /* Professional gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(0, 0%, 4%), hsl(0, 0%, 8%));
+    --gradient-success: linear-gradient(135deg, hsl(142, 76%, 36%), hsl(142, 76%, 42%));
+    --gradient-warning: linear-gradient(135deg, hsl(45, 93%, 47%), hsl(45, 93%, 53%));
+    --gradient-error: linear-gradient(135deg, hsl(0, 84%, 60%), hsl(0, 84%, 66%));
     
-    --shadow-elegant: 0 4px 20px -2px rgba(34, 34, 34, 0.08);
-    --shadow-luxury: 0 8px 30px -4px rgba(34, 34, 34, 0.12);
-    --shadow-premium: 0 12px 40px -8px rgba(34, 34, 34, 0.15);
+    /* Professional shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    
+    /* Professional sidebar shadows */
+    --sidebar-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --sidebar-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 
   .dark {
-    /* Dark theme with sophisticated charcoal and gold */
-    --background: 222 47% 11%;
-    --foreground: 30 67% 98%;
+    /* Dark theme - Deep black with white accents */
+    --background: 0 0% 4%; /* Deep black */
+    --foreground: 0 0% 98%; /* Near white */
 
-    --card: 217 33% 17%;
-    --card-foreground: 30 67% 98%;
+    --card: 0 0% 8%; /* Dark gray */
+    --card-foreground: 0 0% 98%;
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 30 67% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 38 92% 50%; /* Gold primary in dark */
-    --primary-foreground: 222 47% 11%;
+    --primary: 0 0% 98%; /* Near white */
+    --primary-foreground: 0 0% 4%;
 
-    --secondary: 145 11% 34%;
-    --secondary-foreground: 138 20% 97%;
+    --secondary: 0 0% 12%; /* Dark gray */
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 215 25% 27%;
-    --muted-foreground: 215 16% 65%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 38 92% 50%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 142 76% 36%; /* Green accent */
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 30 67% 98%;
+    --destructive: 0 84% 60%; /* Red */
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 215 25% 27%;
-    --input: 215 25% 27%;
-    --ring: 38 92% 50%;
+    --warning: 45 93% 47%; /* Yellow */
+    --warning-foreground: 0 0% 4%;
 
-    --sidebar-background: 217 33% 17%;
-    --sidebar-foreground: 30 67% 98%;
-    --sidebar-primary: 38 92% 50%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 215 25% 27%;
-    --sidebar-accent-foreground: 30 67% 98%;
-    --sidebar-border: 215 25% 27%;
-    --sidebar-ring: 38 92% 50%;
+    --success: 142 76% 36%; /* Green */
+    --success-foreground: 0 0% 98%;
+
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 142 76% 36%;
+
+    /* Keep sidebar white even in dark mode */
+    --sidebar-background: 0 0% 100%; /* Pure white */
+    --sidebar-foreground: 0 0% 4%; /* Deep black */
+    --sidebar-primary: 142 76% 36%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%; /* Light gray hover */
+    --sidebar-accent-foreground: 0 0% 4%;
+    --sidebar-border: 0 0% 88%; /* Light gray border */
+    --sidebar-ring: 142 76% 36%;
   }
 }
 
@@ -113,13 +139,13 @@ All colors MUST be HSL.
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
+    @apply font-semibold;
     font-feature-settings: "kern" 1, "liga" 1;
   }
 
-  /* Elegant scrollbar */
+  /* Professional scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
   
   ::-webkit-scrollbar-track {
@@ -127,35 +153,315 @@ All colors MUST be HSL.
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/20 rounded-full;
+    @apply bg-muted-foreground/30 rounded-full;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/30;
+    @apply bg-muted-foreground/50;
   }
 }
 
 @layer components {
-  /* Elegant hover effects */
-  .elegant-hover {
-    @apply transition-all duration-300 ease-out hover:shadow-elegant hover:-translate-y-0.5;
+  /* Ultra Professional Cards */
+  .professional-card {
+    @apply bg-card border border-border/50 rounded-lg shadow-md backdrop-blur-sm;
+    @apply hover:shadow-lg transition-all duration-200;
   }
 
-  .luxury-card {
-    @apply bg-card border border-border/50 rounded-lg shadow-elegant backdrop-blur-sm;
+  .professional-card-hover {
+    @apply transition-all duration-200 ease-out hover:shadow-lg hover:-translate-y-1;
   }
 
-  .premium-button {
-    @apply bg-gradient-to-r from-primary to-primary/90 text-primary-foreground;
-    @apply shadow-elegant hover:shadow-luxury transform hover:-translate-y-0.5;
-    @apply transition-all duration-300 ease-out;
+  /* Status indicators with vibrant colors */
+  .status-success {
+    @apply bg-green-50 text-green-800 border border-green-200;
   }
 
-  .gold-accent {
-    @apply text-accent font-medium;
+  .status-warning {
+    @apply bg-yellow-50 text-yellow-800 border border-yellow-200;
   }
 
-  .sophisticated-border {
-    @apply border border-border/30 bg-gradient-to-b from-card to-card/95;
+  .status-error {
+    @apply bg-red-50 text-red-800 border border-red-200;
+  }
+
+  .status-info {
+    @apply bg-blue-50 text-blue-800 border border-blue-200;
+  }
+
+  /* Professional buttons */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+    @apply shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .btn-success {
+    @apply bg-green-600 text-white hover:bg-green-700;
+    @apply shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .btn-warning {
+    @apply bg-yellow-500 text-black hover:bg-yellow-600;
+    @apply shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .btn-error {
+    @apply bg-red-600 text-white hover:bg-red-700;
+    @apply shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  /* Professional metric cards */
+  .metric-card {
+    @apply bg-white border border-gray-200 rounded-xl p-6 shadow-sm;
+    @apply hover:shadow-md transition-all duration-200;
+  }
+
+  .metric-card-success {
+    @apply border-l-4 border-l-green-500;
+  }
+
+  .metric-card-warning {
+    @apply border-l-4 border-l-yellow-500;
+  }
+
+  .metric-card-error {
+    @apply border-l-4 border-l-red-500;
+  }
+
+  .metric-card-info {
+    @apply border-l-4 border-l-blue-500;
+  }
+
+  /* Professional data visualization */
+  .chart-container {
+    @apply bg-white border border-gray-200 rounded-xl p-6 shadow-sm;
+  }
+
+  /* Professional tables */
+  .professional-table {
+    @apply bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm;
+  }
+
+  .table-header {
+    @apply bg-gray-50 border-b border-gray-200;
+  }
+
+  .table-row {
+    @apply border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150;
+  }
+
+  /* Ultra Professional Sidebar - Force White Background */
+  .sidebar-professional {
+    background-color: #ffffff !important; /* Force white background */
+    color: #000000 !important; /* Force black text */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-right: 1px solid #e5e7eb; /* Light gray border */
+    height: 100vh; /* Full height */
+    position: fixed; /* Fixed positioning for full height */
+    top: 0;
+    left: 0;
+    z-index: 50;
+  }
+
+  .sidebar-item {
+    @apply flex items-center gap-3 p-3 mx-2 rounded-lg transition-all duration-200;
+    @apply min-h-[44px];
+  }
+
+  .sidebar-item:hover {
+    background-color: #f3f4f6 !important; /* Light gray hover */
+    color: #000000 !important; /* Black text on hover */
+  }
+
+  .sidebar-item-active {
+    background-color: #22c55e !important; /* Green background for active */
+    color: #ffffff !important; /* White text for active */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .sidebar-separator {
+    border-top: 1px solid #e5e7eb; /* Light gray border */
+    @apply mx-4 my-2;
+  }
+
+  .sidebar-section {
+    @apply px-4 py-2;
+  }
+
+  .sidebar-section-title {
+    @apply text-xs font-semibold uppercase tracking-wider;
+    color: #6b7280; /* Gray text for section titles */
+  }
+
+  /* Status indicators for navigation */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-dot-success {
+    @apply bg-green-500 shadow-lg shadow-green-500/50;
+  }
+
+  .status-dot-warning {
+    @apply bg-yellow-500 shadow-lg shadow-yellow-500/50;
+  }
+
+  .status-dot-error {
+    @apply bg-red-500 shadow-lg shadow-red-500/50;
+  }
+
+  .status-dot-info {
+    @apply bg-blue-500 shadow-lg shadow-blue-500/50;
+  }
+
+  /* Professional navigation with status indicators */
+  .nav-item-with-status {
+    @apply flex items-center justify-between p-3 mx-2 rounded-lg transition-all duration-200;
+    @apply min-h-[44px];
+  }
+
+  .nav-item-with-status:hover {
+    background-color: #f3f4f6 !important; /* Light gray hover */
+    color: #000000 !important; /* Black text on hover */
+  }
+
+  .nav-item-content {
+    @apply flex items-center gap-3 flex-1;
+  }
+
+  .nav-item-status {
+    @apply flex items-center gap-2;
+  }
+
+  /* Mobile-specific improvements */
+  .mobile-touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .mobile-input {
+    @apply text-base;
+  }
+
+  .mobile-card-stack {
+    @apply space-y-3;
+  }
+
+  .mobile-padding {
+    @apply px-4 py-3;
+  }
+
+  .mobile-nav-item {
+    @apply flex items-center gap-3 p-4 text-left transition-colors duration-200;
+    @apply hover:bg-accent/10 active:bg-accent/20;
+    @apply min-h-[52px];
+  }
+
+  .mobile-dialog {
+    @apply max-h-[85vh] overflow-y-auto;
+  }
+
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-button {
+    @apply min-h-[48px] px-6 text-base font-medium;
+  }
+
+  .mobile-button-sm {
+    @apply min-h-[40px] px-4 text-sm;
+  }
+
+  .mobile-table-card {
+    @apply border rounded-lg p-4 space-y-3 bg-card;
+  }
+
+  .mobile-table-row {
+    @apply flex justify-between items-center py-2 border-b border-border/50 last:border-0;
+  }
+
+  .mobile-table-label {
+    @apply text-sm font-medium text-muted-foreground;
+  }
+
+  .mobile-table-value {
+    @apply text-sm font-medium text-right;
+  }
+}
+
+/* Mobile-specific media queries */
+@media (max-width: 768px) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  input, textarea, select {
+    font-size: 16px;
+  }
+
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .card-mobile-padding {
+    padding: 1rem;
+  }
+
+  .mobile-nav-overlay {
+    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Touch-specific improvements */
+@media (hover: none) and (pointer: coarse) {
+  .hover\:shadow-md:hover {
+    box-shadow: none;
+  }
+  
+  .hover\:-translate-y-1:hover {
+    transform: none;
+  }
+
+  button:active {
+    transform: scale(0.98);
+  }
+
+  .card:active {
+    transform: scale(0.99);
+  }
+}
+
+/* Focus states for accessibility */
+@media (prefers-reduced-motion: no-preference) {
+  .focus-ring {
+    @apply focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none;
+    transition: box-shadow 0.2s ease-out;
+  }
+}
+
+/* Safe area support */
+@supports (padding: max(0px)) {
+  .safe-area-top {
+    padding-top: max(env(safe-area-inset-top), 1rem);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+  }
+  
+  .safe-area-left {
+    padding-left: max(env(safe-area-inset-left), 1rem);
+  }
+  
+  .safe-area-right {
+    padding-right: max(env(safe-area-inset-right), 1rem);
   }
 }

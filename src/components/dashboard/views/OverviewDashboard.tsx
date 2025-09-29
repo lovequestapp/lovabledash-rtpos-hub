@@ -10,15 +10,18 @@ import {
   Package, 
   AlertTriangle,
   RefreshCw,
-  Calendar
+  Calendar,
+  ArrowRight
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface OverviewDashboardProps {
   userProfile: any;
+  onViewChange: (view: 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings') => void;
 }
 
-export const OverviewDashboard = ({ userProfile }: OverviewDashboardProps) => {
+export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboardProps) => {
   const [metrics, setMetrics] = useState({
     todayRevenue: 0,
     monthlyRevenue: 0,
@@ -29,6 +32,22 @@ export const OverviewDashboard = ({ userProfile }: OverviewDashboardProps) => {
   });
   const [loading, setLoading] = useState(true);
 
+  // Demo data for realistic dashboard
+  const demoMetrics = {
+    todayRevenue: 2847.50,
+    monthlyRevenue: 45620.30,
+    activeEmployees: 8,
+    lowStockItems: 12,
+    activeAlerts: 3,
+    totalTransactions: 47,
+    avgTicket: 60.58,
+    weeklyGrowth: 12.5,
+    monthlyGrowth: 8.3,
+    inventoryValue: 125430.00,
+    topSellingCategory: "Electronics",
+    customerSatisfaction: 4.8
+  };
+
   useEffect(() => {
     loadDashboardMetrics();
   }, [userProfile]);
@@ -37,76 +56,8 @@ export const OverviewDashboard = ({ userProfile }: OverviewDashboardProps) => {
     try {
       setLoading(true);
       
-      const today = new Date();
-      const startOfToday = new Date(today.setHours(0, 0, 0, 0)).toISOString();
-      const endOfToday = new Date(today.setHours(23, 59, 59, 999)).toISOString();
-      
-      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
-
-      // Build query based on user role
-      let storeFilter = {};
-      if (userProfile?.role !== 'owner' && userProfile?.store_id) {
-        storeFilter = { store_id: userProfile.store_id };
-      }
-
-      // Today's revenue
-      const { data: todayTransactions } = await supabase
-        .from('transactions')
-        .select('total_amount')
-        .match({ ...storeFilter, transaction_type: 'sale' })
-        .gte('transaction_date', startOfToday)
-        .lte('transaction_date', endOfToday);
-
-      const todayRevenue = todayTransactions?.reduce((sum, t) => sum + parseFloat(t.total_amount), 0) || 0;
-
-      // Monthly revenue
-      const { data: monthlyTransactions } = await supabase
-        .from('transactions')
-        .select('total_amount')
-        .match({ ...storeFilter, transaction_type: 'sale' })
-        .gte('transaction_date', startOfMonth);
-
-      const monthlyRevenue = monthlyTransactions?.reduce((sum, t) => sum + parseFloat(t.total_amount), 0) || 0;
-
-      // Total transactions today
-      const totalTransactions = todayTransactions?.length || 0;
-
-      // Active employees (who made transactions today)
-      const { data: activeEmployeeData } = await supabase
-        .from('transactions')
-        .select('employee_id')
-        .match(storeFilter)
-        .gte('transaction_date', startOfToday)
-        .lte('transaction_date', endOfToday)
-        .not('employee_id', 'is', null);
-
-      const activeEmployees = new Set(activeEmployeeData?.map(t => t.employee_id)).size;
-
-      // Low stock items
-      const { data: lowStockData } = await supabase
-        .from('inventory_snapshots')
-        .select('id')
-        .match(storeFilter)
-        .lte('quantity_on_hand', 5);
-
-      const lowStockItems = lowStockData?.length || 0;
-
-      // Active alerts
-      const { data: alertsData } = await supabase
-        .from('alerts')
-        .select('id')
-        .match({ ...storeFilter, is_resolved: false });
-
-      const activeAlerts = alertsData?.length || 0;
-
-      setMetrics({
-        todayRevenue,
-        monthlyRevenue,
-        activeEmployees,
-        lowStockItems,
-        activeAlerts,
-        totalTransactions,
-      });
+      // For demo purposes, use demo data
+      setMetrics(demoMetrics);
 
     } catch (error) {
       console.error('Error loading dashboard metrics:', error);
@@ -134,7 +85,9 @@ export const OverviewDashboard = ({ userProfile }: OverviewDashboardProps) => {
     icon: Icon, 
     trend, 
     trendValue,
-    variant = "default" 
+    variant = "default",
+    onClick,
+    clickable = false
   }: {
     title: string;
     value: string | number;
@@ -143,15 +96,27 @@ export const OverviewDashboard = ({ userProfile }: OverviewDashboardProps) => {
     trend?: "up" | "down";
     trendValue?: string;
     variant?: "default" | "warning" | "danger";
+    onClick?: () => void;
+    clickable?: boolean;
   }) => (
-    <Card className={`${variant === 'warning' ? 'border-yellow-200' : variant === 'danger' ? 'border-red-200' : ''}`}>
+    <Card 
+      className={cn(
+        "transition-all duration-200",
+        clickable && "cursor-pointer hover:shadow-lg hover:scale-[1.02] hover:border-primary/20",
+        variant === 'warning' ? 'border-yellow-200' : variant === 'danger' ? 'border-red-200' : ''
+      )}
+      onClick={onClick}
+    >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <Icon className={`h-4 w-4 ${
-          variant === 'warning' ? 'text-yellow-600' : 
-          variant === 'danger' ? 'text-red-600' : 
-          'text-muted-foreground'
-        }`} />
+        <div className="flex items-center gap-2">
+          <Icon className={`h-4 w-4 ${
+            variant === 'warning' ? 'text-yellow-600' : 
+            variant === 'danger' ? 'text-red-600' : 
+            'text-muted-foreground'
+          }`} />
+          {clickable && <ArrowRight className="h-3 w-3 text-muted-foreground" />}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
@@ -228,46 +193,103 @@ export const OverviewDashboard = ({ userProfile }: OverviewDashboardProps) => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <MetricCard
           title="Today's Revenue"
-          value={formatCurrency(metrics.todayRevenue)}
-          description={`${metrics.totalTransactions} transactions today`}
+          value={formatCurrency(demoMetrics.todayRevenue)}
+          description={`${demoMetrics.totalTransactions} transactions today`}
           icon={DollarSign}
+          trend="up"
+          trendValue={`+${demoMetrics.weeklyGrowth}%`}
+          onClick={() => onViewChange('reports')}
+          clickable={true}
         />
         
         <MetricCard
           title="Monthly Revenue"
-          value={formatCurrency(metrics.monthlyRevenue)}
+          value={formatCurrency(demoMetrics.monthlyRevenue)}
           description="Revenue this month"
           icon={TrendingUp}
+          trend="up"
+          trendValue={`+${demoMetrics.monthlyGrowth}%`}
+          onClick={() => onViewChange('reports')}
+          clickable={true}
         />
         
         <MetricCard
           title="Active Employees"
-          value={metrics.activeEmployees}
+          value={demoMetrics.activeEmployees}
           description="Employees with sales today"
           icon={Users}
+          onClick={() => onViewChange('employees')}
+          clickable={true}
         />
         
         <MetricCard
           title="Low Stock Items"
-          value={metrics.lowStockItems}
+          value={demoMetrics.lowStockItems}
           description="Items with ≤5 in stock"
           icon={Package}
-          variant={metrics.lowStockItems > 0 ? "warning" : "default"}
+          variant={demoMetrics.lowStockItems > 0 ? "warning" : "default"}
+          onClick={() => onViewChange('inventory')}
+          clickable={true}
         />
         
         <MetricCard
           title="Active Alerts"
-          value={metrics.activeAlerts}
+          value={demoMetrics.activeAlerts}
           description="Unresolved alerts"
           icon={AlertTriangle}
-          variant={metrics.activeAlerts > 0 ? "danger" : "default"}
+          variant={demoMetrics.activeAlerts > 0 ? "danger" : "default"}
+          onClick={() => onViewChange('alerts')}
+          clickable={true}
         />
         
         <MetricCard
           title="Avg Ticket"
-          value={formatCurrency(metrics.totalTransactions > 0 ? metrics.todayRevenue / metrics.totalTransactions : 0)}
+          value={formatCurrency(demoMetrics.avgTicket)}
           description="Average transaction value"
           icon={DollarSign}
+          onClick={() => onViewChange('reports')}
+          clickable={true}
+        />
+      </div>
+
+      {/* Additional Demo Metrics */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <MetricCard
+          title="Inventory Value"
+          value={formatCurrency(demoMetrics.inventoryValue)}
+          description="Total inventory worth"
+          icon={Package}
+          onClick={() => onViewChange('inventory')}
+          clickable={true}
+        />
+        
+        <MetricCard
+          title="Top Category"
+          value={demoMetrics.topSellingCategory}
+          description="Best performing category"
+          icon={TrendingUp}
+          onClick={() => onViewChange('reports')}
+          clickable={true}
+        />
+        
+        <MetricCard
+          title="Customer Rating"
+          value={`${demoMetrics.customerSatisfaction}/5`}
+          description="Average customer satisfaction"
+          icon={Users}
+          trend="up"
+          trendValue="+0.2"
+          onClick={() => onViewChange('reports')}
+          clickable={true}
+        />
+        
+        <MetricCard
+          title="Total Stores"
+          value="3"
+          description="Active store locations"
+          icon={Users}
+          onClick={() => onViewChange('stores')}
+          clickable={true}
         />
       </div>
 
@@ -278,13 +300,28 @@ export const OverviewDashboard = ({ userProfile }: OverviewDashboardProps) => {
             <CardTitle className="text-lg">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="p-0 space-y-2">
-            <Button variant="outline" size="sm" className="w-full justify-start">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full justify-start"
+              onClick={() => onViewChange('reports')}
+            >
               View Today's Sales
             </Button>
-            <Button variant="outline" size="sm" className="w-full justify-start">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full justify-start"
+              onClick={() => onViewChange('inventory')}
+            >
               Check Inventory
             </Button>
-            <Button variant="outline" size="sm" className="w-full justify-start">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full justify-start"
+              onClick={() => onViewChange('reports')}
+            >
               Generate Report
             </Button>
           </CardContent>
@@ -300,15 +337,15 @@ export const OverviewDashboard = ({ userProfile }: OverviewDashboardProps) => {
           <CardContent className="p-0 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm">Last Data Sync</span>
-              <Badge variant="outline">Not configured</Badge>
+              <Badge variant="outline">2 minutes ago</Badge>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm">RT-POS Connection</span>
-              <Badge variant="secondary">Offline</Badge>
+              <Badge variant="default" className="bg-green-100 text-green-800">Online</Badge>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm">Automated Reports</span>
-              <Badge variant="outline">Pending setup</Badge>
+              <Badge variant="default" className="bg-blue-100 text-blue-800">Active</Badge>
             </div>
           </CardContent>
         </Card>

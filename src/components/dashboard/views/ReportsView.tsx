@@ -34,10 +34,17 @@ import {
   Target,
   FileText,
   Mail,
-  Printer
+  Printer,
+  ArrowRight,
+  ExternalLink
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+
+interface ReportsViewProps {
+  onViewChange: (view: 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings') => void;
+}
 
 const salesData = [
   { month: "Jan", revenue: 45000, transactions: 1200, avgTicket: 37.50 },
@@ -49,28 +56,34 @@ const salesData = [
 ];
 
 const employeePerformance = [
-  { name: "Sarah Johnson", sales: 45000, transactions: 320, store: "Downtown" },
-  { name: "Jessica Rodriguez", sales: 38000, transactions: 280, store: "Airport" },
-  { name: "Mike Chen", sales: 32000, transactions: 240, store: "Mall" },
-  { name: "David Kim", sales: 28000, transactions: 210, store: "Suburban" },
-  { name: "Emily Davis", sales: 25000, transactions: 190, store: "Downtown" },
+  { name: "Sarah Johnson", sales: 45000, transactions: 320, store: "Downtown", id: "emp_001" },
+  { name: "Jessica Rodriguez", sales: 38000, transactions: 280, store: "Airport", id: "emp_002" },
+  { name: "Mike Chen", sales: 32000, transactions: 240, store: "Mall", id: "emp_003" },
+  { name: "David Kim", sales: 28000, transactions: 210, store: "Suburban", id: "emp_004" },
+  { name: "Emily Davis", sales: 25000, transactions: 190, store: "Downtown", id: "emp_005" },
 ];
 
 const categoryData = [
-  { name: "Smartphones", value: 145000, color: "#0088FE" },
-  { name: "Accessories", value: 65000, color: "#00C49F" },
-  { name: "Tablets", value: 35000, color: "#FFBB28" },
-  { name: "Cases", value: 25000, color: "#FF8042" },
+  { name: "Smartphones", value: 145000, color: "#0088FE", category: "electronics" },
+  { name: "Accessories", value: 65000, color: "#00C49F", category: "accessories" },
+  { name: "Tablets", value: 35000, color: "#FFBB28", category: "electronics" },
+  { name: "Cases", value: 25000, color: "#FF8042", category: "accessories" },
 ];
 
 const storeComparison = [
-  { store: "Downtown", revenue: 75000, employees: 8, efficiency: 9375 },
-  { store: "Airport", revenue: 62000, employees: 6, efficiency: 10333 },
-  { store: "Mall", revenue: 28000, employees: 4, efficiency: 7000 },
-  { store: "Suburban", revenue: 35000, employees: 5, efficiency: 7000 },
+  { store: "Downtown", revenue: 75000, employees: 8, efficiency: 9375, storeId: "DT001" },
+  { store: "Airport", revenue: 62000, employees: 6, efficiency: 10333, storeId: "AP003" },
+  { store: "Mall", revenue: 28000, employees: 4, efficiency: 7000, storeId: "MK002" },
+  { store: "Suburban", revenue: 35000, employees: 5, efficiency: 7000, storeId: "SP004" },
 ];
 
-export const ReportsView = () => {
+const inventoryStatus = [
+  { status: "In Stock", count: 847, color: "green", items: ["iPhone 15", "Samsung Galaxy", "AirPods Pro"] },
+  { status: "Low Stock", count: 23, color: "yellow", items: ["iPhone 14", "MacBook Air", "iPad Pro"] },
+  { status: "Out of Stock", count: 8, color: "red", items: ["iPhone 13", "Samsung S24", "AirPods Max"] },
+];
+
+export const ReportsView = ({ onViewChange }: ReportsViewProps) => {
   const [selectedStore, setSelectedStore] = useState("all");
   const [dateRange, setDateRange] = useState("last_30_days");
   const [startDate, setStartDate] = useState<Date>();
@@ -95,6 +108,38 @@ export const ReportsView = () => {
       style: 'currency',
       currency: 'USD',
     }).format(amount);
+  };
+
+  const handleEmployeeClick = (employeeId: string) => {
+    toast({
+      title: "Employee Details",
+      description: `Viewing detailed performance for employee ${employeeId}`,
+    });
+    onViewChange('employees');
+  };
+
+  const handleStoreClick = (storeId: string) => {
+    toast({
+      title: "Store Details",
+      description: `Viewing detailed analytics for store ${storeId}`,
+    });
+    onViewChange('stores');
+  };
+
+  const handleInventoryClick = (category: string) => {
+    toast({
+      title: "Inventory Analysis",
+      description: `Viewing detailed inventory for ${category}`,
+    });
+    onViewChange('inventory');
+  };
+
+  const handleCategoryClick = (category: string) => {
+    toast({
+      title: "Category Analysis",
+      description: `Viewing detailed sales analysis for ${category}`,
+    });
+    onViewChange('inventory');
   };
 
   return (
@@ -208,12 +253,18 @@ export const ReportsView = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
-          {/* Key Metrics */}
+          {/* Key Metrics - Now Clickable */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200 hover:border-primary/20"
+              onClick={() => onViewChange('reports')}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{formatCurrency(328000)}</div>
@@ -223,10 +274,16 @@ export const ReportsView = () => {
               </CardContent>
             </Card>
             
-            <Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200 hover:border-primary/20"
+              onClick={() => onViewChange('reports')}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Transactions</CardTitle>
-                <Target className="h-4 w-4 text-muted-foreground" />
+                <div className="flex items-center gap-2">
+                  <Target className="h-4 w-4 text-muted-foreground" />
+                  <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">7,950</div>
@@ -236,10 +293,16 @@ export const ReportsView = () => {
               </CardContent>
             </Card>
             
-            <Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200 hover:border-primary/20"
+              onClick={() => onViewChange('reports')}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Average Ticket</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{formatCurrency(41.26)}</div>
@@ -249,10 +312,16 @@ export const ReportsView = () => {
               </CardContent>
             </Card>
             
-            <Card>
+            <Card 
+              className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200 hover:border-primary/20"
+              onClick={() => onViewChange('inventory')}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Items Sold</CardTitle>
-                <Package className="h-4 w-4 text-muted-foreground" />
+                <div className="flex items-center gap-2">
+                  <Package className="h-4 w-4 text-muted-foreground" />
+                  <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">12,450</div>
@@ -292,7 +361,7 @@ export const ReportsView = () => {
 
         <TabsContent value="sales" className="space-y-4">
           <div className="grid gap-4 lg:grid-cols-2">
-            {/* Sales by Category */}
+            {/* Sales by Category - Clickable */}
             <Card>
               <CardHeader>
                 <CardTitle>Sales by Category</CardTitle>
@@ -318,6 +387,27 @@ export const ReportsView = () => {
                     <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                   </PieChart>
                 </ResponsiveContainer>
+                <div className="mt-4 space-y-2">
+                  {categoryData.map((category) => (
+                    <div 
+                      key={category.name}
+                      className="flex items-center justify-between p-2 rounded cursor-pointer hover:bg-gray-50 transition-colors"
+                      onClick={() => handleCategoryClick(category.category)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div 
+                          className="w-4 h-4 rounded" 
+                          style={{ backgroundColor: category.color }}
+                        ></div>
+                        <span className="text-sm">{category.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">{formatCurrency(category.value)}</span>
+                        <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                    </div>
+                  ))}
+                  </div>
               </CardContent>
             </Card>
 
@@ -360,11 +450,16 @@ export const ReportsView = () => {
                     <TableHead>Transactions</TableHead>
                     <TableHead>Avg per Transaction</TableHead>
                     <TableHead>Performance</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {employeePerformance.map((employee, index) => (
-                    <TableRow key={employee.name}>
+                    <TableRow 
+                      key={employee.name}
+                      className="cursor-pointer hover:bg-gray-50 transition-colors"
+                      onClick={() => handleEmployeeClick(employee.id)}
+                    >
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
@@ -381,6 +476,11 @@ export const ReportsView = () => {
                         <Badge variant={index < 2 ? "default" : index < 4 ? "secondary" : "outline"}>
                           {index < 2 ? "Excellent" : index < 4 ? "Good" : "Average"}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -400,7 +500,11 @@ export const ReportsView = () => {
               <CardContent>
                 <div className="space-y-4">
                   {categoryData.map((category) => (
-                    <div key={category.name} className="flex items-center justify-between">
+                    <div 
+                      key={category.name} 
+                      className="flex items-center justify-between p-3 rounded cursor-pointer hover:bg-gray-50 transition-colors"
+                      onClick={() => handleInventoryClick(category.category)}
+                    >
                       <div className="flex items-center gap-3">
                         <div 
                           className="w-4 h-4 rounded" 
@@ -408,11 +512,14 @@ export const ReportsView = () => {
                         ></div>
                         <span>{category.name}</span>
                       </div>
-                      <div className="text-right">
-                        <div className="font-medium">{formatCurrency(category.value)}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {((category.value / categoryData.reduce((sum, cat) => sum + cat.value, 0)) * 100).toFixed(1)}%
+                      <div className="flex items-center gap-2">
+                        <div className="text-right">
+                          <div className="font-medium">{formatCurrency(category.value)}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {((category.value / categoryData.reduce((sum, cat) => sum + cat.value, 0)) * 100).toFixed(1)}%
+                          </div>
                         </div>
+                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
                       </div>
                     </div>
                   ))}
@@ -427,27 +534,32 @@ export const ReportsView = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 border rounded">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span>In Stock</span>
+                  {inventoryStatus.map((status) => (
+                    <div 
+                      key={status.status}
+                      className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
+                      onClick={() => handleInventoryClick(status.status.toLowerCase().replace(' ', '_'))}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          "w-3 h-3 rounded-full",
+                          status.color === "green" ? "bg-green-500" : 
+                          status.color === "yellow" ? "bg-yellow-500" : "bg-red-500"
+                        )}></div>
+                        <div>
+                          <span className="font-medium">{status.status}</span>
+                          <div className="text-sm text-muted-foreground">
+                            {status.items.slice(0, 2).join(", ")}
+                            {status.items.length > 2 && ` +${status.items.length - 2} more`}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{status.count} items</span>
+                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                      </div>
                     </div>
-                    <span className="font-medium">847 items</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 border rounded">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                      <span>Low Stock</span>
-                    </div>
-                    <span className="font-medium">23 items</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 border rounded">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <span>Out of Stock</span>
-                    </div>
-                    <span className="font-medium">8 items</span>
-                  </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -482,11 +594,16 @@ export const ReportsView = () => {
                       <TableHead>Employees</TableHead>
                       <TableHead>Revenue per Employee</TableHead>
                       <TableHead>Performance Rating</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {storeComparison.map((store) => (
-                      <TableRow key={store.store}>
+                      <TableRow 
+                        key={store.store}
+                        className="cursor-pointer hover:bg-gray-50 transition-colors"
+                        onClick={() => handleStoreClick(store.storeId)}
+                      >
                         <TableCell className="font-medium">{store.store}</TableCell>
                         <TableCell>{formatCurrency(store.revenue)}</TableCell>
                         <TableCell>{store.employees}</TableCell>
@@ -495,6 +612,11 @@ export const ReportsView = () => {
                           <Badge variant={store.efficiency > 9000 ? "default" : store.efficiency > 7500 ? "secondary" : "outline"}>
                             {store.efficiency > 9000 ? "Excellent" : store.efficiency > 7500 ? "Good" : "Average"}
                           </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
