@@ -111,47 +111,47 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cream-50 via-background to-sage-50 p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4">
-            <Building2 className="w-8 h-8 text-primary-foreground" />
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-navy-800 rounded-3xl mb-6 shadow-luxury">
+            <Building2 className="w-10 h-10 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">S & S Wireless Portal</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-4xl font-serif font-bold tracking-tight text-foreground mb-2">S & S Wireless</h1>
+          <p className="text-muted-foreground text-lg font-light">
             Multi-store management platform
           </p>
         </div>
 
-        <Card className="border-border/50 shadow-lg">
-          <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-2xl text-center">Welcome</CardTitle>
-            <CardDescription className="text-center">
-              Sign in to access your store dashboard
+        <Card className="luxury-card border-border/30 shadow-premium backdrop-blur-xl animate-slide-up">
+          <CardHeader className="space-y-1 pb-6 text-center">
+            <CardTitle className="text-2xl font-serif text-foreground">Welcome</CardTitle>
+            <CardDescription className="text-center text-muted-foreground">
+              Access your sophisticated store management dashboard
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             {/* Temporary bypass button */}
-            <div className="mb-4 p-3 bg-muted/30 rounded-lg border border-dashed border-muted-foreground/50">
-              <p className="text-sm text-muted-foreground mb-2">Development Mode:</p>
+            <div className="mb-6 p-4 bg-gradient-to-r from-sage-50 to-cream-50 rounded-xl border border-sage-200/50">
+              <p className="text-sm text-sage-700 mb-3 font-medium">Development Access:</p>
               <Button 
                 variant="outline" 
-                className="w-full" 
+                className="w-full sophisticated-border hover:bg-sage-50 hover:text-sage-800 transition-all duration-300" 
                 onClick={onBypassLogin}
               >
-                Continue as Demo User (Bypass Login)
+                Continue as Demo User
               </Button>
             </div>
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 bg-sage-50 border border-sage-200/50">
+                <TabsTrigger value="signin" className="data-[state=active]:bg-white data-[state=active]:text-primary">Access Account</TabsTrigger>
+                <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:text-primary">Create Account</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
+              <TabsContent value="signin" className="space-y-4">
+                <form onSubmit={handleSignIn} className="space-y-5">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email" className="text-sm font-medium text-foreground">Email Address</Label>
                     <Input
                       id="email"
                       type="email"
@@ -160,10 +160,11 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       disabled={loading}
+                      className="h-12 sophisticated-border focus:ring-accent focus:border-accent"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password" className="text-sm font-medium text-foreground">Password</Label>
                     <Input
                       id="password"
                       type="password"
@@ -172,20 +173,21 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       disabled={loading}
+                      className="h-12 sophisticated-border focus:ring-accent focus:border-accent"
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
+                  <Button type="submit" className="w-full h-12 premium-button" disabled={loading}>
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Sign In
+                    Access Dashboard
                   </Button>
                 </form>
                 
-                <div className="mt-4 text-center">
+                <div className="mt-6 text-center">
                   <Button
                     variant="link"
                     onClick={handleMagicLink}
                     disabled={loading || !email}
-                    className="text-sm"
+                    className="text-sm text-muted-foreground hover:text-accent transition-colors"
                   >
                     Send magic link instead
                   </Button>
