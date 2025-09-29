@@ -9,10 +9,12 @@ interface SidebarItem {
   icon: React.ComponentType<any>;
 }
 
+type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings';
+
 interface DashboardSidebarProps {
   items: SidebarItem[];
-  currentView: string;
-  onViewChange: (view: string) => void;
+  currentView: ViewType;
+  onViewChange: (view: ViewType) => void;
   userProfile: any;
   onSignOut: () => void;
 }
@@ -59,7 +61,7 @@ export const DashboardSidebar = ({
             key={id}
             variant={currentView === id ? "secondary" : "ghost"}
             className="w-full justify-start gap-3 h-11"
-            onClick={() => onViewChange(id)}
+            onClick={() => onViewChange(id as ViewType)}
           >
             <Icon className="w-5 h-5" />
             {label}

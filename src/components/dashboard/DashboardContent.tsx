@@ -1,7 +1,9 @@
 import { OverviewDashboard } from "./views/OverviewDashboard";
 
+type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings';
+
 interface DashboardContentProps {
-  currentView: string;
+  currentView: ViewType;
   userProfile: any;
 }
 
