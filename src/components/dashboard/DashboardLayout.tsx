@@ -17,7 +17,8 @@ import {
   X,
   Brain,
   Eye,
-  Zap
+  Zap,
+  CreditCard
 } from "lucide-react";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardContent } from "./DashboardContent";
