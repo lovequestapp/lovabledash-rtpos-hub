@@ -8,7 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import { Loader2, Building2 } from "lucide-react";
 
-export const AuthForm = () => {
+interface AuthFormProps {
+  onBypassLogin?: () => void;
+}
+
+export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -113,9 +117,9 @@ export const AuthForm = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4">
             <Building2 className="w-8 h-8 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">RT-POS Hub</h1>
+          <h1 className="text-3xl font-bold tracking-tight">S & S Wireless Portal</h1>
           <p className="text-muted-foreground mt-2">
-            Multi-store dealer reporting platform
+            Multi-store management platform
           </p>
         </div>
 
@@ -127,6 +131,17 @@ export const AuthForm = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* Temporary bypass button */}
+            <div className="mb-4 p-3 bg-muted/30 rounded-lg border border-dashed border-muted-foreground/50">
+              <p className="text-sm text-muted-foreground mb-2">Development Mode:</p>
+              <Button 
+                variant="outline" 
+                className="w-full" 
+                onClick={onBypassLogin}
+              >
+                Continue as Demo User (Bypass Login)
+              </Button>
+            </div>
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Sign In</TabsTrigger>

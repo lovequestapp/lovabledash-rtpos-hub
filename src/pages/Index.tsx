@@ -8,9 +8,18 @@ import { toast } from "@/hooks/use-toast";
 const Index = () => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [bypassLogin, setBypassLogin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check for bypass mode first
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('bypass') === 'true' || localStorage.getItem('bypass_login') === 'true') {
+      setBypassLogin(true);
+      setLoading(false);
+      return;
+    }
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -39,8 +48,11 @@ const Index = () => {
     );
   }
 
-  if (!session) {
-    return <AuthForm />;
+  if (!session && !bypassLogin) {
+    return <AuthForm onBypassLogin={() => {
+      localStorage.setItem('bypass_login', 'true');
+      setBypassLogin(true);
+    }} />;
   }
 
   return <DashboardLayout />;
