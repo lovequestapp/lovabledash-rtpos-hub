@@ -142,7 +142,7 @@ export const DashboardSidebar = ({
           </div>
           {!isCollapsed && (
             <div className="flex-1">
-              <h1 className="font-bold text-xl text-gray-900 tracking-tight">S & S Wireless</h1>
+              <h1 className="font-bold text-xl text-gray-900 tracking-tight">WaveLength Communications</h1>
               <p className="text-sm text-gray-600 font-medium">Management Portal</p>
               <div className="flex items-center gap-2 mt-1">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>

@@ -117,7 +117,7 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
           <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary to-navy-800 rounded-2xl md:rounded-3xl mb-4 md:mb-6 shadow-luxury">
             <Building2 className="w-8 h-8 md:w-10 md:h-10 text-primary-foreground" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight text-foreground mb-2">S & S Wireless</h1>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight text-foreground mb-2">WaveLength Communications</h1>
           <p className="text-muted-foreground text-base md:text-lg font-light">
             Multi-store management platform
           </p>

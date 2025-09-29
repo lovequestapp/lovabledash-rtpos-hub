@@ -123,7 +123,7 @@ export const DashboardLayout = () => {
               <Building2 className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h1 className="font-semibold text-sm">S & S Wireless</h1>
+              <h1 className="font-semibold text-sm">WaveLength Communications</h1>
               <p className="text-xs text-gray-600 capitalize">{currentView}</p>
             </div>
           </div>
