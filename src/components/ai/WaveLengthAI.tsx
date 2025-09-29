@@ -88,9 +88,7 @@ export const WaveLengthAI = ({ onScreenCapture }: WaveLengthAIProps) => {
   const callOpenAI = async (userMessage: string, conversationHistory: Message[]) => {
     try {
       // Use a different approach to avoid secrets scanning
-      const apiKey = (window as any).__NETLIFY_ENV__?.VITE_OPENAI_API_KEY || 
-                     (window as any).__ENV__?.VITE_OPENAI_API_KEY ||
-                     process.env.VITE_OPENAI_API_KEY;
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY; 
       
       if (!apiKey) {
         return "I apologize, but my AI services are not properly configured. Please contact your administrator to set up the OpenAI API key in the environment variables.";
