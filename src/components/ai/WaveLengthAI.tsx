@@ -51,7 +51,7 @@ interface WaveLengthAIProps {
 }
 
 // OpenAI API configuration - uses VITE_ prefix for Vite
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
+
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 
 export const WaveLengthAI = ({ onScreenCapture }: WaveLengthAIProps) => {
@@ -87,7 +87,9 @@ export const WaveLengthAI = ({ onScreenCapture }: WaveLengthAIProps) => {
   }, [messages]);
 
   const callOpenAI = async (userMessage: string, conversationHistory: Message[]) => {
-    if (!OPENAI_API_KEY) {
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    
+    if (!apiKey) {
       return "I apologize, but my AI services are not properly configured. Please contact your administrator to set up the OpenAI API key in the environment variables.";
     }
 
@@ -107,7 +109,7 @@ export const WaveLengthAI = ({ onScreenCapture }: WaveLengthAIProps) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`
+          'Authorization.*apiKey}`
         },
         body: JSON.stringify({
           model: "gpt-4",
