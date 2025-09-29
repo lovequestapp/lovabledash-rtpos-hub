@@ -87,7 +87,12 @@ export const WaveLengthAI = ({ onScreenCapture }: WaveLengthAIProps) => {
   }, [messages]);
 
   const callOpenAI = async (userMessage: string, conversationHistory: Message[]) => {
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    let apiKey;
+    try {
+      apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    } catch (e) {
+      apiKey = null;
+    }
     
     if (!apiKey) {
       return "I apologize, but my AI services are not properly configured. Please contact your administrator to set up the OpenAI API key in the environment variables.";
