@@ -14,7 +14,10 @@ import {
   LogOut,
   Building2,
   Menu,
-  X
+  X,
+  Brain,
+  Eye,
+  Zap
 } from "lucide-react";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardContent } from "./DashboardContent";
@@ -112,6 +115,9 @@ export const DashboardLayout = () => {
     { id: 'reports', label: 'Reports', icon: TrendingUp },
     { id: 'alerts', label: 'Alerts', icon: AlertTriangle },
     { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'ai-insights', label: 'AI Insights', icon: Brain, isNew: true },
+    { id: 'customer-360', label: 'Customer 360°', icon: Eye, isNew: true },
+    { id: 'automation', label: 'Automation', icon: Zap, isNew: true },
   ];
 
   return (
