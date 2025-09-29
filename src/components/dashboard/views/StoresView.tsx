@@ -376,7 +376,7 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
   const avgRevenue = totalRevenue / stores.length;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 backdrop-blur-glass">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

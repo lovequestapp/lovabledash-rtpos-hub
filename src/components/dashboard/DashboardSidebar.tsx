@@ -124,7 +124,7 @@ export const DashboardSidebar = ({
   };
 
   return (
-    <div className={cn(
+    <div className={cn("nav-item-glass", 
       "sidebar-ultra-professional",
       isCollapsed ? 'w-16' : 'w-72',
       "transition-all duration-500 ease-in-out",
@@ -159,7 +159,7 @@ export const DashboardSidebar = ({
           <div key={id} className="relative group">
             <Button
               variant="ghost"
-              className={cn(
+              className={cn("nav-item-glass", 
                 "w-full justify-start gap-4 h-14 text-left transition-all duration-300 group-hover:scale-[1.02]",
                 "rounded-xl border border-transparent",
                 "hover:border-gray-200 hover:shadow-lg hover:shadow-gray-900/5",
@@ -172,12 +172,12 @@ export const DashboardSidebar = ({
               onMouseLeave={() => setHoveredItem(null)}
             >
               <div className="relative">
-                <Icon className={cn(
+                <Icon className={cn("nav-item-glass", 
                   "w-5 h-5 transition-all duration-300",
                   currentView === id ? "text-white" : "text-gray-600 group-hover:text-gray-900"
                 )} />
                 {status && (
-                  <div className={cn(
+                  <div className={cn("nav-item-glass", 
                     "absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white shadow-lg",
                     getStatusColor(status),
                     getStatusGlow(status)
@@ -215,7 +215,7 @@ export const DashboardSidebar = ({
                 <div className="bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-xl whitespace-nowrap">
                   {label}
                   {status && (
-                    <div className={cn(
+                    <div className={cn("nav-item-glass", 
                       "w-2 h-2 rounded-full ml-2 inline-block",
                       getStatusColor(status)
                     )}></div>

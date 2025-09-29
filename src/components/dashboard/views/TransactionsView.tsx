@@ -5,7 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   CreditCard, 
   Store, 
@@ -32,7 +34,6 @@ import {
   MapPin,
   Phone,
   Mail,
-  CreditCard as CardIcon,
   Banknote,
   Coins,
   Wallet,
@@ -63,108 +64,16 @@ import {
   QrCode,
   Barcode,
   Hash,
-  Hash as HashIcon,
-  Hash as HashIcon2,
-  Hash as HashIcon3,
-  Hash as HashIcon4,
-  Hash as HashIcon5,
-  Hash as HashIcon6,
-  Hash as HashIcon7,
-  Hash as HashIcon8,
-  Hash as HashIcon9,
-  Hash as HashIcon10,
-  Hash as HashIcon11,
-  Hash as HashIcon12,
-  Hash as HashIcon13,
-  Hash as HashIcon14,
-  Hash as HashIcon15,
-  Hash as HashIcon16,
-  Hash as HashIcon17,
-  Hash as HashIcon18,
-  Hash as HashIcon19,
-  Hash as HashIcon20,
-  Hash as HashIcon21,
-  Hash as HashIcon22,
-  Hash as HashIcon23,
-  Hash as HashIcon24,
-  Hash as HashIcon25,
-  Hash as HashIcon26,
-  Hash as HashIcon27,
-  Hash as HashIcon28,
-  Hash as HashIcon29,
-  Hash as HashIcon30,
-  Hash as HashIcon31,
-  Hash as HashIcon32,
-  Hash as HashIcon33,
-  Hash as HashIcon34,
-  Hash as HashIcon35,
-  Hash as HashIcon36,
-  Hash as HashIcon37,
-  Hash as HashIcon38,
-  Hash as HashIcon39,
-  Hash as HashIcon40,
-  Hash as HashIcon41,
-  Hash as HashIcon42,
-  Hash as HashIcon43,
-  Hash as HashIcon44,
-  Hash as HashIcon45,
-  Hash as HashIcon46,
-  Hash as HashIcon47,
-  Hash as HashIcon48,
-  Hash as HashIcon49,
-  Hash as HashIcon50,
-  Hash as HashIcon51,
-  Hash as HashIcon52,
-  Hash as HashIcon53,
-  Hash as HashIcon54,
-  Hash as HashIcon55,
-  Hash as HashIcon56,
-  Hash as HashIcon57,
-  Hash as HashIcon58,
-  Hash as HashIcon59,
-  Hash as HashIcon60,
-  Hash as HashIcon61,
-  Hash as HashIcon62,
-  Hash as HashIcon63,
-  Hash as HashIcon64,
-  Hash as HashIcon65,
-  Hash as HashIcon66,
-  Hash as HashIcon67,
-  Hash as HashIcon68,
-  Hash as HashIcon69,
-  Hash as HashIcon70,
-  Hash as HashIcon71,
-  Hash as HashIcon72,
-  Hash as HashIcon73,
-  Hash as HashIcon74,
-  Hash as HashIcon75,
-  Hash as HashIcon76,
-  Hash as HashIcon77,
-  Hash as HashIcon78,
-  Hash as HashIcon79,
-  Hash as HashIcon80,
-  Hash as HashIcon81,
-  Hash as HashIcon82,
-  Hash as HashIcon83,
-  Hash as HashIcon84,
-  Hash as HashIcon85,
-  Hash as HashIcon86,
-  Hash as HashIcon87,
-  Hash as HashIcon88,
-  Hash as HashIcon89,
-  Hash as HashIcon90,
-  Hash as HashIcon91,
-  Hash as HashIcon92,
-  Hash as HashIcon93,
-  Hash as HashIcon94,
-  Hash as HashIcon95,
-  Hash as HashIcon96,
-  Hash as HashIcon97,
-  Hash as HashIcon98,
-  Hash as HashIcon99,
-  Hash as HashIcon100
+  Building2,
+  Users,
+  Target,
+  BarChart3,
+  PieChart,
+  LineChart,
+  Gift
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 interface TransactionsViewProps {
   onViewChange?: (view: string) => void;
@@ -248,17 +157,38 @@ interface Refund {
   reason: string;
   status: 'pending' | 'approved' | 'rejected' | 'completed';
   createdAt: string;
-  processedBy: string;
 }
 
-// Generate comprehensive mock transaction data
+// Enhanced mock data with comprehensive transaction details
 const generateMockTransactions = (): Transaction[] => {
   const stores = [
-    { id: 'ST001', name: 'Downtown Flagship', city: 'New York' },
-    { id: 'ST002', name: 'Mall Location', city: 'Los Angeles' },
-    { id: 'ST003', name: 'Airport Terminal', city: 'Chicago' },
-    { id: 'ST004', name: 'University Store', city: 'Boston' },
-    { id: 'ST005', name: 'Suburban Plaza', city: 'Miami' }
+    { id: 'ST001', name: 'Post Oak', city: 'Houston', address: '5015 Westheimer Rd', zipCode: '77056', manager: 'Sarah Johnson' },
+    { id: 'ST002', name: 'Fondren', city: 'Houston', address: '9801 Southwest Fwy', zipCode: '77074', manager: 'Michael Chen' },
+    { id: 'ST003', name: 'West Bellfort', city: 'Houston', address: '7625 W Bellfort Ave', zipCode: '77071', manager: 'Emily Rodriguez' },
+    { id: 'ST004', name: 'El Campo', city: 'El Campo', address: '2101 N Mechanic St', zipCode: '77437', manager: 'David Kim' },
+    { id: 'ST005', name: 'Galleria', city: 'Houston', address: '5085 Westheimer Rd', zipCode: '77056', manager: 'Lisa Thompson' },
+    { id: 'ST006', name: 'Woodlands', city: 'The Woodlands', address: '1201 Lake Woodlands Dr', zipCode: '77380', manager: 'Carlos Martinez' },
+    { id: 'ST007', name: 'Katy', city: 'Katy', address: '23501 Cinco Ranch Blvd', zipCode: '77494', manager: 'Angela White' },
+    { id: 'ST008', name: 'Pearland', city: 'Pearland', address: '11200 Broadway St', zipCode: '77584', manager: 'James Wilson' }
+  ];
+
+  const employees = [
+    { id: 'E001', name: 'John Smith', store: 'ST001', role: 'Sales Associate' },
+    { id: 'E002', name: 'Maria Garcia', store: 'ST001', role: 'Senior Sales' },
+    { id: 'E003', name: 'Alex Johnson', store: 'ST002', role: 'Store Manager' },
+    { id: 'E004', name: 'Sarah Wilson', store: 'ST002', role: 'Sales Associate' },
+    { id: 'E005', name: 'Mike Brown', store: 'ST003', role: 'Sales Associate' },
+    { id: 'E006', name: 'Jennifer Lee', store: 'ST003', role: 'Senior Sales' },
+    { id: 'E007', name: 'Robert Davis', store: 'ST004', role: 'Store Manager' },
+    { id: 'E008', name: 'Amanda Taylor', store: 'ST004', role: 'Sales Associate' },
+    { id: 'E009', name: 'Chris Martinez', store: 'ST005', role: 'Senior Sales' },
+    { id: 'E010', name: 'Jessica White', store: 'ST005', role: 'Sales Associate' },
+    { id: 'E011', name: 'Brandon Lee', store: 'ST006', role: 'Sales Associate' },
+    { id: 'E012', name: 'Sophia Nguyen', store: 'ST006', role: 'Senior Sales' },
+    { id: 'E013', name: 'Tyler Rodriguez', store: 'ST007', role: 'Sales Associate' },
+    { id: 'E014', name: 'Olivia Johnson', store: 'ST007', role: 'Store Manager' },
+    { id: 'E015', name: 'Marcus Thompson', store: 'ST008', role: 'Sales Associate' },
+    { id: 'E016', name: 'Emma Davis', store: 'ST008', role: 'Senior Sales' }
   ];
 
   const customers = [
@@ -269,20 +199,17 @@ const generateMockTransactions = (): Transaction[] => {
     { id: 'C005', name: 'Lisa Thompson', email: 'lisa.t@email.com', phone: '+1-555-0105' }
   ];
 
-  const employees = [
-    { id: 'E001', name: 'John Smith' },
-    { id: 'E002', name: 'Maria Garcia' },
-    { id: 'E003', name: 'Alex Johnson' },
-    { id: 'E004', name: 'Sarah Wilson' },
-    { id: 'E005', name: 'Mike Brown' }
-  ];
-
   const products = [
-    { id: 'P001', name: 'iPhone 15 Pro', category: 'Electronics', price: 999 },
-    { id: 'P002', name: 'MacBook Air M3', category: 'Electronics', price: 1299 },
-    { id: 'P003', name: 'AirPods Pro', category: 'Electronics', price: 249 },
-    { id: 'P004', name: 'Nike Air Max', category: 'Fashion', price: 120 },
-    { id: 'P005', name: 'Coffee Maker', category: 'Home', price: 89 }
+    { id: 'P001', name: 'iPhone 15 Pro Max', category: 'Electronics', sku: 'APL-IPH-15PM-256', price: 1199, brand: 'Apple' },
+    { id: 'P002', name: 'Samsung Galaxy S24 Ultra', category: 'Electronics', sku: 'SAM-GAL-S24U-512', price: 1299, brand: 'Samsung' },
+    { id: 'P003', name: 'MacBook Pro 16" M3 Pro', category: 'Electronics', sku: 'APL-MBP-16M3-1TB', price: 2499, brand: 'Apple' },
+    { id: 'P004', name: 'iPad Pro 12.9"', category: 'Electronics', sku: 'APL-IPD-129-256', price: 1099, brand: 'Apple' },
+    { id: 'P005', name: 'AirPods Pro 2nd Gen', category: 'Electronics', sku: 'APL-APP-PRO2', price: 249, brand: 'Apple' },
+    { id: 'P006', name: 'Apple Watch Series 9', category: 'Electronics', sku: 'APL-AW-S9-45MM', price: 429, brand: 'Apple' },
+    { id: 'P007', name: 'Sony WH-1000XM5 Headphones', category: 'Electronics', sku: 'SNY-WH-1000XM5', price: 399, brand: 'Sony' },
+    { id: 'P008', name: 'Dell XPS 15 Laptop', category: 'Electronics', sku: 'DEL-XPS-15-1TB', price: 1899, brand: 'Dell' },
+    { id: 'P009', name: 'LG 55" OLED TV', category: 'Electronics', sku: 'LG-OLED-55C3', price: 1599, brand: 'LG' },
+    { id: 'P010', name: 'PlayStation 5', category: 'Electronics', sku: 'SNY-PS5-1TB', price: 499, brand: 'Sony' }
   ];
 
   const paymentMethods: Array<'card' | 'cash' | 'mobile' | 'crypto' | 'check' | 'gift_card'> = 
@@ -293,11 +220,11 @@ const generateMockTransactions = (): Transaction[] => {
 
   const transactions: Transaction[] = [];
 
-  // Generate transactions for the last 30 days
-  for (let i = 0; i < 500; i++) {
+  // Generate comprehensive transaction data
+  for (let i = 0; i < 200; i++) {
     const store = stores[Math.floor(Math.random() * stores.length)];
+    const employee = employees.filter(emp => emp.store === store.id)[Math.floor(Math.random() * employees.filter(emp => emp.store === store.id).length)];
     const customer = customers[Math.floor(Math.random() * customers.length)];
-    const employee = employees[Math.floor(Math.random() * employees.length)];
     const paymentMethod = paymentMethods[Math.floor(Math.random() * paymentMethods.length)];
     const paymentStatus = paymentStatuses[Math.floor(Math.random() * paymentStatuses.length)];
     
@@ -325,7 +252,7 @@ const generateMockTransactions = (): Transaction[] => {
         productId: product.id,
         productName: product.name,
         category: product.category,
-        sku: `SKU-${product.id}`,
+        sku: product.sku,
         quantity,
         unitPrice,
         totalPrice,
@@ -350,7 +277,7 @@ const generateMockTransactions = (): Transaction[] => {
     const total = subtotal + tax - discount + tip;
 
     transactions.push({
-      id: `TXN-${String(i + 1).padStart(6, '0')}`,
+      id: `TXN-${String(Date.now() + i).slice(-6)}`,
       timestamp: transactionDate.toISOString(),
       storeId: store.id,
       storeName: store.name,
@@ -358,7 +285,7 @@ const generateMockTransactions = (): Transaction[] => {
       customerName: customer.name,
       customerEmail: customer.email,
       customerPhone: customer.phone,
-      amount: subtotal,
+      amount: total,
       currency: 'USD',
       paymentMethod,
       paymentStatus,
@@ -366,32 +293,32 @@ const generateMockTransactions = (): Transaction[] => {
       employeeId: employee.id,
       employeeName: employee.name,
       terminalId: `TERM-${store.id}-${Math.floor(Math.random() * 5) + 1}`,
-      receiptNumber: `RCP-${String(Math.floor(Math.random() * 10000)).padStart(6, '0')}`,
+      receiptNumber: `RCP-${String(Date.now() + i).slice(-8)}`,
       tax,
       discount,
       tip,
       total,
       location: {
-        address: `${Math.floor(Math.random() * 9999) + 1} Main St`,
+        address: store.address,
         city: store.city,
-        state: ['NY', 'CA', 'IL', 'MA', 'FL'][Math.floor(Math.random() * 5)],
-        zipCode: `${Math.floor(Math.random() * 90000) + 10000}`,
+        state: 'TX',
+        zipCode: store.zipCode,
         country: 'USA'
       },
       metadata: {
-        ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-        userAgent: ['Chrome', 'Safari', 'Firefox', 'Edge'][Math.floor(Math.random() * 4)],
-        deviceType: ['mobile', 'tablet', 'desktop', 'pos'][Math.floor(Math.random() * 4)] as any,
-        browser: ['Chrome', 'Safari', 'Firefox', 'Edge'][Math.floor(Math.random() * 4)],
-        os: ['Windows', 'macOS', 'iOS', 'Android'][Math.floor(Math.random() * 4)],
-        referrer: ['Google', 'Facebook', 'Direct', 'Email'][Math.floor(Math.random() * 4)],
-        campaign: ['Summer Sale', 'Black Friday', 'Holiday', 'None'][Math.floor(Math.random() * 4)],
-        source: ['organic', 'paid', 'social', 'email'][Math.floor(Math.random() * 4)],
-        medium: ['search', 'display', 'social', 'email'][Math.floor(Math.random() * 4)]
+        ipAddress: `192.168.1.${Math.floor(Math.random() * 255)}`,
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        deviceType: ['mobile', 'tablet', 'desktop', 'pos'][Math.floor(Math.random() * 4)] as 'mobile' | 'tablet' | 'desktop' | 'pos',
+        browser: 'Chrome',
+        os: 'Windows 10',
+        referrer: 'https://google.com',
+        campaign: 'Summer Sale',
+        source: 'google',
+        medium: 'cpc'
       },
-      riskScore: Math.floor(Math.random() * 100),
-      fraudFlags: Math.random() > 0.8 ? ['High Amount', 'Unusual Time', 'New Customer'] : [],
-      tags: ['VIP', 'First Time', 'Returning', 'Bulk Order'].filter(() => Math.random() > 0.7),
+      riskScore: Math.random() * 100,
+      fraudFlags: Math.random() > 0.8 ? ['High Risk', 'Unusual Pattern'] : [],
+      tags: [['VIP', 'Returning Customer', 'High Value'][Math.floor(Math.random() * 3)]],
       notes: Math.random() > 0.7 ? 'Special handling required' : '',
       attachments: [],
       relatedTransactions: [],
@@ -418,6 +345,7 @@ export const TransactionsView = ({ onViewChange }: TransactionsViewProps) => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [realTimeUpdates, setRealTimeUpdates] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
 
   // Initialize with mock data
   useEffect(() => {
@@ -516,16 +444,33 @@ export const TransactionsView = ({ onViewChange }: TransactionsViewProps) => {
           aValue = new Date(a.timestamp).getTime();
           bValue = new Date(b.timestamp).getTime();
       }
-
-      if (sortOrder === "asc") {
-        return aValue > bValue ? 1 : -1;
-      } else {
-        return aValue < bValue ? 1 : -1;
-      }
+      
+      return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
     });
 
     setFilteredTransactions(filtered);
   }, [transactions, searchTerm, filterStore, filterStatus, filterMethod, filterDateRange, sortBy, sortOrder]);
+
+  const handleTransactionClick = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -538,168 +483,163 @@ export const TransactionsView = ({ onViewChange }: TransactionsViewProps) => {
     }
   };
 
-  const getPaymentMethodIcon = (method: string) => {
+  const getMethodIcon = (method: string) => {
     switch (method) {
-      case 'card': return CreditCard;
-      case 'cash': return Banknote;
-      case 'mobile': return Smartphone;
-      case 'crypto': return Coins;
-      case 'check': return Receipt;
-      case 'gift_card': return GiftCard;
-      default: return CreditCard;
+      case 'card': return <CreditCard className="w-4 h-4" />;
+      case 'cash': return <Banknote className="w-4 h-4" />;
+      case 'mobile': return <Smartphone className="w-4 h-4" />;
+      case 'crypto': return <Coins className="w-4 h-4" />;
+      case 'check': return <Receipt className="w-4 h-4" />;
+      case 'gift_card': return <Gift className="w-4 h-4" />;
+      default: return <CreditCard className="w-4 h-4" />;
     }
   };
 
-  const getRiskColor = (score: number) => {
-    if (score >= 80) return 'text-red-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-green-600';
+  const getDeviceIcon = (device: string) => {
+    switch (device) {
+      case 'mobile': return <Smartphone className="w-4 h-4" />;
+      case 'tablet': return <Monitor className="w-4 h-4" />;
+      case 'desktop': return <Monitor className="w-4 h-4" />;
+      case 'pos': return <CreditCard className="w-4 h-4" />;
+      default: return <Monitor className="w-4 h-4" />;
+    }
   };
 
-  const stats = {
-    totalTransactions: filteredTransactions.length,
-    totalRevenue: filteredTransactions.reduce((sum, txn) => sum + txn.total, 0),
-    averageTransaction: filteredTransactions.length > 0 ? 
-      filteredTransactions.reduce((sum, txn) => sum + txn.total, 0) / filteredTransactions.length : 0,
-    completedTransactions: filteredTransactions.filter(txn => txn.paymentStatus === 'completed').length,
-    pendingTransactions: filteredTransactions.filter(txn => txn.paymentStatus === 'pending').length,
-    failedTransactions: filteredTransactions.filter(txn => txn.paymentStatus === 'failed').length,
-    highRiskTransactions: filteredTransactions.filter(txn => txn.riskScore >= 80).length
-  };
+  // Calculate summary statistics
+  const totalRevenue = filteredTransactions.reduce((sum, txn) => sum + txn.total, 0);
+  const totalTransactions = filteredTransactions.length;
+  const avgTransactionValue = totalTransactions > 0 ? totalRevenue / totalTransactions : 0;
+  const completedTransactions = filteredTransactions.filter(txn => txn.paymentStatus === 'completed').length;
+  const completionRate = totalTransactions > 0 ? (completedTransactions / totalTransactions) * 100 : 0;
 
-  const uniqueStores = Array.from(new Set(transactions.map(txn => txn.storeId)))
-    .map(id => transactions.find(txn => txn.storeId === id))
-    .filter(Boolean)
-    .map(txn => ({ id: txn!.storeId, name: txn!.storeName }));
+  // Group transactions by store
+  const transactionsByStore = filteredTransactions.reduce((acc, txn) => {
+    if (!acc[txn.storeId]) {
+      acc[txn.storeId] = {
+        storeName: txn.storeName,
+        transactions: [],
+        totalRevenue: 0,
+        transactionCount: 0
+      };
+    }
+    acc[txn.storeId].transactions.push(txn);
+    acc[txn.storeId].totalRevenue += txn.total;
+    acc[txn.storeId].transactionCount += 1;
+    return acc;
+  }, {} as Record<string, { storeName: string; transactions: Transaction[]; totalRevenue: number; transactionCount: number }>);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 backdrop-blur-glass" style={{background: "linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1))"}}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Transaction Monitor</h1>
-          <p className="text-muted-foreground">
-            Real-time transaction monitoring across all stores
+          <h1 className="text-3xl font-bold tracking-tight text-shadow-lg">🚀 MASTERFUL TRANSACTION MONITOR 🚀</h1>
+          <p className="text-muted-foreground mt-2">
+            Real-time transaction monitoring and analysis across all stores
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-2">
-              <div className={`w-3 h-3 rounded-full ${realTimeUpdates ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
-              <span className="text-sm">Live Updates</span>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setRealTimeUpdates(!realTimeUpdates)}
-            >
-              {realTimeUpdates ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-            </Button>
-          </div>
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Export
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setRealTimeUpdates(!realTimeUpdates)}
+            className={cn("btn-glass", realTimeUpdates && "animate-glow")}
+          >
+            <Activity className="w-4 h-4 mr-2" />
+            {realTimeUpdates ? 'Live' : 'Paused'}
           </Button>
-          <Button variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
+          <Button variant="outline" size="sm" className="btn-glass">
+            <Download className="w-4 h-4 mr-2" />
+            Export
           </Button>
         </div>
       </div>
 
-      {/* Stats Dashboard */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Transactions</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalTransactions.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.completedTransactions} completed
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-float">
+        <Card className="card-premium">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${stats.totalRevenue.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{formatCurrency(totalRevenue)}</div>
             <p className="text-xs text-muted-foreground">
-              Avg: ${stats.averageTransaction.toFixed(2)}
+              {totalTransactions} transactions
             </p>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card className="card-premium">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">Avg Transaction</CardTitle>
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{formatCurrency(avgTransactionValue)}</div>
+            <p className="text-xs text-muted-foreground">
+              Per transaction
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="card-premium">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats.totalTransactions > 0 ? 
-                ((stats.completedTransactions / stats.totalTransactions) * 100).toFixed(1) : 0}%
-            </div>
+            <div className="text-2xl font-bold">{completionRate.toFixed(1)}%</div>
             <p className="text-xs text-muted-foreground">
-              {stats.pendingTransactions} pending
+              {completedTransactions} completed
             </p>
           </CardContent>
         </Card>
-        <Card>
+
+        <Card className="card-premium">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Risk Alerts</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Active Stores</CardTitle>
+            <Store className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.highRiskTransactions}</div>
+            <div className="text-2xl font-bold">{Object.keys(transactionsByStore).length}</div>
             <p className="text-xs text-muted-foreground">
-              High risk transactions
+              Processing transactions
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Transaction Filters</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Search</label>
+      {/* Filters and Search */}
+      <Card className="card-premium">
+        <CardContent className="p-6">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder="Search transactions..."
+                  placeholder="Search transactions, customers, stores..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 input-glass"
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Store</label>
-              <select 
-                value={filterStore} 
+            <div className="flex gap-2">
+              <select
+                value={filterStore}
                 onChange={(e) => setFilterStore(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
+                className="px-3 py-2 border border-white/20 rounded-md bg-white/10 backdrop-blur-xl text-sm"
               >
                 <option value="all">All Stores</option>
-                {uniqueStores.map(store => (
-                  <option key={store.id} value={store.id}>{store.name}</option>
+                {Object.values(transactionsByStore).map((store, index) => (
+                  <option key={index} value={store.storeName}>{store.storeName}</option>
                 ))}
               </select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Status</label>
-              <select 
-                value={filterStatus} 
+              <select
+                value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
+                className="px-3 py-2 border border-white/20 rounded-md bg-white/10 backdrop-blur-xl text-sm"
               >
                 <option value="all">All Status</option>
                 <option value="completed">Completed</option>
@@ -708,399 +648,214 @@ export const TransactionsView = ({ onViewChange }: TransactionsViewProps) => {
                 <option value="refunded">Refunded</option>
                 <option value="cancelled">Cancelled</option>
               </select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Payment Method</label>
-              <select 
-                value={filterMethod} 
-                onChange={(e) => setFilterMethod(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
-              >
-                <option value="all">All Methods</option>
-                <option value="card">Card</option>
-                <option value="cash">Cash</option>
-                <option value="mobile">Mobile</option>
-                <option value="crypto">Crypto</option>
-                <option value="check">Check</option>
-                <option value="gift_card">Gift Card</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Date Range</label>
-              <select 
-                value={filterDateRange} 
+              <select
+                value={filterDateRange}
                 onChange={(e) => setFilterDateRange(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
+                className="px-3 py-2 border border-white/20 rounded-md bg-white/10 backdrop-blur-xl text-sm"
               >
                 <option value="today">Today</option>
                 <option value="week">This Week</option>
                 <option value="month">This Month</option>
-                <option value="all">All Time</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Sort By</label>
-              <select 
-                value={sortBy} 
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
-              >
-                <option value="timestamp">Date</option>
-                <option value="amount">Amount</option>
-                <option value="customer">Customer</option>
-                <option value="store">Store</option>
               </select>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Transactions Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Transactions ({filteredTransactions.length})</CardTitle>
-          <CardDescription>
-            Real-time transaction monitoring with live updates
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Transaction ID</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead>Store</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Payment</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Risk</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredTransactions.slice(0, 50).map((transaction) => {
-                  const PaymentIcon = getPaymentMethodIcon(transaction.paymentMethod);
-                  return (
-                    <TableRow key={transaction.id} className="hover:bg-muted/50">
-                      <TableCell className="font-mono text-sm">
-                        {transaction.id}
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {new Date(transaction.timestamp).toLocaleDateString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {new Date(transaction.timestamp).toLocaleTimeString()}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-medium">{transaction.storeName}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {transaction.location.city}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-medium">{transaction.customerName}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {transaction.customerEmail}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-medium">${transaction.total.toFixed(2)}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {transaction.items.length} items
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <PaymentIcon className="h-4 w-4" />
-                          <span className="capitalize">{transaction.paymentMethod}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getStatusColor(transaction.paymentStatus)}>
-                          {transaction.paymentStatus}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className={`font-medium ${getRiskColor(transaction.riskScore)}`}>
-                          {transaction.riskScore}%
-                        </div>
-                        {transaction.fraudFlags.length > 0 && (
-                          <div className="text-xs text-red-600">
-                            {transaction.fraudFlags.length} flags
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setSelectedTransaction(transaction)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="outline" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Transactions by Store */}
+      <div className="space-y-6">
+        {Object.entries(transactionsByStore).map(([storeId, storeData]) => (
+          <Card key={storeId} className="card-premium">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Building2 className="w-6 h-6 text-primary" />
+                  <div>
+                    <CardTitle className="text-xl">{storeData.storeName}</CardTitle>
+                    <CardDescription>
+                      {storeData.transactionCount} transactions • {formatCurrency(storeData.totalRevenue)} revenue
+                    </CardDescription>
+                  </div>
+                </div>
+                <Badge variant="outline" className="badge-glass">
+                  {storeData.transactionCount} transactions
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {storeData.transactions.slice(0, 5).map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    onClick={() => handleTransactionClick(transaction)}
+                    className="flex items-center justify-between p-4 border border-white/20 rounded-lg bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-200 cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-2">
+                        {getMethodIcon(transaction.paymentMethod)}
+                        <span className="text-sm font-medium">{transaction.id}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <User className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm">{transaction.customerName}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <User className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm">{transaction.employeeName}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="text-right">
+                        <div className="font-semibold">{formatCurrency(transaction.total)}</div>
+                        <div className="text-sm text-muted-foreground">{formatDate(transaction.timestamp)}</div>
+                      </div>
+                      <Badge className={getStatusColor(transaction.paymentStatus)}>
+                        {transaction.paymentStatus}
+                      </Badge>
+                      <Button variant="ghost" size="sm">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                {storeData.transactions.length > 5 && (
+                  <div className="text-center pt-2">
+                    <Button variant="outline" size="sm" className="btn-glass">
+                      View All {storeData.transactionCount} Transactions
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       {/* Transaction Detail Modal */}
       {selectedTransaction && (
         <Dialog open={!!selectedTransaction} onOpenChange={() => setSelectedTransaction(null)}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="dialog-glass max-w-4xl">
             <DialogHeader>
-              <DialogTitle>Transaction Details - {selectedTransaction.id}</DialogTitle>
+              <DialogTitle className="flex items-center space-x-2">
+                <Receipt className="w-5 h-5" />
+                <span>Transaction Details - {selectedTransaction.id}</span>
+              </DialogTitle>
               <DialogDescription>
-                Complete transaction information and analysis
+                Complete transaction information and line items
               </DialogDescription>
             </DialogHeader>
-            
-            <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="items">Items</TabsTrigger>
-                <TabsTrigger value="customer">Customer</TabsTrigger>
-                <TabsTrigger value="analysis">Analysis</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="overview" className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Transaction Info</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>ID:</span>
-                        <span className="font-mono">{selectedTransaction.id}</span>
+            <div className="space-y-6">
+              {/* Transaction Overview */}
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold mb-2">Customer Information</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center space-x-2">
+                        <User className="w-4 h-4" />
+                        <span>{selectedTransaction.customerName}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Receipt:</span>
-                        <span className="font-mono">{selectedTransaction.receiptNumber}</span>
+                      <div className="flex items-center space-x-2">
+                        <Mail className="w-4 h-4" />
+                        <span>{selectedTransaction.customerEmail}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Terminal:</span>
-                        <span>{selectedTransaction.terminalId}</span>
+                      <div className="flex items-center space-x-2">
+                        <Phone className="w-4 h-4" />
+                        <span>{selectedTransaction.customerPhone}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Employee:</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Store & Employee</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center space-x-2">
+                        <Store className="w-4 h-4" />
+                        <span>{selectedTransaction.storeName}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <User className="w-4 h-4" />
                         <span>{selectedTransaction.employeeName}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Date:</span>
-                        <span>{new Date(selectedTransaction.timestamp).toLocaleString()}</span>
+                      <div className="flex items-center space-x-2">
+                        <MapPin className="w-4 h-4" />
+                        <span>{selectedTransaction.location.address}, {selectedTransaction.location.city}</span>
                       </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Payment Details</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>Method:</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold mb-2">Payment Details</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center space-x-2">
+                        {getMethodIcon(selectedTransaction.paymentMethod)}
                         <span className="capitalize">{selectedTransaction.paymentMethod}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Status:</span>
+                      <div className="flex items-center space-x-2">
                         <Badge className={getStatusColor(selectedTransaction.paymentStatus)}>
                           {selectedTransaction.paymentStatus}
                         </Badge>
                       </div>
+                      <div className="flex items-center space-x-2">
+                        <Receipt className="w-4 h-4" />
+                        <span>{selectedTransaction.receiptNumber}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Transaction Summary</h4>
+                    <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span>Subtotal:</span>
-                        <span>${selectedTransaction.amount.toFixed(2)}</span>
+                        <span>{formatCurrency(selectedTransaction.total - selectedTransaction.tax + selectedTransaction.discount - selectedTransaction.tip)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Tax:</span>
-                        <span>${selectedTransaction.tax.toFixed(2)}</span>
+                        <span>{formatCurrency(selectedTransaction.tax)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Discount:</span>
-                        <span>-${selectedTransaction.discount.toFixed(2)}</span>
+                        <span>-{formatCurrency(selectedTransaction.discount)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Tip:</span>
-                        <span>${selectedTransaction.tip.toFixed(2)}</span>
+                        <span>{formatCurrency(selectedTransaction.tip)}</span>
                       </div>
-                      <div className="flex justify-between font-bold">
+                      <div className="flex justify-between font-semibold border-t pt-2">
                         <span>Total:</span>
-                        <span>${selectedTransaction.total.toFixed(2)}</span>
+                        <span>{formatCurrency(selectedTransaction.total)}</span>
                       </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="items" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Transaction Items</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {selectedTransaction.items.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                          <div className="flex-1">
-                            <div className="font-medium">{item.productName}</div>
-                            <div className="text-sm text-muted-foreground">
-                              SKU: {item.sku} | Category: {item.category}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              Qty: {item.quantity} × ${item.unitPrice.toFixed(2)}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-medium">${item.totalPrice.toFixed(2)}</div>
-                            {item.discount > 0 && (
-                              <div className="text-sm text-green-600">
-                                -${item.discount.toFixed(2)} discount
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
                     </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="customer" className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Customer Information</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>Name:</span>
-                        <span>{selectedTransaction.customerName}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Email:</span>
-                        <span>{selectedTransaction.customerEmail}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Phone:</span>
-                        <span>{selectedTransaction.customerPhone}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Customer ID:</span>
-                        <span className="font-mono">{selectedTransaction.customerId}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Store Information</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>Store:</span>
-                        <span>{selectedTransaction.storeName}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Store ID:</span>
-                        <span className="font-mono">{selectedTransaction.storeId}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Address:</span>
-                        <span>{selectedTransaction.location.address}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>City:</span>
-                        <span>{selectedTransaction.location.city}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  </div>
                 </div>
-              </TabsContent>
-              
-              <TabsContent value="analysis" className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Risk Analysis</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>Risk Score:</span>
-                        <span className={`font-medium ${getRiskColor(selectedTransaction.riskScore)}`}>
-                          {selectedTransaction.riskScore}%
-                        </span>
-                      </div>
-                      {selectedTransaction.fraudFlags.length > 0 && (
+              </div>
+
+              {/* Line Items */}
+              <div>
+                <h4 className="font-semibold mb-4">Line Items</h4>
+                <div className="space-y-2">
+                  {selectedTransaction.items.map((item) => (
+                    <div key={item.id} className="flex items-center justify-between p-3 border border-white/20 rounded-lg bg-white/5">
+                      <div className="flex items-center space-x-4">
                         <div>
-                          <span>Fraud Flags:</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {selectedTransaction.fraudFlags.map((flag, index) => (
-                              <Badge key={index} variant="destructive" className="text-xs">
-                                {flag}
-                              </Badge>
-                            ))}
-                          </div>
+                          <div className="font-medium">{item.productName}</div>
+                          <div className="text-sm text-muted-foreground">{item.sku}</div>
                         </div>
-                      )}
-                      {selectedTransaction.tags.length > 0 && (
-                        <div>
-                          <span>Tags:</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {selectedTransaction.tags.map((tag, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
+                        <div className="text-sm text-muted-foreground">
+                          {item.quantity} × {formatCurrency(item.unitPrice)}
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Technical Details</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>IP Address:</span>
-                        <span className="font-mono">{selectedTransaction.metadata.ipAddress}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Device:</span>
-                        <span className="capitalize">{selectedTransaction.metadata.deviceType}</span>
+                      <div className="text-right">
+                        <div className="font-semibold">{formatCurrency(item.totalPrice)}</div>
+                        <div className="text-sm text-muted-foreground">
+                          Tax: {formatCurrency(item.tax)} | Discount: {formatCurrency(item.discount)}
+                        </div>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Browser:</span>
-                        <span>{selectedTransaction.metadata.browser}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>OS:</span>
-                        <span>{selectedTransaction.metadata.os}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Source:</span>
-                        <span>{selectedTransaction.metadata.source}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  ))}
                 </div>
-              </TabsContent>
-            </Tabs>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
       )}

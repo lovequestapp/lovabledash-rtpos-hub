@@ -643,7 +643,7 @@ export const WaveLengthAI = () => {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           onClick={() => setIsOpen(true)}
-          className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-green-400 relative overflow-hidden"
+          className="fab-glass"
         >
           <Bot className="w-8 h-8 text-white" />
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-pulse"></div>
@@ -656,7 +656,7 @@ export const WaveLengthAI = () => {
     <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${
       isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
     }`}>
-      <Card className="w-full h-full shadow-2xl border-2 border-green-200 bg-white/95 backdrop-blur-sm">
+      <Card className="w-full h-full shadow-2xl border-2 border-green-200/30 bg-white/10 backdrop-blur-2xl">
         <CardHeader className="bg-gradient-to-r from-green-500 to-green-700 text-white p-4 rounded-t-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">

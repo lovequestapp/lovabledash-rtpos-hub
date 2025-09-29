@@ -210,7 +210,7 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
 
   if (loading) {
     return (
-      <div className="p-4 lg:p-6">
+      <div className="p-4 lg:p-6 card-premium">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">Dashboard</h1>
