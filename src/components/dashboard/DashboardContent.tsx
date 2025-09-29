@@ -1,4 +1,10 @@
 import { OverviewDashboard } from "./views/OverviewDashboard";
+import { StoresView } from "./views/StoresView";
+import { EmployeesView } from "./views/EmployeesView";
+import { InventoryView } from "./views/InventoryView";
+import { ReportsView } from "./views/ReportsView";
+import { AlertsView } from "./views/AlertsView";
+import { SettingsView } from "./views/SettingsView";
 
 type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings';
 
@@ -13,17 +19,17 @@ export const DashboardContent = ({ currentView, userProfile }: DashboardContentP
       case 'overview':
         return <OverviewDashboard userProfile={userProfile} />;
       case 'stores':
-        return <div className="p-6">Stores Management (Coming Soon)</div>;
+        return <StoresView />;
       case 'employees':
-        return <div className="p-6">Employee Management (Coming Soon)</div>;
+        return <EmployeesView />;
       case 'inventory':
-        return <div className="p-6">Inventory Management (Coming Soon)</div>;
+        return <InventoryView />;
       case 'reports':
-        return <div className="p-6">Reports & Analytics (Coming Soon)</div>;
+        return <ReportsView />;
       case 'alerts':
-        return <div className="p-6">Alert Management (Coming Soon)</div>;
+        return <AlertsView />;
       case 'settings':
-        return <div className="p-6">Settings (Coming Soon)</div>;
+        return <SettingsView />;
       default:
         return <OverviewDashboard userProfile={userProfile} />;
     }
