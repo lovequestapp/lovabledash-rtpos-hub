@@ -109,7 +109,7 @@ export const WaveLengthAI = ({ onScreenCapture }: WaveLengthAIProps) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization.*apiKey}`
+          "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: "gpt-4",
