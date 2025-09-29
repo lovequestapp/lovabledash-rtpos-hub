@@ -49,8 +49,9 @@ import {
   Coffee,
   Briefcase,
   GraduationCap,
+  Trophy,
   Medal,
-  Trophy,  Flag,
+  Flag,
   CheckCircle,
   AlertCircle,
   Info,
@@ -460,21 +461,6 @@ export const EmployeesView = ({ onViewChange }: EmployeesViewProps) => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
-  const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
-  const [newEmployee, setNewEmployee] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    position: "",
-    store: "",
-    department: "",
-    salary: "",
-    hireDate: "",
-    address: "",
-    emergencyContact: "",
-    skills: [],
-    certifications: []
-  });
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
 
   const filteredAndSortedEmployees = useMemo(() => {
@@ -1204,97 +1190,3 @@ export const EmployeesView = ({ onViewChange }: EmployeesViewProps) => {
     </div>
   );
 };
-
-  // Add Employee Dialog
-  const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
-  const [newEmployee, setNewEmployee] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    position: "",
-    store: "",
-    department: "",
-    salary: "",
-    hireDate: "",
-    address: "",
-    emergencyContact: "",
-    skills: [] as string[],
-    certifications: [] as string[]
-  });
-
-  const handleAddEmployee = () => {
-    setIsAddEmployeeOpen(true);
-  };
-
-  const handleSaveEmployee = () => {
-    const employee: Employee = {
-      id: String(employees.length + 1),
-      name: newEmployee.name,
-      email: newEmployee.email,
-      phone: newEmployee.phone,
-      position: newEmployee.position,
-      store: newEmployee.store,
-      storeCode: "ST" + String(employees.length + 1).padStart(3, "0"),
-      hireDate: newEmployee.hireDate || new Date().toISOString().split("T")[0],
-      monthlySales: 0,
-      totalSales: 0,
-      status: "active",
-      performance: "average",
-      salary: newEmployee.salary ? parseFloat(newEmployee.salary) : undefined,
-      department: newEmployee.department,
-      notes: "",
-      lastLogin: new Date().toISOString(),
-      schedule: "Monday-Friday, 9AM-5PM",
-      certification: newEmployee.certifications,
-      goals: {
-        monthly: 50000,
-        quarterly: 150000,
-        annual: 600000
-      },
-      achievements: [],
-      reviews: [],
-      skills: newEmployee.skills,
-      experience: 0,
-      education: "",
-      emergencyContact: {
-        name: newEmployee.emergencyContact,
-        phone: "",
-        relationship: "Emergency Contact"
-      },
-      address: {
-        street: newEmployee.address,
-        city: "",
-        state: "",
-        zipCode: ""
-      },
-      performanceMetrics: {
-        customerSatisfaction: 4.0,
-        salesTarget: 50000,
-        salesAchieved: 0,
-        attendanceRate: 100,
-        punctualityRate: 100
-      }
-    };
-    
-    setEmployees(prev => [employee, ...prev]);
-    setNewEmployee({
-      name: "",
-      email: "",
-      phone: "",
-      position: "",
-      store: "",
-      department: "",
-      salary: "",
-      hireDate: "",
-      address: "",
-      emergencyContact: "",
-      skills: [],
-      certifications: []
-    });
-    setIsAddEmployeeOpen(false);
-    
-    toast({
-      title: "Employee Added",
-      description: `${employee.name} has been successfully added to the team!`
-    });
-  };
