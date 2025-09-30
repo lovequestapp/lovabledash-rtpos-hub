@@ -186,6 +186,8 @@ export const DashboardLayout = () => {
           onSignOut={handleSignOut}
           isCollapsed={isCollapsed}
           onToggle={handleToggleSidebar}
+          isMobile={isMobile}
+          onClose={() => setIsSidebarOpen(false)}
         />
       </div>
       
