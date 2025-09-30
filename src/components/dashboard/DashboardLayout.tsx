@@ -123,7 +123,7 @@ export const DashboardLayout = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background overflow-x-hidden w-full max-w-full">
       {/* Mobile Header - Safe Area Support */}
       {isMobile && (
         <div 
@@ -192,12 +192,12 @@ export const DashboardLayout = () => {
       <main 
         className={`flex-1 overflow-hidden ${
           isCollapsed ? 'ml-16' : ''
-        } transition-all duration-300`}
+        } transition-all duration-300 w-full max-w-full`}
         style={isMobile ? {
           paddingTop: 'calc(env(safe-area-inset-top) + 4rem)'
         } : undefined}
       >
-        <div className="h-full overflow-y-auto">
+        <div className="h-full overflow-y-auto overflow-x-hidden w-full max-w-full">
           <DashboardContent currentView={currentView} userProfile={userProfile} onViewChange={handleViewChange} />
         </div>
       </main>
