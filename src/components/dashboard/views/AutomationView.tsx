@@ -389,7 +389,7 @@ export const AutomationView = ({ onViewChange }: AutomationViewProps) => {
             <select 
               value={filterCategory} 
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-green-500 focus:outline-none transition-colors"
             >
               <option value="all">All Categories</option>
               <option value="inventory">Inventory</option>
@@ -402,7 +402,7 @@ export const AutomationView = ({ onViewChange }: AutomationViewProps) => {
             <select 
               value={filterStatus} 
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-green-500 focus:outline-none transition-colors"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>

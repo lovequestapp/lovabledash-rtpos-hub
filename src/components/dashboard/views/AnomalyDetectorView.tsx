@@ -690,7 +690,7 @@ export const AnomalyDetectorView = ({ onViewChange }: AnomalyDetectorViewProps) 
             <select 
               value={filterType} 
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-green-500 focus:outline-none transition-colors"
             >
               <option value="all">All Types</option>
               <option value="fraud">Fraud</option>
@@ -704,7 +704,7 @@ export const AnomalyDetectorView = ({ onViewChange }: AnomalyDetectorViewProps) 
             <select 
               value={filterSeverity} 
               onChange={(e) => setFilterSeverity(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-green-500 focus:outline-none transition-colors"
             >
               <option value="all">All Severity</option>
               <option value="critical">Critical</option>
@@ -715,7 +715,7 @@ export const AnomalyDetectorView = ({ onViewChange }: AnomalyDetectorViewProps) 
             <select 
               value={filterStatus} 
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-green-500 focus:outline-none transition-colors"
             >
               <option value="all">All Status</option>
               <option value="new">New</option>

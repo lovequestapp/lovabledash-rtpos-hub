@@ -421,7 +421,7 @@ export const Customer360View = ({ onViewChange }: Customer360ViewProps) => {
             <select 
               value={filterTier} 
               onChange={(e) => setFilterTier(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-green-500 focus:outline-none transition-colors"
             >
               <option value="all">All Tiers</option>
               <option value="platinum">Platinum</option>
@@ -432,7 +432,7 @@ export const Customer360View = ({ onViewChange }: Customer360ViewProps) => {
             <select 
               value={filterRisk} 
               onChange={(e) => setFilterRisk(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-green-500 focus:outline-none transition-colors"
             >
               <option value="all">All Risk Levels</option>
               <option value="low">Low Risk</option>
