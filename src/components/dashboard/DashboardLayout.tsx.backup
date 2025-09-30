@@ -127,14 +127,13 @@ export const DashboardLayout = () => {
       {/* Mobile Header - Safe Area Support */}
       {isMobile && (
         <div 
-          className="fixed top-0 left-0 right-0 z-50 bg-white backdrop-blur-xl text-black border-b border-gray-200 shadow-lg mobile-header-safe"
+          className="fixed top-0 left-0 right-0 z-50 bg-white backdrop-blur-xl text-black border-b border-gray-200 shadow-lg"
           style={{ 
-            paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)',
-            paddingBottom: '1rem',
-            paddingLeft: 'calc(env(safe-area-inset-left, 0px) + 1rem)',
-            paddingRight: 'calc(env(safe-area-inset-right, 0px) + 1rem)',
-            backgroundColor: '#ffffff',
-            minHeight: 'calc(env(safe-area-inset-top, 0px) + 5rem)'
+            paddingTop: 'max(env(safe-area-inset-top), 0.75rem)',
+            paddingBottom: '0.75rem',
+            paddingLeft: 'max(env(safe-area-inset-left), 1rem)',
+            paddingRight: 'max(env(safe-area-inset-right), 1rem)',
+            backgroundColor: '#ffffff'
           }}
         >
           <div className="flex items-center justify-between">
@@ -195,7 +194,7 @@ export const DashboardLayout = () => {
           isCollapsed ? 'ml-16' : ''
         } transition-all duration-300 w-full max-w-full`}
         style={isMobile ? {
-          paddingTop: 'calc(env(safe-area-inset-top, 0px) + 6rem)'
+          paddingTop: 'calc(env(safe-area-inset-top) + 4rem)'
         } : undefined}
       >
         <div className="h-full overflow-y-auto overflow-x-hidden w-full max-w-full">
