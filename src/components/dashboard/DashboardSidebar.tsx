@@ -43,7 +43,8 @@ import {
   Download,
   Upload,
   RefreshCw,
-  MoreHorizontal
+  MoreHorizontal,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
