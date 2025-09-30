@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { 
   DollarSign, 
   TrendingUp, 
@@ -29,7 +30,10 @@ import {
   Sparkles,
   Shield,
   Brain,
-  Rocket
+  Rocket,
+  LineChart,
+  Flame,
+  Trophy
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -365,54 +369,130 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
         />
       </div>
 
-      {/* Performance Insights */}
+      {/* Performance Insights - Enhanced & Animated */}
       <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-blue-600" />
-              Performance Insights
-            </CardTitle>
-            <CardDescription>Key performance indicators and trends</CardDescription>
+        <Card className="lg:col-span-2 bg-card/70 backdrop-blur-lg border border-border/50 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                  <BarChart3 className="w-5 h-5 text-white" />
+                </div>
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Performance Insights
+                </span>
+              </CardTitle>
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 animate-pulse">
+                <Activity className="w-3 h-3 mr-1" />
+                Live
+              </Badge>
+            </div>
+            <CardDescription>Real-time performance metrics and analytics</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-                <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">Best Performer</span>
+            {/* Top Row - Animated Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Best Performer Card */}
+              <div className="group relative p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 hover:border-green-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-green-400/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 bg-green-500 rounded-lg shadow-lg">
+                        <Trophy className="w-4 h-4 text-white animate-bounce" />
+                      </div>
+                      <span className="text-sm font-semibold text-green-800">Best Performer</span>
+                    </div>
+                    <ArrowUpRight className="w-4 h-4 text-green-600 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </div>
+                  <div className="text-2xl font-bold text-green-900 mb-1">{demoMetrics.bestPerformer}</div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge className="bg-green-500 text-white text-xs">+24% vs last month</Badge>
+                  </div>
+                  <Progress value={92} className="h-2 bg-green-200" />
+                  <div className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    Top sales performer this month
+                  </div>
                 </div>
-                <div className="text-lg font-bold text-green-900">{demoMetrics.bestPerformer}</div>
-                <div className="text-xs text-green-600">Top sales this month</div>
               </div>
-              
-              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="flex items-center gap-2 mb-1">
-                  <Clock className="w-4 h-4 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-800">Peak Hour</span>
+
+              {/* Peak Hour Card */}
+              <div className="group relative p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-200 hover:border-blue-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-400/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 bg-blue-500 rounded-lg shadow-lg">
+                        <Flame className="w-4 h-4 text-white animate-pulse" />
+                      </div>
+                      <span className="text-sm font-semibold text-blue-800">Peak Hour</span>
+                    </div>
+                    <LineChart className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                  </div>
+                  <div className="text-2xl font-bold text-blue-900 mb-1">{demoMetrics.peakHour}</div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge className="bg-blue-500 text-white text-xs">347 transactions</Badge>
+                  </div>
+                  <Progress value={78} className="h-2 bg-blue-200" />
+                  <div className="text-xs text-blue-600 mt-1 flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    Highest sales volume today
+                  </div>
                 </div>
-                <div className="text-lg font-bold text-blue-900">{demoMetrics.peakHour}</div>
-                <div className="text-xs text-blue-600">Highest sales volume</div>
               </div>
             </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
-                <div className="flex items-center gap-2 mb-1">
-                  <Shield className="w-4 h-4 text-purple-600" />
-                  <span className="text-sm font-medium text-purple-800">System Uptime</span>
+
+            {/* Bottom Row - System Status */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* System Uptime Card */}
+              <div className="group relative p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200 hover:border-purple-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-400/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 bg-purple-500 rounded-lg shadow-lg">
+                        <Shield className="w-4 h-4 text-white" />
+                      </div>
+                      <span className="text-sm font-semibold text-purple-800">System Uptime</span>
+                    </div>
+                    <CheckCircle className="w-4 h-4 text-purple-600 group-hover:rotate-12 transition-transform" />
+                  </div>
+                  <div className="text-2xl font-bold text-purple-900 mb-1">{demoMetrics.systemUptime}%</div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge className="bg-purple-500 text-white text-xs">30 days stable</Badge>
+                  </div>
+                  <Progress value={99.9} className="h-2 bg-purple-200" />
+                  <div className="text-xs text-purple-600 mt-1">Exceptional reliability</div>
                 </div>
-                <div className="text-lg font-bold text-purple-900">{demoMetrics.systemUptime}%</div>
-                <div className="text-xs text-purple-600">Last 30 days</div>
               </div>
-              
-              <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="flex items-center gap-2 mb-1">
-                  <Zap className="w-4 h-4 text-orange-600" />
-                  <span className="text-sm font-medium text-orange-800">Data Sync</span>
+
+              {/* Data Sync Card */}
+              <div className="group relative p-4 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border border-orange-200 hover:border-orange-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 bg-orange-500 rounded-lg shadow-lg">
+                        <Zap className="w-4 h-4 text-white group-hover:animate-ping" />
+                      </div>
+                      <span className="text-sm font-semibold text-orange-800">Data Sync</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs text-green-600 font-medium">Active</span>
+                    </div>
+                  </div>
+                  <div className="text-2xl font-bold text-orange-900 mb-1">{demoMetrics.dataSyncStatus}</div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge className="bg-orange-500 text-white text-xs">Real-time</Badge>
+                  </div>
+                  <Progress value={100} className="h-2 bg-orange-200 animate-pulse" />
+                  <div className="text-xs text-orange-600 mt-1 flex items-center gap-1">
+                    <RefreshCw className="w-3 h-3 animate-spin" />
+                    Syncing across all locations
+                  </div>
                 </div>
-                <div className="text-lg font-bold text-orange-900">{demoMetrics.dataSyncStatus}</div>
-                <div className="text-xs text-orange-600">Real-time updates</div>
               </div>
             </div>
           </CardContent>
