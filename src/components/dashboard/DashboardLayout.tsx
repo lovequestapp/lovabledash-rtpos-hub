@@ -124,29 +124,40 @@ export const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Mobile Header */}
+      {/* Mobile Header - Safe Area Support */}
       {isMobile && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl text-black px-4 py-3 flex items-center justify-between border-b border-gray-200 shadow-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.98)' }}>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
-              <Building2 className="w-5 h-5 text-white" />
+        <div 
+          className="fixed top-0 left-0 right-0 z-50 bg-white backdrop-blur-xl text-black border-b border-gray-200 shadow-lg"
+          style={{ 
+            paddingTop: 'max(env(safe-area-inset-top), 0.75rem)',
+            paddingBottom: '0.75rem',
+            paddingLeft: 'max(env(safe-area-inset-left), 1rem)',
+            paddingRight: 'max(env(safe-area-inset-right), 1rem)',
+            backgroundColor: '#ffffff'
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Building2 className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className="font-bold text-base leading-tight">WaveLength Communications</h1>
+                <p className="text-xs text-gray-600 capitalize flex items-center gap-1 leading-tight mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                  {currentView.replace('-', ' ')}
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="font-bold text-base">WaveLength Communications</h1>
-              <p className="text-xs text-gray-600 capitalize flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                {currentView.replace('-', ' ')}
-              </p>
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="text-black hover:bg-gray-100 rounded-lg p-2 transition-all duration-200 min-h-[44px] min-w-[44px]"
+            >
+              {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="text-black hover:bg-gray-100 rounded-lg p-2 transition-all duration-200"
-          >
-            {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </Button>
         </div>
       )}
 
@@ -178,13 +189,14 @@ export const DashboardLayout = () => {
       </div>
       
       {/* Main Content */}
-      <main className={`flex-1 overflow-hidden ${
-        isMobile 
-          ? 'pt-16' 
-          : isCollapsed 
-            ? 'ml-16' 
-            : ''
-      } transition-all duration-300`}>
+      <main 
+        className={`flex-1 overflow-hidden ${
+          isCollapsed ? 'ml-16' : ''
+        } transition-all duration-300`}
+        style={isMobile ? {
+          paddingTop: 'calc(env(safe-area-inset-top) + 4rem)'
+        } : undefined}
+      >
         <div className="h-full overflow-y-auto">
           <DashboardContent currentView={currentView} userProfile={userProfile} onViewChange={handleViewChange} />
         </div>
