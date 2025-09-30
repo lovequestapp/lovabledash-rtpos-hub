@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   DollarSign, 
   TrendingUp, 
@@ -52,6 +53,8 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
     activeAlerts: 0,
     totalTransactions: 0,
   });
+
+  const [selectedInsight, setSelectedInsight] = useState<'performer' | 'peak' | 'uptime' | 'sync' | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Enhanced demo data for realistic dashboard
@@ -393,7 +396,10 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
             {/* Top Row - Animated Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Best Performer Card */}
-              <div className="group relative p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 hover:border-green-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden">
+              <div 
+                onClick={() => setSelectedInsight('performer')}
+                className="group relative p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 hover:border-green-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden"
+              >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-green-400/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
                 <div className="relative">
                   <div className="flex items-center justify-between mb-2">
@@ -418,7 +424,10 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
               </div>
 
               {/* Peak Hour Card */}
-              <div className="group relative p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-200 hover:border-blue-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden">
+              <div 
+                onClick={() => setSelectedInsight('peak')}
+                className="group relative p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-200 hover:border-blue-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden"
+              >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-400/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
                 <div className="relative">
                   <div className="flex items-center justify-between mb-2">
@@ -446,7 +455,10 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
             {/* Bottom Row - System Status */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* System Uptime Card */}
-              <div className="group relative p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200 hover:border-purple-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden">
+              <div 
+                onClick={() => setSelectedInsight('uptime')}
+                className="group relative p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200 hover:border-purple-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden"
+              >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-purple-400/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
                 <div className="relative">
                   <div className="flex items-center justify-between mb-2">
@@ -468,7 +480,10 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
               </div>
 
               {/* Data Sync Card */}
-              <div className="group relative p-4 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border border-orange-200 hover:border-orange-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden">
+              <div 
+                onClick={() => setSelectedInsight('sync')}
+                className="group relative p-4 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border border-orange-200 hover:border-orange-400 transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden"
+              >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
                 <div className="relative">
                   <div className="flex items-center justify-between mb-2">
@@ -625,6 +640,309 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
           </CardContent>
         </Card>
       </div>
+
+      {/* Performance Insight Detail Dialogs */}
+      <Dialog open={selectedInsight !== null} onOpenChange={() => setSelectedInsight(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          {selectedInsight === 'performer' && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-3 bg-green-500 rounded-xl shadow-lg">
+                    <Trophy className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-2xl">Best Performer Details</DialogTitle>
+                    <DialogDescription>In-depth performance analysis</DialogDescription>
+                  </div>
+                </div>
+              </DialogHeader>
+              <div className="space-y-6 mt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Card className="bg-green-50 border-green-200">
+                    <CardContent className="pt-6">
+                      <div className="text-sm text-green-600 mb-1">Employee Name</div>
+                      <div className="text-2xl font-bold text-green-900">{demoMetrics.bestPerformer}</div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-green-50 border-green-200">
+                    <CardContent className="pt-6">
+                      <div className="text-sm text-green-600 mb-1">Total Sales</div>
+                      <div className="text-2xl font-bold text-green-900">$127,500</div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Monthly Performance</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Devices Sold</span>
+                      <span className="font-bold">347 units</span>
+                    </div>
+                    <Progress value={92} className="h-2" />
+                    
+                    <div className="flex justify-between items-center mt-4">
+                      <span className="text-sm">Accessories Sold</span>
+                      <span className="font-bold">892 items</span>
+                    </div>
+                    <Progress value={88} className="h-2" />
+                    
+                    <div className="flex justify-between items-center mt-4">
+                      <span className="text-sm">Plan Activations</span>
+                      <span className="font-bold">234 plans</span>
+                    </div>
+                    <Progress value={95} className="h-2" />
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-green-50 to-emerald-50">
+                  <CardContent className="pt-6">
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <div className="text-3xl font-bold text-green-600">+24%</div>
+                        <div className="text-xs text-green-700 mt-1">vs Last Month</div>
+                      </div>
+                      <div>
+                        <div className="text-3xl font-bold text-green-600">4.9</div>
+                        <div className="text-xs text-green-700 mt-1">Customer Rating</div>
+                      </div>
+                      <div>
+                        <div className="text-3xl font-bold text-green-600">#1</div>
+                        <div className="text-xs text-green-700 mt-1">Store Ranking</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          )}
+
+          {selectedInsight === 'peak' && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-3 bg-blue-500 rounded-xl shadow-lg">
+                    <Flame className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-2xl">Peak Hour Analysis</DialogTitle>
+                    <DialogDescription>Traffic and sales patterns</DialogDescription>
+                  </div>
+                </div>
+              </DialogHeader>
+              <div className="space-y-6 mt-4">
+                <Card className="bg-gradient-to-br from-blue-50 to-cyan-50">
+                  <CardContent className="pt-6">
+                    <div className="text-center mb-4">
+                      <div className="text-4xl font-bold text-blue-900">{demoMetrics.peakHour}</div>
+                      <div className="text-sm text-blue-600 mt-1">Highest Sales Volume</div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <div className="text-2xl font-bold text-blue-600">347</div>
+                        <div className="text-xs text-blue-700">Transactions</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-blue-600">$42.3K</div>
+                        <div className="text-xs text-blue-700">Revenue</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-blue-600">890</div>
+                        <div className="text-xs text-blue-700">Customers</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Hourly Breakdown</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {[
+                      { hour: '10:00 AM - 11:00 AM', transactions: 45, revenue: '$5,200' },
+                      { hour: '11:00 AM - 12:00 PM', transactions: 62, revenue: '$7,800' },
+                      { hour: '12:00 PM - 1:00 PM', transactions: 89, revenue: '$12,400' },
+                      { hour: '1:00 PM - 2:00 PM', transactions: 151, revenue: '$17,100', peak: true },
+                    ].map((slot, idx) => (
+                      <div key={idx} className={`p-3 rounded-lg ${slot.peak ? 'bg-blue-100 border-2 border-blue-400' : 'bg-gray-50'}`}>
+                        <div className="flex justify-between items-center">
+                          <div className="flex-1">
+                            <div className="font-semibold">{slot.hour}</div>
+                            <div className="text-sm text-gray-600">{slot.transactions} transactions</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-bold text-lg">{slot.revenue}</div>
+                            {slot.peak && <Badge className="mt-1 bg-blue-500">Peak</Badge>}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          )}
+
+          {selectedInsight === 'uptime' && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-3 bg-purple-500 rounded-xl shadow-lg">
+                    <Shield className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-2xl">System Uptime Report</DialogTitle>
+                    <DialogDescription>Reliability and performance metrics</DialogDescription>
+                  </div>
+                </div>
+              </DialogHeader>
+              <div className="space-y-6 mt-4">
+                <Card className="bg-gradient-to-br from-purple-50 to-pink-50">
+                  <CardContent className="pt-6">
+                    <div className="text-center mb-4">
+                      <div className="text-5xl font-bold text-purple-900">{demoMetrics.systemUptime}%</div>
+                      <div className="text-sm text-purple-600 mt-1">30-Day Average</div>
+                      <Badge className="mt-3 bg-purple-500 text-white">Exceptional</Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-center">
+                        <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                        <div className="text-2xl font-bold">720</div>
+                        <div className="text-sm text-gray-600">Hours Online</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="text-center">
+                        <XCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
+                        <div className="text-2xl font-bold">0.7</div>
+                        <div className="text-sm text-gray-600">Hours Downtime</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>System Health</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm">Database Performance</span>
+                        <span className="text-sm font-bold">98.5%</span>
+                      </div>
+                      <Progress value={98.5} className="h-2" />
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm">API Response Time</span>
+                        <span className="text-sm font-bold">45ms avg</span>
+                      </div>
+                      <Progress value={95} className="h-2" />
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm">Server Load</span>
+                        <span className="text-sm font-bold">34%</span>
+                      </div>
+                      <Progress value={34} className="h-2" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          )}
+
+          {selectedInsight === 'sync' && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-3 bg-orange-500 rounded-xl shadow-lg">
+                    <Zap className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-2xl">Data Synchronization</DialogTitle>
+                    <DialogDescription>Real-time sync status across all locations</DialogDescription>
+                  </div>
+                </div>
+              </DialogHeader>
+              <div className="space-y-6 mt-4">
+                <Card className="bg-gradient-to-br from-orange-50 to-amber-50">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <div className="text-3xl font-bold text-orange-900">{demoMetrics.dataSyncStatus}</div>
+                        <div className="text-sm text-orange-600 mt-1">All Systems Synchronized</div>
+                      </div>
+                      <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
+                        <CheckCircle className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                    <Progress value={100} className="h-2" />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Store Sync Status</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {[
+                      { store: 'Post Oak Store', status: 'Synced', lastSync: '2 sec ago', icon: CheckCircle, color: 'text-green-500' },
+                      { store: 'Fondren Store', status: 'Synced', lastSync: '5 sec ago', icon: CheckCircle, color: 'text-green-500' },
+                      { store: 'West Bellfort Store', status: 'Synced', lastSync: '3 sec ago', icon: CheckCircle, color: 'text-green-500' },
+                      { store: 'El Campo Store', status: 'Synced', lastSync: '8 sec ago', icon: CheckCircle, color: 'text-green-500' },
+                    ].map((store, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <store.icon className={`w-5 h-5 ${store.color}`} />
+                          <div>
+                            <div className="font-semibold">{store.store}</div>
+                            <div className="text-xs text-gray-600">{store.lastSync}</div>
+                          </div>
+                        </div>
+                        <Badge className="bg-green-500 text-white">{store.status}</Badge>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <Card>
+                    <CardContent className="pt-6 text-center">
+                      <div className="text-2xl font-bold text-orange-600">2.3s</div>
+                      <div className="text-xs text-gray-600 mt-1">Avg Sync Time</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-6 text-center">
+                      <div className="text-2xl font-bold text-orange-600">12.5K</div>
+                      <div className="text-xs text-gray-600 mt-1">Records Today</div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent className="pt-6 text-center">
+                      <div className="text-2xl font-bold text-orange-600">0</div>
+                      <div className="text-xs text-gray-600 mt-1">Sync Errors</div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
