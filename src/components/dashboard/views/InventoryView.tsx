@@ -1,15 +1,16 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
   Package, 
   Plus, 
@@ -47,14 +48,69 @@ import {
   Share,
   Archive,
   Star,
-  StarOff
+  StarOff,
+  Brain,
+  Sparkles,
+  MapPin,
+  Boxes,
+  ShoppingCart,
+  Truck,
+  LineChart,
+  PieChart,
+  Radio,
+  Waves,
+  Cpu,
+  Database,
+  Layers,
+  Grid3x3,
+  PackageCheck,
+  PackageX,
+  PackagePlus,
+  PackageMinus,
+  PackageSearch,
+  Warehouse,
+  Store,
+  Building2,
+  Users,
+  UserCheck,
+  UserX,
+  Mail,
+  Phone,
+  Globe,
+  Link2,
+  ExternalLink,
+  FileText,
+  Image as ImageIcon,
+  Tag,
+  Hash,
+  Percent,
+  Calculator,
+  CreditCard,
+  Wallet,
+  Receipt,
+  TrendingUpIcon,
+  ArrowUpRight,
+  ArrowDownRight,
+  ArrowRight,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
+  Info,
+  HelpCircle,
+  AlertOctagon,
+  Flame,
+  Snowflake,
+  Wind,
+  Sun,
+  Moon,
+  CloudRain,
+  Zap as ZapIcon
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-
-type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings';
+import { cn } from "@/lib/utils";
 
 interface InventoryViewProps {
-  onViewChange?: (view: ViewType) => void;
+  onViewChange?: (view: string) => void;
 }
 
 interface InventoryItem {
@@ -70,13 +126,13 @@ interface InventoryItem {
   price: number;
   status: 'in_stock' | 'low_stock' | 'out_of_stock' | 'discontinued';
   storeCode: string;
+  storeName: string;
   supplier: string;
   lastRestocked: string;
   totalSold: number;
   totalRevenue: number;
   fraudRisk: number;
   alerts: number;
-  // Advanced fields
   lifecycle: 'introduction' | 'growth' | 'maturity' | 'decline';
   abcCategory: 'A' | 'B' | 'C';
   turnoverRate: number;
@@ -97,705 +153,420 @@ interface InventoryItem {
   returnRate: number;
   profitMargin: number;
   roi: number;
+  velocity: number;
+  seasonality: 'high' | 'medium' | 'low';
+  aiRecommendation: string;
+  predictedStockout: number;
+  optimalPrice: number;
+  competitorPrice: number;
+  marketDemand: number;
+  trendScore: number;
 }
 
-const mockInventoryItems: InventoryItem[] = [
-  {
-    id: "1",
-    name: "iPhone 15 Pro Max 256GB",
-    sku: "IPH15PM-256-TIT",
-    category: "Smartphones",
-    brand: "Apple",
-    currentStock: 12,
-    minStock: 5,
-    maxStock: 50,
-    cost: 999,
-    price: 1199,
-    status: "in_stock",
-    storeCode: "DT001",
-    supplier: "Apple Inc.",
-    lastRestocked: "2024-01-10",
-    totalSold: 45,
-    totalRevenue: 53955,
-    fraudRisk: 15,
-    alerts: 1,
-    lifecycle: "growth",
-    abcCategory: "A",
-    turnoverRate: 3.75,
-    demandForecast: 18,
-    shrinkageRate: 2.1,
-    securityLevel: "high",
-    autoReorder: true,
-    lastAudit: "2024-01-15",
-    location: "A1-B2-C3",
-    weight: 0.221,
-    dimensions: "159.9 x 76.7 x 8.25 mm",
-    tags: ["premium", "5G", "camera"],
-    notes: "High-demand item, monitor closely",
-    images: ["iphone15pm.jpg"],
-    warrantyPeriod: 12,
-    returnRate: 1.2,
-    profitMargin: 20.0,
-    roi: 15.8
-  },
-  {
-    id: "2",
-    name: "Samsung Galaxy S24 Ultra 512GB",
-    sku: "SGS24U-512-BLK",
-    category: "Smartphones",
-    brand: "Samsung",
-    currentStock: 3,
-    minStock: 5,
-    maxStock: 30,
-    cost: 899,
-    price: 1099,
-    status: "low_stock",
-    storeCode: "DT001",
-    supplier: "Samsung Electronics",
-    lastRestocked: "2024-01-05",
-    totalSold: 28,
-    totalRevenue: 30772,
-    fraudRisk: 25,
-    alerts: 1,
-    lifecycle: "maturity",
-    abcCategory: "A",
-    turnoverRate: 9.33,
-    demandForecast: 8,
-    shrinkageRate: 3.5,
-    securityLevel: "high",
-    autoReorder: true,
-    lastAudit: "2024-01-12",
-    location: "A1-B2-C4",
-    weight: 0.232,
-    dimensions: "162.3 x 79.0 x 8.6 mm",
-    tags: ["premium", "5G", "S-Pen"],
-    notes: "Low stock alert triggered",
-    images: ["sgs24u.jpg"],
-    warrantyPeriod: 12,
-    returnRate: 2.1,
-    profitMargin: 22.3,
-    roi: 18.2
-  },
-  {
-    id: "3",
-    name: "AirPods Pro 2nd Gen",
-    sku: "APP2-WHT",
-    category: "Audio",
-    brand: "Apple",
-    currentStock: 0,
-    minStock: 10,
-    maxStock: 100,
-    cost: 199,
-    price: 249,
-    status: "out_of_stock",
-    storeCode: "MK002",
-    supplier: "Apple Inc.",
-    lastRestocked: "2024-01-08",
-    totalSold: 156,
-    totalRevenue: 38844,
-    fraudRisk: 5,
-    alerts: 1,
-    lifecycle: "maturity",
-    abcCategory: "B",
-    turnoverRate: 15.6,
-    demandForecast: 25,
-    shrinkageRate: 1.8,
-    securityLevel: "medium",
-    autoReorder: true,
-    lastAudit: "2024-01-10",
-    location: "B1-C2-D1",
-    weight: 0.056,
-    dimensions: "60.9 x 45.2 x 21.7 mm",
-    tags: ["wireless", "noise-cancelling"],
-    notes: "Out of stock - reorder needed",
-    images: ["airpodspro2.jpg"],
-    warrantyPeriod: 12,
-    returnRate: 0.8,
-    profitMargin: 25.1,
-    roi: 22.4
+// Generate advanced mock data
+const generateMockInventory = (): InventoryItem[] => {
+  const stores = [
+    { code: 'ST001', name: 'Post Oak' },
+    { code: 'ST002', name: 'Fondren' },
+    { code: 'ST003', name: 'West Bellfort' },
+    { code: 'ST004', name: 'El Campo' },
+    { code: 'ST005', name: 'Galleria' },
+    { code: 'ST006', name: 'Woodlands' },
+    { code: 'ST007', name: 'Katy' },
+    { code: 'ST008', name: 'Pearland' }
+  ];
+
+  const categories = ['Smartphones', 'Tablets', 'Accessories', 'Wearables', 'Audio', 'Computing'];
+  const brands = ['Apple', 'Samsung', 'Google', 'OnePlus', 'Sony', 'LG', 'Motorola'];
+  const suppliers = ['Tech Supply Co', 'Global Electronics', 'Premium Distributors', 'Direct Import LLC'];
+  const lifecycles: Array<'introduction' | 'growth' | 'maturity' | 'decline'> = ['introduction', 'growth', 'maturity', 'decline'];
+  const abcCategories: Array<'A' | 'B' | 'C'> = ['A', 'B', 'C'];
+  const securityLevels: Array<'low' | 'medium' | 'high'> = ['low', 'medium', 'high'];
+  const seasonalities: Array<'high' | 'medium' | 'low'> = ['high', 'medium', 'low'];
+  const statuses: Array<'in_stock' | 'low_stock' | 'out_of_stock' | 'discontinued'> = ['in_stock', 'low_stock', 'out_of_stock', 'discontinued'];
+
+  const items: InventoryItem[] = [];
+
+  for (let i = 0; i < 150; i++) {
+    const store = stores[Math.floor(Math.random() * stores.length)];
+    const category = categories[Math.floor(Math.random() * categories.length)];
+    const brand = brands[Math.floor(Math.random() * brands.length)];
+    const currentStock = Math.floor(Math.random() * 200);
+    const minStock = Math.floor(Math.random() * 20) + 10;
+    const maxStock = minStock + Math.floor(Math.random() * 100) + 50;
+    const cost = Math.floor(Math.random() * 800) + 50;
+    const price = cost * (1.2 + Math.random() * 0.6);
+    const totalSold = Math.floor(Math.random() * 500);
+    const velocity = Math.floor(Math.random() * 100);
+    const turnoverRate = Math.random() * 12;
+    const shrinkageRate = Math.random() * 5;
+    const returnRate = Math.random() * 15;
+    const profitMargin = ((price - cost) / price) * 100;
+    const roi = ((price - cost) / cost) * 100;
+
+    let status: 'in_stock' | 'low_stock' | 'out_of_stock' | 'discontinued';
+    if (currentStock === 0) status = 'out_of_stock';
+    else if (currentStock < minStock) status = 'low_stock';
+    else status = 'in_stock';
+
+    items.push({
+      id: `INV-${String(i + 1000).padStart(5, '0')}`,
+      name: `${brand} ${category} ${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${Math.floor(Math.random() * 99)}`,
+      sku: `SKU-${brand.substring(0, 3).toUpperCase()}-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`,
+      category,
+      brand,
+      currentStock,
+      minStock,
+      maxStock,
+      cost,
+      price,
+      status,
+      storeCode: store.code,
+      storeName: store.name,
+      supplier: suppliers[Math.floor(Math.random() * suppliers.length)],
+      lastRestocked: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+      totalSold,
+      totalRevenue: totalSold * price,
+      fraudRisk: Math.floor(Math.random() * 100),
+      alerts: Math.floor(Math.random() * 5),
+      lifecycle: lifecycles[Math.floor(Math.random() * lifecycles.length)],
+      abcCategory: abcCategories[Math.floor(Math.random() * abcCategories.length)],
+      turnoverRate,
+      demandForecast: Math.floor(Math.random() * 200) + 50,
+      shrinkageRate,
+      securityLevel: securityLevels[Math.floor(Math.random() * securityLevels.length)],
+      autoReorder: Math.random() > 0.3,
+      lastAudit: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString(),
+      expiryDate: Math.random() > 0.7 ? new Date(Date.now() + Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString() : undefined,
+      batchNumber: `BATCH-${String(Math.floor(Math.random() * 99999)).padStart(5, '0')}`,
+      location: `${String.fromCharCode(65 + Math.floor(Math.random() * 5))}-${Math.floor(Math.random() * 20) + 1}-${Math.floor(Math.random() * 10) + 1}`,
+      weight: Math.random() * 2,
+      dimensions: `${Math.floor(Math.random() * 20) + 5}x${Math.floor(Math.random() * 15) + 5}x${Math.floor(Math.random() * 10) + 2}cm`,
+      tags: ['Popular', 'Best Seller', 'New Arrival', 'Limited Stock', 'Premium'].slice(0, Math.floor(Math.random() * 3) + 1),
+      notes: Math.random() > 0.7 ? 'Handle with care - fragile item' : '',
+      images: [],
+      warrantyPeriod: [12, 24, 36, 48][Math.floor(Math.random() * 4)],
+      returnRate,
+      profitMargin,
+      roi,
+      velocity,
+      seasonality: seasonalities[Math.floor(Math.random() * seasonalities.length)],
+      aiRecommendation: ['Increase stock', 'Reduce price', 'Promote heavily', 'Consider clearance', 'Maintain current'][Math.floor(Math.random() * 5)],
+      predictedStockout: Math.floor(Math.random() * 30),
+      optimalPrice: price * (0.9 + Math.random() * 0.2),
+      competitorPrice: price * (0.85 + Math.random() * 0.3),
+      marketDemand: Math.floor(Math.random() * 100),
+      trendScore: Math.floor(Math.random() * 100)
+    });
   }
-];
+
+  return items.sort((a, b) => b.velocity - a.velocity);
+};
 
 export const InventoryView = ({ onViewChange }: InventoryViewProps) => {
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>(mockInventoryItems);
+  const [items, setItems] = useState<InventoryItem[]>(generateMockInventory());
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterStore, setFilterStore] = useState("all");
-  const [filterLifecycle, setFilterLifecycle] = useState("all");
-  const [filterABC, setFilterABC] = useState("all");
-  const [sortBy, setSortBy] = useState("name");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<"table" | "cards">("table");
+  const [sortBy, setSortBy] = useState<keyof InventoryItem>("velocity");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  const [realTimeMode, setRealTimeMode] = useState(true);
 
-  const [newItem, setNewItem] = useState<Partial<InventoryItem>>({
-    name: "",
-    sku: "",
-    category: "",
-    brand: "",
-    currentStock: 0,
-    minStock: 0,
-    maxStock: 0,
-    cost: 0,
-    price: 0,
-    status: "in_stock",
-    storeCode: "",
-    supplier: "",
-    lifecycle: "introduction",
-    abcCategory: "C",
-    securityLevel: "medium",
-    autoReorder: false,
-    location: "",
-    weight: 0,
-    dimensions: "",
-    tags: [],
-    notes: "",
-    images: [],
-    warrantyPeriod: 12,
-    returnRate: 0,
-    profitMargin: 0,
-    roi: 0
-  });
+  // Real-time updates simulation
+  useEffect(() => {
+    if (!realTimeMode) return;
 
-  const filteredAndSortedItems = useMemo(() => {
-    let filtered = inventoryItems.filter(item => {
-      const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           item.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           item.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-      const matchesCategory = filterCategory === "all" || item.category === filterCategory;
-      const matchesStatus = filterStatus === "all" || item.status === filterStatus;
-      const matchesStore = filterStore === "all" || item.storeCode === filterStore;
-      const matchesLifecycle = filterLifecycle === "all" || item.lifecycle === filterLifecycle;
-      const matchesABC = filterABC === "all" || item.abcCategory === filterABC;
-      
-      return matchesSearch && matchesCategory && matchesStatus && matchesStore && matchesLifecycle && matchesABC;
-    });
+    const interval = setInterval(() => {
+      setItems(prev => prev.map(item => ({
+        ...item,
+        currentStock: Math.max(0, item.currentStock + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3)),
+        velocity: Math.max(0, item.velocity + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 5))
+      })));
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [realTimeMode]);
+
+  // Filter and sort items
+  const filteredItems = useMemo(() => {
+    let filtered = items;
+
+    if (searchTerm) {
+      filtered = filtered.filter(item =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.brand.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (filterCategory !== "all") {
+      filtered = filtered.filter(item => item.category === filterCategory);
+    }
+
+    if (filterStatus !== "all") {
+      filtered = filtered.filter(item => item.status === filterStatus);
+    }
+
+    if (filterStore !== "all") {
+      filtered = filtered.filter(item => item.storeCode === filterStore);
+    }
 
     return filtered.sort((a, b) => {
-      let aValue: any = a[sortBy as keyof InventoryItem];
-      let bValue: any = b[sortBy as keyof InventoryItem];
+      const aValue = a[sortBy];
+      const bValue = b[sortBy];
       
-      if (typeof aValue === 'string') {
-        aValue = aValue.toLowerCase();
-        bValue = bValue.toLowerCase();
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
       }
       
-      if (sortOrder === "asc") {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortOrder === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
       }
+      
+      return 0;
     });
-  }, [inventoryItems, searchTerm, filterCategory, filterStatus, filterStore, filterLifecycle, filterABC, sortBy, sortOrder]);
+  }, [items, searchTerm, filterCategory, filterStatus, filterStore, sortBy, sortOrder]);
 
-  const stats = {
-    totalItems: inventoryItems.length,
-    totalValue: inventoryItems.reduce((sum, item) => sum + (item.currentStock * item.cost), 0),
-    lowStockItems: inventoryItems.filter(item => item.status === 'low_stock').length,
-    outOfStockItems: inventoryItems.filter(item => item.status === 'out_of_stock').length,
-    highRiskItems: inventoryItems.filter(item => item.fraudRisk > 20).length,
-    totalRevenue: inventoryItems.reduce((sum, item) => sum + item.totalRevenue, 0),
-    averageTurnover: inventoryItems.reduce((sum, item) => sum + item.turnoverRate, 0) / inventoryItems.length,
-    shrinkageRate: inventoryItems.reduce((sum, item) => sum + item.shrinkageRate, 0) / inventoryItems.length
-  };
+  // Calculate metrics
+  const metrics = useMemo(() => {
+    const totalValue = filteredItems.reduce((sum, item) => sum + (item.currentStock * item.price), 0);
+    const totalItems = filteredItems.reduce((sum, item) => sum + item.currentStock, 0);
+    const lowStockItems = filteredItems.filter(item => item.status === 'low_stock' || item.status === 'out_of_stock').length;
+    const avgTurnover = filteredItems.reduce((sum, item) => sum + item.turnoverRate, 0) / filteredItems.length;
+    const totalRevenue = filteredItems.reduce((sum, item) => sum + item.totalRevenue, 0);
+    const avgProfit = filteredItems.reduce((sum, item) => sum + item.profitMargin, 0) / filteredItems.length;
+    const highRiskItems = filteredItems.filter(item => item.fraudRisk > 70).length;
+    const aiRecommendations = filteredItems.filter(item => item.aiRecommendation).length;
 
-  const handleAddItem = () => {
-    if (!newItem.name || !newItem.sku) {
-      toast({
-        title: "Error",
-        description: "Name and SKU are required",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const item: InventoryItem = {
-      id: Date.now().toString(),
-      name: newItem.name!,
-      sku: newItem.sku!,
-      category: newItem.category!,
-      brand: newItem.brand!,
-      currentStock: newItem.currentStock!,
-      minStock: newItem.minStock!,
-      maxStock: newItem.maxStock!,
-      cost: newItem.cost!,
-      price: newItem.price!,
-      status: newItem.status!,
-      storeCode: newItem.storeCode!,
-      supplier: newItem.supplier!,
-      lastRestocked: new Date().toISOString().split('T')[0],
-      totalSold: 0,
-      totalRevenue: 0,
-      fraudRisk: 0,
-      alerts: 0,
-      lifecycle: newItem.lifecycle!,
-      abcCategory: newItem.abcCategory!,
-      turnoverRate: 0,
-      demandForecast: 0,
-      shrinkageRate: 0,
-      securityLevel: newItem.securityLevel!,
-      autoReorder: newItem.autoReorder!,
-      lastAudit: new Date().toISOString().split('T')[0],
-      location: newItem.location!,
-      weight: newItem.weight!,
-      dimensions: newItem.dimensions!,
-      tags: newItem.tags!,
-      notes: newItem.notes!,
-      images: newItem.images!,
-      warrantyPeriod: newItem.warrantyPeriod!,
-      returnRate: 0,
-      profitMargin: ((newItem.price! - newItem.cost!) / newItem.price!) * 100,
-      roi: 0
+    return {
+      totalValue,
+      totalItems,
+      lowStockItems,
+      avgTurnover,
+      totalRevenue,
+      avgProfit,
+      highRiskItems,
+      aiRecommendations
     };
-
-    setInventoryItems([...inventoryItems, item]);
-    setNewItem({
-      name: "",
-      sku: "",
-      category: "",
-      brand: "",
-      currentStock: 0,
-      minStock: 0,
-      maxStock: 0,
-      cost: 0,
-      price: 0,
-      status: "in_stock",
-      storeCode: "",
-      supplier: "",
-      lifecycle: "introduction",
-      abcCategory: "C",
-      securityLevel: "medium",
-      autoReorder: false,
-      location: "",
-      weight: 0,
-      dimensions: "",
-      tags: [],
-      notes: "",
-      images: [],
-      warrantyPeriod: 12,
-      returnRate: 0,
-      profitMargin: 0,
-      roi: 0
-    });
-    setIsAddDialogOpen(false);
-    
-    toast({
-      title: "Success",
-      description: "Inventory item added successfully"
-    });
-  };
-
-  const handleBulkAction = (action: string) => {
-    if (selectedItems.length === 0) {
-      toast({
-        title: "No items selected",
-        description: "Please select items to perform bulk actions",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    switch (action) {
-      case 'reorder':
-        toast({
-          title: "Bulk Reorder",
-          description: `Reordering ${selectedItems.length} items`
-        });
-        break;
-      case 'audit':
-        toast({
-          title: "Bulk Audit",
-          description: `Auditing ${selectedItems.length} items`
-        });
-        break;
-      case 'archive':
-        toast({
-          title: "Bulk Archive",
-          description: `Archiving ${selectedItems.length} items`
-        });
-        break;
-    }
-    setSelectedItems([]);
-  };
+  }, [filteredItems]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'in_stock': return 'bg-green-100 text-green-800';
-      case 'low_stock': return 'bg-yellow-100 text-yellow-800';
-      case 'out_of_stock': return 'bg-red-100 text-red-800';
-      case 'discontinued': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'in_stock': return 'bg-green-100 text-green-800 border-green-300';
+      case 'low_stock': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case 'out_of_stock': return 'bg-red-100 text-red-800 border-red-300';
+      case 'discontinued': return 'bg-gray-100 text-gray-800 border-gray-300';
+      default: return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   };
 
-  const getLifecycleColor = (lifecycle: string) => {
+  const getLifecycleIcon = (lifecycle: string) => {
     switch (lifecycle) {
-      case 'introduction': return 'bg-blue-100 text-blue-800';
-      case 'growth': return 'bg-green-100 text-green-800';
-      case 'maturity': return 'bg-yellow-100 text-yellow-800';
-      case 'decline': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'introduction': return <Sparkles className="w-4 h-4 text-blue-500" />;
+      case 'growth': return <TrendingUp className="w-4 h-4 text-green-500" />;
+      case 'maturity': return <Target className="w-4 h-4 text-purple-500" />;
+      case 'decline': return <TrendingDown className="w-4 h-4 text-red-500" />;
+      default: return <Activity className="w-4 h-4" />;
     }
   };
 
-  const getABCCategoryColor = (category: string) => {
-    switch (category) {
-      case 'A': return 'bg-red-100 text-red-800';
-      case 'B': return 'bg-yellow-100 text-yellow-800';
-      case 'C': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
   };
 
-  const getSecurityLevelColor = (level: string) => {
-    switch (level) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   return (
-    <div className="p-6 space-y-6 backdrop-blur-glass">
+    <div className="p-6 space-y-6 bg-background/80 backdrop-blur-xl rounded-lg shadow-lg border border-border/50">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Advanced Inventory Management</h1>
-          <p className="text-muted-foreground">
-            Comprehensive inventory tracking, lifecycle management, and loss prevention
+          <h1 className="text-3xl font-bold tracking-tight flex items-center space-x-3">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+              <Warehouse className="w-8 h-8 text-purple-500" />
+            </div>
+            <span>Advanced Inventory Management</span>
+            <Badge variant="outline" className="animate-pulse bg-gradient-to-r from-purple-500/20 to-pink-500/20">
+              <Brain className="w-3 h-3 mr-1" />
+              AI-Powered
+            </Badge>
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Next-generation inventory control with predictive analytics and real-time optimization
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setRealTimeMode(!realTimeMode)}
+            className={cn("btn-glass", realTimeMode && "animate-pulse border-green-500")}
+          >
+            <Radio className="w-4 h-4 mr-2" />
+            {realTimeMode ? 'Live Mode' : 'Paused'}
+          </Button>
+          <Button variant="outline" size="sm" className="btn-glass">
+            <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
-          <Button variant="outline" size="sm">
-            <Upload className="h-4 w-4 mr-2" />
-            Import
+          <Button variant="default" size="sm" className="bg-gradient-to-r from-purple-500 to-pink-500">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Item
           </Button>
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Item
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Add New Inventory Item</DialogTitle>
-                <DialogDescription>
-                  Add a new item to your inventory with comprehensive tracking
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Product Name *</Label>
-                  <Input
-                    id="name"
-                    value={newItem.name}
-                    onChange={(e) => setNewItem({...newItem, name: e.target.value})}
-                    placeholder="Enter product name"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="sku">SKU *</Label>
-                  <Input
-                    id="sku"
-                    value={newItem.sku}
-                    onChange={(e) => setNewItem({...newItem, sku: e.target.value})}
-                    placeholder="Enter SKU"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category</Label>
-                  <Select value={newItem.category} onValueChange={(value) => setNewItem({...newItem, category: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Smartphones">Smartphones</SelectItem>
-                      <SelectItem value="Audio">Audio</SelectItem>
-                      <SelectItem value="Computers">Computers</SelectItem>
-                      <SelectItem value="Accessories">Accessories</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="brand">Brand</Label>
-                  <Input
-                    id="brand"
-                    value={newItem.brand}
-                    onChange={(e) => setNewItem({...newItem, brand: e.target.value})}
-                    placeholder="Enter brand"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="currentStock">Current Stock</Label>
-                  <Input
-                    id="currentStock"
-                    type="number"
-                    value={newItem.currentStock}
-                    onChange={(e) => setNewItem({...newItem, currentStock: parseInt(e.target.value) || 0})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="minStock">Min Stock</Label>
-                  <Input
-                    id="minStock"
-                    type="number"
-                    value={newItem.minStock}
-                    onChange={(e) => setNewItem({...newItem, minStock: parseInt(e.target.value) || 0})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="maxStock">Max Stock</Label>
-                  <Input
-                    id="maxStock"
-                    type="number"
-                    value={newItem.maxStock}
-                    onChange={(e) => setNewItem({...newItem, maxStock: parseInt(e.target.value) || 0})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cost">Cost ($)</Label>
-                  <Input
-                    id="cost"
-                    type="number"
-                    value={newItem.cost}
-                    onChange={(e) => setNewItem({...newItem, cost: parseFloat(e.target.value) || 0})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="price">Price ($)</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={newItem.price}
-                    onChange={(e) => setNewItem({...newItem, price: parseFloat(e.target.value) || 0})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="storeCode">Store Code</Label>
-                  <Input
-                    id="storeCode"
-                    value={newItem.storeCode}
-                    onChange={(e) => setNewItem({...newItem, storeCode: e.target.value})}
-                    placeholder="Enter store code"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="supplier">Supplier</Label>
-                  <Input
-                    id="supplier"
-                    value={newItem.supplier}
-                    onChange={(e) => setNewItem({...newItem, supplier: e.target.value})}
-                    placeholder="Enter supplier"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lifecycle">Product Lifecycle</Label>
-                  <Select value={newItem.lifecycle} onValueChange={(value) => setNewItem({...newItem, lifecycle: value as any})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select lifecycle" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="introduction">Introduction</SelectItem>
-                      <SelectItem value="growth">Growth</SelectItem>
-                      <SelectItem value="maturity">Maturity</SelectItem>
-                      <SelectItem value="decline">Decline</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="abcCategory">ABC Category</Label>
-                  <Select value={newItem.abcCategory} onValueChange={(value) => setNewItem({...newItem, abcCategory: value as any})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select ABC category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="A">A (High Value)</SelectItem>
-                      <SelectItem value="B">B (Medium Value)</SelectItem>
-                      <SelectItem value="C">C (Low Value)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="securityLevel">Security Level</Label>
-                  <Select value={newItem.securityLevel} onValueChange={(value) => setNewItem({...newItem, securityLevel: value as any})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select security level" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="location">Location</Label>
-                  <Input
-                    id="location"
-                    value={newItem.location}
-                    onChange={(e) => setNewItem({...newItem, location: e.target.value})}
-                    placeholder="e.g., A1-B2-C3"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="weight">Weight (kg)</Label>
-                  <Input
-                    id="weight"
-                    type="number"
-                    step="0.001"
-                    value={newItem.weight}
-                    onChange={(e) => setNewItem({...newItem, weight: parseFloat(e.target.value) || 0})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dimensions">Dimensions</Label>
-                  <Input
-                    id="dimensions"
-                    value={newItem.dimensions}
-                    onChange={(e) => setNewItem({...newItem, dimensions: e.target.value})}
-                    placeholder="e.g., 159.9 x 76.7 x 8.25 mm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="warrantyPeriod">Warranty Period (months)</Label>
-                  <Input
-                    id="warrantyPeriod"
-                    type="number"
-                    value={newItem.warrantyPeriod}
-                    onChange={(e) => setNewItem({...newItem, warrantyPeriod: parseInt(e.target.value) || 12})}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="notes">Notes</Label>
-                  <Input
-                    id="notes"
-                    value={newItem.notes}
-                    onChange={(e) => setNewItem({...newItem, notes: e.target.value})}
-                    placeholder="Additional notes"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="autoReorder"
-                      checked={newItem.autoReorder}
-                      onCheckedChange={(checked) => setNewItem({...newItem, autoReorder: checked})}
-                    />
-                    <Label htmlFor="autoReorder">Auto Reorder</Label>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleAddItem}>
-                  Add Item
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
 
-      {/* Advanced Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Items</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalItems}</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.lowStockItems} low stock, {stats.outOfStockItems} out of stock
-            </p>
+      {/* Advanced Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="card-premium hover:shadow-2xl transition-all duration-300 border-2 border-purple-500/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Inventory Value</p>
+                <p className="text-3xl font-bold mt-2">{formatCurrency(metrics.totalValue)}</p>
+                <div className="flex items-center space-x-2 mt-2">
+                  <Badge variant="secondary" className="badge-glass">
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    +12.5%
+                  </Badge>
+                  <span className="text-xs text-muted-foreground">vs last month</span>
+                </div>
+              </div>
+              <div className="p-4 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+                <DollarSign className="w-8 h-8 text-purple-500" />
+              </div>
+            </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Value</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${stats.totalValue.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              Average: ${(stats.totalValue / stats.totalItems).toFixed(0)} per item
-            </p>
+
+        <Card className="card-premium hover:shadow-2xl transition-all duration-300 border-2 border-blue-500/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Units</p>
+                <p className="text-3xl font-bold mt-2">{metrics.totalItems.toLocaleString()}</p>
+                <div className="flex items-center space-x-2 mt-2">
+                  <Badge variant="secondary" className="badge-glass">
+                    <Package className="w-3 h-3 mr-1" />
+                    {filteredItems.length} SKUs
+                  </Badge>
+                </div>
+              </div>
+              <div className="p-4 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20">
+                <Boxes className="w-8 h-8 text-blue-500" />
+              </div>
+            </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Turnover Rate</CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.averageTurnover.toFixed(1)}x</div>
-            <p className="text-xs text-muted-foreground">
-              {stats.highRiskItems} high-risk items
-            </p>
+
+        <Card className="card-premium hover:shadow-2xl transition-all duration-300 border-2 border-yellow-500/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Low Stock Alerts</p>
+                <p className="text-3xl font-bold mt-2">{metrics.lowStockItems}</p>
+                <div className="flex items-center space-x-2 mt-2">
+                  <Badge variant="destructive" className="badge-glass animate-pulse">
+                    <AlertTriangle className="w-3 h-3 mr-1" />
+                    Needs Attention
+                  </Badge>
+                </div>
+              </div>
+              <div className="p-4 rounded-full bg-gradient-to-br from-yellow-500/20 to-orange-500/20">
+                <AlertCircle className="w-8 h-8 text-yellow-500" />
+              </div>
+            </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Shrinkage Rate</CardTitle>
-            <Shield className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.shrinkageRate.toFixed(1)}%</div>
-            <p className="text-xs text-muted-foreground">
-              Loss prevention monitoring
-            </p>
+
+        <Card className="card-premium hover:shadow-2xl transition-all duration-300 border-2 border-green-500/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Avg Turnover Rate</p>
+                <p className="text-3xl font-bold mt-2">{metrics.avgTurnover.toFixed(1)}x</p>
+                <div className="flex items-center space-x-2 mt-2">
+                  <Badge variant="secondary" className="badge-glass">
+                    <RefreshCw className="w-3 h-3 mr-1" />
+                    Excellent
+                  </Badge>
+                </div>
+              </div>
+              <div className="p-4 rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20">
+                <RotateCcw className="w-8 h-8 text-green-500" />
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Advanced Filters and Controls */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Advanced Inventory Management</CardTitle>
-          <CardDescription>
-            Comprehensive filtering, sorting, and bulk operations
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {/* Search and Filters */}
-            <div className="flex flex-wrap gap-4">
-              <div className="flex-1 min-w-[200px]">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input
-                    placeholder="Search items, SKU, brand, tags..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
+      {/* AI Insights Banner */}
+      <Card className="card-premium border-2 border-purple-500/30 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-blue-500/10">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 rounded-full bg-gradient-to-br from-purple-500/30 to-pink-500/30 animate-pulse">
+                <Brain className="w-6 h-6 text-purple-500" />
               </div>
+              <div>
+                <h3 className="font-bold text-lg">AI-Powered Recommendations Active</h3>
+                <p className="text-sm text-muted-foreground">
+                  {metrics.aiRecommendations} intelligent insights available • Predictive analytics running • Auto-optimization enabled
+                </p>
+              </div>
+            </div>
+            <Button variant="outline" className="btn-glass border-purple-500/50">
+              <Sparkles className="w-4 h-4 mr-2" />
+              View Insights
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Filters and Search */}
+      <Card className="card-premium">
+        <CardContent className="p-6">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Input
+                  placeholder="Search by name, SKU, brand..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 input-glass"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 flex-wrap">
               <Select value={filterCategory} onValueChange={setFilterCategory}>
-                <SelectTrigger className="w-[150px]">
+                <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="Smartphones">Smartphones</SelectItem>
-                  <SelectItem value="Audio">Audio</SelectItem>
-                  <SelectItem value="Computers">Computers</SelectItem>
+                  <SelectItem value="Tablets">Tablets</SelectItem>
                   <SelectItem value="Accessories">Accessories</SelectItem>
+                  <SelectItem value="Wearables">Wearables</SelectItem>
+                  <SelectItem value="Audio">Audio</SelectItem>
+                  <SelectItem value="Computing">Computing</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="w-[150px]">
+                <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -806,277 +577,563 @@ export const InventoryView = ({ onViewChange }: InventoryViewProps) => {
                   <SelectItem value="discontinued">Discontinued</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={filterLifecycle} onValueChange={setFilterLifecycle}>
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Lifecycle" />
+              <Select value={filterStore} onValueChange={setFilterStore}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Store" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Lifecycle</SelectItem>
-                  <SelectItem value="introduction">Introduction</SelectItem>
-                  <SelectItem value="growth">Growth</SelectItem>
-                  <SelectItem value="maturity">Maturity</SelectItem>
-                  <SelectItem value="decline">Decline</SelectItem>
+                  <SelectItem value="all">All Stores</SelectItem>
+                  <SelectItem value="ST001">Post Oak</SelectItem>
+                  <SelectItem value="ST002">Fondren</SelectItem>
+                  <SelectItem value="ST003">West Bellfort</SelectItem>
+                  <SelectItem value="ST004">El Campo</SelectItem>
+                  <SelectItem value="ST005">Galleria</SelectItem>
+                  <SelectItem value="ST006">Woodlands</SelectItem>
+                  <SelectItem value="ST007">Katy</SelectItem>
+                  <SelectItem value="ST008">Pearland</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={filterABC} onValueChange={setFilterABC}>
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="ABC Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All ABC</SelectItem>
-                  <SelectItem value="A">A Category</SelectItem>
-                  <SelectItem value="B">B Category</SelectItem>
-                  <SelectItem value="C">C Category</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Sort and View Controls */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-4">
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-[150px]">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="name">Name</SelectItem>
-                    <SelectItem value="currentStock">Stock</SelectItem>
-                    <SelectItem value="price">Price</SelectItem>
-                    <SelectItem value="turnoverRate">Turnover</SelectItem>
-                    <SelectItem value="fraudRisk">Risk</SelectItem>
-                    <SelectItem value="lastRestocked">Last Restocked</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center space-x-2 border border-border/50 rounded-md px-3 bg-white/5">
+                <span className="text-sm text-muted-foreground">View:</span>
                 <Button
-                  variant="outline"
+                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
                   size="sm"
-                  onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                  onClick={() => setViewMode('grid')}
+                  className="h-8 w-8 p-0"
                 >
-                  {sortOrder === "asc" ? <SortAsc className="h-4 w-4" /> : <SortDesc className="h-4 w-4" />}
-                </Button>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant={viewMode === "table" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setViewMode("table")}
-                >
-                  Table
+                  <Grid3x3 className="w-4 h-4" />
                 </Button>
                 <Button
-                  variant={viewMode === "cards" ? "default" : "outline"}
+                  variant={viewMode === 'table' ? 'default' : 'ghost'}
                   size="sm"
-                  onClick={() => setViewMode("cards")}
+                  onClick={() => setViewMode('table')}
+                  className="h-8 w-8 p-0"
                 >
-                  Cards
+                  <Layers className="w-4 h-4" />
                 </Button>
               </div>
             </div>
-
-            {/* Bulk Actions */}
-            {selectedItems.length > 0 && (
-              <div className="flex items-center space-x-2 p-3 bg-blue-50 rounded-lg">
-                <span className="text-sm font-medium">{selectedItems.length} items selected</span>
-                <Button size="sm" onClick={() => handleBulkAction('reorder')}>
-                  <RefreshCw className="h-4 w-4 mr-1" />
-                  Reorder
-                </Button>
-                <Button size="sm" variant="outline" onClick={() => handleBulkAction('audit')}>
-                  <Shield className="h-4 w-4 mr-1" />
-                  Audit
-                </Button>
-                <Button size="sm" variant="outline" onClick={() => handleBulkAction('archive')}>
-                  <Archive className="h-4 w-4 mr-1" />
-                  Archive
-                </Button>
-                <Button size="sm" variant="outline" onClick={() => setSelectedItems([])}>
-                  Clear
-                </Button>
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Advanced Inventory Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Inventory Items ({filteredAndSortedItems.length})</CardTitle>
-          <CardDescription>
-            Advanced inventory management with lifecycle tracking and loss prevention
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
+      {/* Inventory Grid/Table */}
+      {viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredItems.map((item) => (
+            <Card
+              key={item.id}
+              className="card-premium hover:shadow-2xl transition-all duration-300 cursor-pointer group"
+              onClick={() => setSelectedItem(item)}
+            >
+              <CardContent className="p-0">
+                {/* Image/Icon Header */}
+                <div className="relative h-32 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden">
+                  <Package className="w-16 h-16 text-purple-500 group-hover:scale-110 transition-transform duration-300" />
+                  <div className="absolute top-2 right-2">
+                    <Badge className={getStatusColor(item.status)}>
+                      {item.status.replace('_', ' ')}
+                    </Badge>
+                  </div>
+                  {item.abcCategory === 'A' && (
+                    <div className="absolute top-2 left-2">
+                      <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0">
+                        <Star className="w-3 h-3 mr-1" />
+                        Premium
+                      </Badge>
+                    </div>
+                  )}
+                  {realTimeMode && (
+                    <div className="absolute bottom-2 right-2">
+                      <Badge variant="outline" className="bg-green-500/20 border-green-500 animate-pulse">
+                        <Radio className="w-3 h-3 mr-1" />
+                        Live
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="p-4 space-y-3">
+                  <div>
+                    <h3 className="font-bold text-lg line-clamp-1 group-hover:text-purple-500 transition-colors">
+                      {item.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">{item.sku}</p>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Stock Level</p>
+                      <p className="text-2xl font-bold">{item.currentStock}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground">Value</p>
+                      <p className="text-lg font-semibold text-green-500">
+                        {formatCurrency(item.currentStock * item.price)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <Progress 
+                    value={(item.currentStock / item.maxStock) * 100} 
+                    className="h-2"
+                  />
+
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Min: {item.minStock}</span>
+                    <span>Max: {item.maxStock}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge variant="outline" className="badge-glass">
+                      {getLifecycleIcon(item.lifecycle)}
+                      <span className="ml-1 capitalize">{item.lifecycle}</span>
+                    </Badge>
+                    <Badge variant="outline" className="badge-glass">
+                      <Zap className="w-3 h-3 mr-1" />
+                      {item.velocity}/day
+                    </Badge>
+                    {item.autoReorder && (
+                      <Badge variant="outline" className="badge-glass bg-blue-500/10 border-blue-500/50">
+                        <Cpu className="w-3 h-3 mr-1" />
+                        Auto
+                      </Badge>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                    <span className="text-xs text-muted-foreground flex items-center">
+                      <MapPin className="w-3 h-3 mr-1" />
+                      {item.storeName}
+                    </span>
+                    <Button variant="ghost" size="sm" className="h-8">
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <Card className="card-premium">
+          <CardContent className="p-0">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-12">
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.length === filteredAndSortedItems.length}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedItems(filteredAndSortedItems.map(item => item.id));
-                        } else {
-                          setSelectedItems([]);
-                        }
-                      }}
-                    />
-                  </TableHead>
                   <TableHead>Product</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Financial</TableHead>
+                  <TableHead>SKU</TableHead>
+                  <TableHead>Store</TableHead>
+                  <TableHead className="text-right">Stock</TableHead>
+                  <TableHead className="text-right">Price</TableHead>
+                  <TableHead className="text-right">Value</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Lifecycle</TableHead>
-                  <TableHead>Analytics</TableHead>
-                  <TableHead>Security</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredAndSortedItems.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      <input
-                        type="checkbox"
-                        checked={selectedItems.includes(item.id)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedItems([...selectedItems, item.id]);
-                          } else {
-                            setSelectedItems(selectedItems.filter(id => id !== item.id));
-                          }
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        <div className="font-medium">{item.name}</div>
-                        <div className="text-sm text-muted-foreground">{item.sku}</div>
-                        <div className="text-sm text-muted-foreground">{item.brand}</div>
-                        <div className="flex flex-wrap gap-1">
-                          {item.tags.map((tag, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
+                {filteredItems.map((item) => (
+                  <TableRow key={item.id} className="cursor-pointer hover:bg-white/5" onClick={() => setSelectedItem(item)}>
+                    <TableCell className="font-medium">
+                      <div>
+                        <p>{item.name}</p>
+                        <p className="text-xs text-muted-foreground">{item.brand}</p>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-medium">{item.currentStock}</span>
-                          <Badge className={getStatusColor(item.status)}>
-                            {item.status.replace('_', ' ')}
-                          </Badge>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Min: {item.minStock} | Max: {item.maxStock}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Location: {item.location}
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-blue-600 h-2 rounded-full" 
-                            style={{width: `${(item.currentStock / item.maxStock) * 100}%`}}
-                          ></div>
-                        </div>
+                    <TableCell className="font-mono text-sm">{item.sku}</TableCell>
+                    <TableCell>{item.storeName}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex flex-col items-end">
+                        <span className="font-bold">{item.currentStock}</span>
+                        <Progress value={(item.currentStock / item.maxStock) * 100} className="w-16 h-1 mt-1" />
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        <div className="text-sm">
-                          <span className="font-medium">${item.price}</span>
-                          <span className="text-muted-foreground"> / ${item.cost}</span>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Margin: {item.profitMargin.toFixed(1)}%
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          ROI: {item.roi.toFixed(1)}%
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Sold: {item.totalSold}
-                        </div>
-                      </div>
+                    <TableCell className="text-right font-semibold">{formatCurrency(item.price)}</TableCell>
+                    <TableCell className="text-right font-bold text-green-500">
+                      {formatCurrency(item.currentStock * item.price)}
                     </TableCell>
                     <TableCell>
-                      <div className="space-y-1">
-                        <Badge className={getLifecycleColor(item.lifecycle)}>
-                          {item.lifecycle}
-                        </Badge>
-                        <Badge className={getABCCategoryColor(item.abcCategory)}>
-                          {item.abcCategory}
-                        </Badge>
-                        <div className="text-sm text-muted-foreground">
-                          Turnover: {item.turnoverRate.toFixed(1)}x
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Forecast: {item.demandForecast}
-                        </div>
-                      </div>
+                      <Badge className={getStatusColor(item.status)}>
+                        {item.status.replace('_', ' ')}
+                      </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="space-y-1">
-                        <div className="text-sm">
-                          <span className="font-medium">Risk: {item.fraudRisk}%</span>
-                          {item.fraudRisk > 20 && <AlertTriangle className="h-4 w-4 text-red-500 inline ml-1" />}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Shrinkage: {item.shrinkageRate.toFixed(1)}%
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Return: {item.returnRate.toFixed(1)}%
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Last Audit: {new Date(item.lastAudit).toLocaleDateString()}
-                        </div>
-                      </div>
+                      <Badge variant="outline" className="badge-glass">
+                        {getLifecycleIcon(item.lifecycle)}
+                        <span className="ml-1 capitalize">{item.lifecycle}</span>
+                      </Badge>
                     </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        <Badge className={getSecurityLevelColor(item.securityLevel)}>
-                          {item.securityLevel}
-                        </Badge>
-                        <div className="text-sm text-muted-foreground">
-                          {item.autoReorder ? (
-                            <span className="text-green-600">Auto Reorder</span>
-                          ) : (
-                            <span className="text-gray-500">Manual</span>
-                          )}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Warranty: {item.warrantyPeriod}m
-                        </div>
-                        {item.alerts > 0 && (
-                          <div className="text-sm text-red-600">
-                            {item.alerts} alerts
-                          </div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center space-x-1">
-                        <Button variant="ghost" size="sm">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </div>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="sm">
+                        <Eye className="w-4 h-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Advanced Item Details Modal */}
+      {selectedItem && (
+        <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
+          <DialogContent className="dialog-glass max-w-6xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader className="sticky top-0 bg-background/95 backdrop-blur-xl z-10 pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-3 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+                    <Package className="w-8 h-8 text-purple-500" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-2xl font-bold">{selectedItem.name}</DialogTitle>
+                    <DialogDescription className="text-sm mt-1">
+                      {selectedItem.sku} • {selectedItem.brand} • {selectedItem.storeName}
+                    </DialogDescription>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Badge className={getStatusColor(selectedItem.status)}>
+                    {selectedItem.status.replace('_', ' ')}
+                  </Badge>
+                  <Button variant="outline" size="sm" className="btn-glass">
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit
+                  </Button>
+                </div>
+              </div>
+            </DialogHeader>
+
+            <Tabs defaultValue="overview" className="w-full">
+              <TabsList className="grid w-full grid-cols-6 mb-6">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                <TabsTrigger value="ai-insights">AI Insights</TabsTrigger>
+                <TabsTrigger value="lifecycle">Lifecycle</TabsTrigger>
+                <TabsTrigger value="security">Security</TabsTrigger>
+                <TabsTrigger value="history">History</TabsTrigger>
+              </TabsList>
+
+              {/* Overview Tab */}
+              <TabsContent value="overview" className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <Card className="card-premium">
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-2">
+                        <Boxes className="w-5 h-5" />
+                        <span>Stock Information</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Current Stock</p>
+                        <p className="text-3xl font-bold">{selectedItem.currentStock}</p>
+                        <Progress value={(selectedItem.currentStock / selectedItem.maxStock) * 100} className="mt-2" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Min Stock</p>
+                          <p className="font-semibold">{selectedItem.minStock}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Max Stock</p>
+                          <p className="font-semibold">{selectedItem.maxStock}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Location</p>
+                        <p className="font-semibold flex items-center">
+                          <MapPin className="w-4 h-4 mr-2" />
+                          {selectedItem.location}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="card-premium">
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-2">
+                        <DollarSign className="w-5 h-5" />
+                        <span>Pricing & Value</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Cost</p>
+                          <p className="font-semibold text-lg">{formatCurrency(selectedItem.cost)}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Price</p>
+                          <p className="font-semibold text-lg text-green-500">{formatCurrency(selectedItem.price)}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Total Value</p>
+                        <p className="text-2xl font-bold text-purple-500">
+                          {formatCurrency(selectedItem.currentStock * selectedItem.price)}
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Profit Margin</p>
+                          <p className="font-semibold">{selectedItem.profitMargin.toFixed(1)}%</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">ROI</p>
+                          <p className="font-semibold">{selectedItem.roi.toFixed(1)}%</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="card-premium">
+                    <CardHeader>
+                      <CardTitle className="flex items-center space-x-2">
+                        <BarChart3 className="w-5 h-5" />
+                        <span>Performance</span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Total Sold</p>
+                        <p className="text-2xl font-bold">{selectedItem.totalSold}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">Total Revenue</p>
+                        <p className="text-xl font-semibold text-green-500">
+                          {formatCurrency(selectedItem.totalRevenue)}
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Velocity</p>
+                          <p className="font-semibold">{selectedItem.velocity}/day</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Turnover</p>
+                          <p className="font-semibold">{selectedItem.turnoverRate.toFixed(1)}x</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              {/* Analytics Tab */}
+              <TabsContent value="analytics" className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card className="card-premium">
+                    <CardHeader>
+                      <CardTitle>Demand Forecast</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">Next 30 Days</span>
+                          <span className="font-bold text-xl">{selectedItem.demandForecast} units</span>
+                        </div>
+                        <Progress value={65} className="h-3" />
+                        <p className="text-sm text-muted-foreground">
+                          Based on historical sales data and market trends
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="card-premium">
+                    <CardHeader>
+                      <CardTitle>Risk Analysis</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">Fraud Risk Score</span>
+                          <Badge variant={selectedItem.fraudRisk > 70 ? 'destructive' : 'secondary'}>
+                            {selectedItem.fraudRisk}%
+                          </Badge>
+                        </div>
+                        <Progress value={selectedItem.fraudRisk} className="h-3" />
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">Shrinkage Rate</span>
+                          <span className="font-semibold">{selectedItem.shrinkageRate.toFixed(2)}%</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">Return Rate</span>
+                          <span className="font-semibold">{selectedItem.returnRate.toFixed(1)}%</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              {/* AI Insights Tab */}
+              <TabsContent value="ai-insights" className="space-y-6">
+                <Card className="card-premium border-2 border-purple-500/30">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Brain className="w-6 h-6 text-purple-500" />
+                      <span>AI Recommendations</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
+                      <p className="font-semibold mb-2">Primary Recommendation</p>
+                      <p className="text-lg">{selectedItem.aiRecommendation}</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-3 rounded-lg bg-white/5">
+                        <p className="text-sm text-muted-foreground">Optimal Price</p>
+                        <p className="text-xl font-bold text-green-500">{formatCurrency(selectedItem.optimalPrice)}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-white/5">
+                        <p className="text-sm text-muted-foreground">Competitor Price</p>
+                        <p className="text-xl font-bold">{formatCurrency(selectedItem.competitorPrice)}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-white/5">
+                        <p className="text-sm text-muted-foreground">Market Demand</p>
+                        <p className="text-xl font-bold">{selectedItem.marketDemand}%</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-white/5">
+                        <p className="text-sm text-muted-foreground">Trend Score</p>
+                        <p className="text-xl font-bold">{selectedItem.trendScore}/100</p>
+                      </div>
+                    </div>
+                    <div className="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                        <p className="font-semibold">Stockout Prediction</p>
+                      </div>
+                      <p>Estimated stockout in <span className="font-bold">{selectedItem.predictedStockout} days</span></p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Lifecycle Tab */}
+              <TabsContent value="lifecycle" className="space-y-6">
+                <Card className="card-premium">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      {getLifecycleIcon(selectedItem.lifecycle)}
+                      <span>Product Lifecycle Stage: {selectedItem.lifecycle}</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/30">
+                        <p className="text-sm text-muted-foreground mb-2">ABC Category</p>
+                        <Badge className="text-lg">{selectedItem.abcCategory}</Badge>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {selectedItem.abcCategory === 'A' && 'High-value, strategic item'}
+                          {selectedItem.abcCategory === 'B' && 'Medium-value, important item'}
+                          {selectedItem.abcCategory === 'C' && 'Low-value, routine item'}
+                        </p>
+                      </div>
+                      <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
+                        <p className="text-sm text-muted-foreground mb-2">Seasonality</p>
+                        <Badge className="text-lg capitalize">{selectedItem.seasonality}</Badge>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {selectedItem.seasonality} seasonal demand variation
+                        </p>
+                      </div>
+                      <div className="p-4 rounded-lg bg-purple-500/10 border border-purple-500/30">
+                        <p className="text-sm text-muted-foreground mb-2">Auto-Reorder</p>
+                        <Badge className="text-lg">
+                          {selectedItem.autoReorder ? 'Enabled' : 'Disabled'}
+                        </Badge>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Automated replenishment {selectedItem.autoReorder ? 'active' : 'inactive'}
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">Last Audit</p>
+                      <p className="font-semibold">{formatDate(selectedItem.lastAudit)}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Security Tab */}
+              <TabsContent value="security" className="space-y-6">
+                <Card className="card-premium">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Shield className="w-6 h-6" />
+                      <span>Security & Protection</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 rounded-lg bg-white/5">
+                        <p className="text-sm text-muted-foreground mb-2">Security Level</p>
+                        <Badge className={cn(
+                          "text-lg",
+                          selectedItem.securityLevel === 'high' && 'bg-red-500',
+                          selectedItem.securityLevel === 'medium' && 'bg-yellow-500',
+                          selectedItem.securityLevel === 'low' && 'bg-green-500'
+                        )}>
+                          {selectedItem.securityLevel.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <div className="p-4 rounded-lg bg-white/5">
+                        <p className="text-sm text-muted-foreground mb-2">Fraud Risk</p>
+                        <div className="flex items-center space-x-2">
+                          <Progress value={selectedItem.fraudRisk} className="flex-1" />
+                          <span className="font-bold">{selectedItem.fraudRisk}%</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">Batch Information</p>
+                      <p className="font-mono font-semibold">{selectedItem.batchNumber}</p>
+                    </div>
+                    {selectedItem.expiryDate && (
+                      <div className="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+                        <p className="text-sm text-muted-foreground mb-2">Expiry Date</p>
+                        <p className="font-semibold">{formatDate(selectedItem.expiryDate)}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* History Tab */}
+              <TabsContent value="history" className="space-y-6">
+                <Card className="card-premium">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Clock className="w-6 h-6" />
+                      <span>Activity History</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="p-4 rounded-lg bg-white/5">
+                      <p className="text-sm text-muted-foreground mb-2">Last Restocked</p>
+                      <p className="font-semibold">{formatDate(selectedItem.lastRestocked)}</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-3 rounded-lg bg-white/5">
+                        <p className="text-sm text-muted-foreground">Supplier</p>
+                        <p className="font-semibold">{selectedItem.supplier}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-white/5">
+                        <p className="text-sm text-muted-foreground">Warranty</p>
+                        <p className="font-semibold">{selectedItem.warrantyPeriod} months</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

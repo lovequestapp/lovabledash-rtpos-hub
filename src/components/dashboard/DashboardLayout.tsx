@@ -126,23 +126,26 @@ export const DashboardLayout = () => {
     <div className="flex h-screen bg-background">
       {/* Mobile Header */}
       {isMobile && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-white text-black px-4 py-3 flex items-center justify-between border-b border-gray-200 shadow-sm">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl text-black px-4 py-3 flex items-center justify-between border-b border-gray-200 shadow-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.98)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-              <Building2 className="w-4 h-4 text-white" />
+            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+              <Building2 className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="font-semibold text-sm">WaveLength Communications</h1>
-              <p className="text-xs text-gray-600 capitalize">{currentView}</p>
+              <h1 className="font-bold text-base">WaveLength Communications</h1>
+              <p className="text-xs text-gray-600 capitalize flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                {currentView.replace('-', ' ')}
+              </p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="text-black hover:bg-gray-100"
+            className="text-black hover:bg-gray-100 rounded-lg p-2 transition-all duration-200"
           >
-            {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </Button>
         </div>
       )}

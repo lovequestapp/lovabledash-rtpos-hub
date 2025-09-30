@@ -78,7 +78,6 @@ import {
   Music,
   Play,
   Pause,
-  Stop,
   SkipBack,
   SkipForward,
   Repeat,
@@ -671,7 +670,7 @@ export const EmployeesView = ({ onViewChange }: EmployeesViewProps) => {
             <select 
               value={filterStatus} 
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-green-500 focus:outline-none transition-colors"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
@@ -681,7 +680,7 @@ export const EmployeesView = ({ onViewChange }: EmployeesViewProps) => {
             <select 
               value={filterPerformance} 
               onChange={(e) => setFilterPerformance(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-green-500 focus:outline-none transition-colors"
             >
               <option value="all">All Performance</option>
               <option value="excellent">Excellent</option>
@@ -692,7 +691,7 @@ export const EmployeesView = ({ onViewChange }: EmployeesViewProps) => {
             <select 
               value={sortBy} 
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 hover:bg-gray-50 focus:ring-2 focus:ring-green-500 focus:outline-none transition-colors"
             >
               <option value="name">Sort by Name</option>
               <option value="position">Sort by Position</option>
@@ -906,11 +905,11 @@ export const EmployeesView = ({ onViewChange }: EmployeesViewProps) => {
             </DialogHeader>
             
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="performance">Performance</TabsTrigger>
-                <TabsTrigger value="personal">Personal</TabsTrigger>
-                <TabsTrigger value="reviews">Reviews</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-4 bg-white border border-gray-200">
+                <TabsTrigger value="overview" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">Overview</TabsTrigger>
+                <TabsTrigger value="performance" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">Performance</TabsTrigger>
+                <TabsTrigger value="personal" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">Personal</TabsTrigger>
+                <TabsTrigger value="reviews" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">Reviews</TabsTrigger>
               </TabsList>
               
               <TabsContent value="overview" className="space-y-4">

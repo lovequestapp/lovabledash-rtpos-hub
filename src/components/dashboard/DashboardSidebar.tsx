@@ -124,8 +124,8 @@ export const DashboardSidebar = ({
   };
 
   return (
-    <div className={cn("nav-item-glass", 
-      "sidebar-ultra-professional",
+    <div className={cn(
+      "sidebar-ultra-professional bg-white",
       isCollapsed ? 'w-16' : 'w-72',
       "transition-all duration-500 ease-in-out",
       "bg-white border-r border-gray-200/60",
