@@ -65,25 +65,22 @@ import {
   Info,
   ChevronRight,
   Maximize2,
-  Minimize2,
-  CreditCard,
-  Brain,
-  Eye as EyeIcon
+  Minimize2
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 interface StoresViewProps {
-  onViewChange: (view: 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'transactions' | 'ai-insights' | 'customer-360' | 'automation') => void;
+  onViewChange: (view: 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings') => void;
 }
 
 const mockStores = [
   {
     id: "1",
-    name: "Post Oak Location",
-    code: "PO001",
-    address: "123 Post Oak Blvd, Houston, TX 77056",
-    phone: "(713) 555-0123",
+    name: "Downtown Location",
+    code: "DT001",
+    address: "123 Main St, Downtown, TX 75201",
+    phone: "(214) 555-0123",
     manager: "Sarah Johnson",
     employees: 8,
     monthlyRevenue: 45000,
@@ -130,10 +127,10 @@ const mockStores = [
   },
   {
     id: "2", 
-    name: "Fondren Location",
-    code: "FN002",
-    address: "456 Fondren Rd, Houston, TX 77074",
-    phone: "(713) 555-0456",
+    name: "Mall Kiosk",
+    code: "MK002",
+    address: "456 Shopping Center Dr, Dallas, TX 75202",
+    phone: "(214) 555-0456",
     manager: "Mike Chen",
     employees: 4,
     monthlyRevenue: 28000,
@@ -179,10 +176,10 @@ const mockStores = [
   },
   {
     id: "3",
-    name: "West Bellfort Location",
-    code: "WB003", 
-    address: "789 West Bellfort Ave, Houston, TX 77071",
-    phone: "(713) 555-0789",
+    name: "Airport Terminal",
+    code: "AP003", 
+    address: "789 Airport Blvd, DFW, TX 75261",
+    phone: "(214) 555-0789",
     manager: "Jessica Rodriguez",
     employees: 6,
     monthlyRevenue: 62000,
@@ -230,10 +227,10 @@ const mockStores = [
   },
   {
     id: "4",
-    name: "El Campo Location",
-    code: "EC004",
-    address: "321 El Campo Blvd, Houston, TX 77036",
-    phone: "(713) 555-0321",
+    name: "Suburban Plaza",
+    code: "SP004",
+    address: "321 Suburb Way, Plano, TX 75023",
+    phone: "(972) 555-0321",
     manager: "David Kim",
     employees: 5,
     monthlyRevenue: 35000,
@@ -353,38 +350,6 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
     onViewChange('alerts');
   };
 
-  const handleTransactionsClick = (storeId: string) => {
-    toast({
-      title: "Store Transactions",
-      description: `Viewing transactions for store ${storeId}`,
-    });
-    onViewChange('transactions');
-  };
-
-  const handleAIClick = (storeId: string) => {
-    toast({
-      title: "AI Insights",
-      description: `Viewing AI insights for store ${storeId}`,
-    });
-    onViewChange('ai-insights');
-  };
-
-  const handleCustomer360Click = (storeId: string) => {
-    toast({
-      title: "Customer 360°",
-      description: `Viewing customer analytics for store ${storeId}`,
-    });
-    onViewChange('customer-360');
-  };
-
-  const handleAutomationClick = (storeId: string) => {
-    toast({
-      title: "Automation",
-      description: `Viewing automation settings for store ${storeId}`,
-    });
-    onViewChange('automation');
-  };
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
@@ -411,13 +376,13 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
   const avgRevenue = totalRevenue / stores.length;
 
   return (
-    <div className="p-6 space-y-6 bg-background/80 backdrop-blur-xl rounded-lg shadow-lg border border-border/50">
+    <div className="p-6 space-y-6 backdrop-blur-glass">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">🏪 Store Management Hub</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Store Management</h1>
           <p className="text-muted-foreground">
-            Manage your Houston-area store locations and monitor performance
+            Manage your store locations and monitor performance
           </p>
         </div>
         
@@ -436,7 +401,7 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
               <DialogHeader>
                 <DialogTitle>Add New Store</DialogTitle>
                 <DialogDescription>
-                  Create a new store location in your Houston network.
+                  Create a new store location in your network.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -454,7 +419,7 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="phone">Phone</Label>
-                  <Input id="phone" placeholder="(713) 555-0123" />
+                  <Input id="phone" placeholder="(214) 555-0123" />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="manager">Manager</Label>
@@ -484,14 +449,14 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
       {/* Interactive Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card 
-          className="relative overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 bg-card/70 backdrop-blur-lg border border-border/50 hover:scale-[1.02] active:scale-[0.98]"
+          className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200 hover:border-primary/20"
           onClick={() => onViewChange('stores')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Stores</CardTitle>
             <div className="flex items-center gap-2">
               <Store className="h-4 w-4 text-muted-foreground" />
-              <ArrowRight className="h-3 w-3 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="h-3 w-3 text-muted-foreground" />
             </div>
           </CardHeader>
           <CardContent>
@@ -503,14 +468,14 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
         </Card>
         
         <Card 
-          className="relative overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 bg-card/70 backdrop-blur-lg border border-border/50 hover:scale-[1.02] active:scale-[0.98]"
+          className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200 hover:border-primary/20"
           onClick={() => onViewChange('employees')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-muted-foreground" />
-              <ArrowRight className="h-3 w-3 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="h-3 w-3 text-muted-foreground" />
             </div>
           </CardHeader>
           <CardContent>
@@ -522,14 +487,14 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
         </Card>
         
         <Card 
-          className="relative overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 bg-card/70 backdrop-blur-lg border border-border/50 hover:scale-[1.02] active:scale-[0.98]"
-          onClick={() => onViewChange('transactions')}
+          className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200 hover:border-primary/20"
+          onClick={() => onViewChange('reports')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
             <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4 text-muted-foreground" />
-              <ArrowRight className="h-3 w-3 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="h-3 w-3 text-muted-foreground" />
             </div>
           </CardHeader>
           <CardContent>
@@ -541,14 +506,14 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
         </Card>
         
         <Card 
-          className="relative overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 bg-card/70 backdrop-blur-lg border border-border/50 hover:scale-[1.02] active:scale-[0.98]"
+          className="cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200 hover:border-primary/20"
           onClick={() => onViewChange('reports')}
         >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avg Revenue/Store</CardTitle>
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              <ArrowRight className="h-3 w-3 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="h-3 w-3 text-muted-foreground" />
             </div>
           </CardHeader>
           <CardContent>
@@ -561,11 +526,11 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
       </div>
 
       {/* Advanced Search and Filters */}
-      <Card className="relative overflow-hidden group bg-card/70 backdrop-blur-lg border border-border/50">
+      <Card>
         <CardHeader>
           <CardTitle>Store Locations</CardTitle>
           <CardDescription>
-            Manage and monitor all your Houston-area store locations
+            Manage and monitor all your store locations
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -622,18 +587,13 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                 {filteredStores.map((store) => (
                   <TableRow 
                     key={store.id}
-                    className="cursor-pointer hover:bg-gray-50 transition-colors group"
+                    className="cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() => handleStoreClick(store)}
                   >
                     <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                          {store.code.slice(-2)}
-                        </div>
-                        <div>
-                          <div className="font-medium">{store.name}</div>
-                          <div className="text-sm text-muted-foreground">{store.code}</div>
-                        </div>
+                      <div>
+                        <div className="font-medium">{store.name}</div>
+                        <div className="text-sm text-muted-foreground">{store.code}</div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -648,55 +608,20 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-muted-foreground" />
-                        {store.manager}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-muted-foreground" />
-                        {store.employees}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <DollarSign className="w-4 h-4 text-muted-foreground" />
-                        {formatCurrency(store.monthlyRevenue)}
-                      </div>
-                    </TableCell>
+                    <TableCell>{store.manager}</TableCell>
+                    <TableCell>{store.employees}</TableCell>
+                    <TableCell>{formatCurrency(store.monthlyRevenue)}</TableCell>
                     <TableCell>{getStatusBadge(store.status)}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-3 h-3" />
-                        {store.lastSync}
-                      </div>
+                      {store.lastSync}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleStoreClick(store);
-                          }}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toast({
-                              title: "Edit Store",
-                              description: `Editing ${store.name}`,
-                            });
-                          }}
-                        >
+                        <Button variant="ghost" size="sm">
                           <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <MoreHorizontal className="w-4 h-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -733,15 +658,9 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
 
               <TabsContent value="overview" className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                  <Card 
-                    className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-                    onClick={() => handleReportsClick(selectedStore.id)}
-                  >
+                  <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium flex items-center gap-2">
-                        Monthly Revenue
-                        <ArrowRight className="w-3 h-3" />
-                      </CardTitle>
+                      <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{formatCurrency(selectedStore.monthlyRevenue)}</div>
@@ -754,15 +673,9 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                     </CardContent>
                   </Card>
                   
-                  <Card 
-                    className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-                    onClick={() => handleTransactionsClick(selectedStore.id)}
-                  >
+                  <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium flex items-center gap-2">
-                        Daily Transactions
-                        <ArrowRight className="w-3 h-3" />
-                      </CardTitle>
+                      <CardTitle className="text-sm font-medium">Daily Transactions</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{selectedStore.metrics.dailyTransactions}</div>
@@ -772,15 +685,9 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                     </CardContent>
                   </Card>
                   
-                  <Card 
-                    className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-                    onClick={() => handleReportsClick(selectedStore.id)}
-                  >
+                  <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium flex items-center gap-2">
-                        Foot Traffic
-                        <ArrowRight className="w-3 h-3" />
-                      </CardTitle>
+                      <CardTitle className="text-sm font-medium">Foot Traffic</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{selectedStore.metrics.footTraffic}</div>
@@ -790,15 +697,9 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                     </CardContent>
                   </Card>
                   
-                  <Card 
-                    className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-                    onClick={() => handleAIClick(selectedStore.id)}
-                  >
+                  <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium flex items-center gap-2">
-                        Performance Rating
-                        <ArrowRight className="w-3 h-3" />
-                      </CardTitle>
+                      <CardTitle className="text-sm font-medium">Performance Rating</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center gap-2">
@@ -812,15 +713,9 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                   </Card>
                 </div>
 
-                <Card 
-                  className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.01]"
-                  onClick={() => handleReportsClick(selectedStore.id)}
-                >
+                <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      Weekly Sales Trend
-                      <ArrowRight className="w-4 h-4" />
-                    </CardTitle>
+                    <CardTitle>Weekly Sales Trend</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
@@ -838,15 +733,9 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
 
               <TabsContent value="performance" className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Card 
-                    className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-                    onClick={() => handleReportsClick(selectedStore.id)}
-                  >
+                  <Card>
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        Sales Performance
-                        <ArrowRight className="w-4 h-4" />
-                      </CardTitle>
+                      <CardTitle>Sales Performance</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
@@ -863,15 +752,9 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                     </CardContent>
                   </Card>
                   
-                  <Card 
-                    className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-                    onClick={() => handleAIClick(selectedStore.id)}
-                  >
+                  <Card>
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        Key Metrics
-                        <ArrowRight className="w-4 h-4" />
-                      </CardTitle>
+                      <CardTitle>Key Metrics</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
@@ -904,7 +787,7 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                       {selectedStore.employeeData.map((employee, index) => (
                         <div 
                           key={index}
-                          className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors group"
+                          className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
                           onClick={() => handleEmployeeClick(selectedStore.id)}
                         >
                           <div className="flex items-center gap-3">
@@ -921,7 +804,7 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                               <div className="font-medium">{formatCurrency(employee.sales)}</div>
                               <div className="text-sm text-muted-foreground">Sales</div>
                             </div>
-                            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                            <ArrowRight className="h-4 w-4 text-muted-foreground" />
                           </div>
                         </div>
                       ))}
@@ -939,7 +822,7 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                   <CardContent>
                     <div className="space-y-4">
                       <div 
-                        className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors group"
+                        className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
                         onClick={() => handleInventoryClick(selectedStore.id)}
                       >
                         <div className="flex items-center gap-3">
@@ -949,11 +832,11 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                             <div className="text-sm text-muted-foreground">847 items available</div>
                           </div>
                         </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
                       </div>
                       
                       <div 
-                        className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors group"
+                        className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
                         onClick={() => handleInventoryClick(selectedStore.id)}
                       >
                         <div className="flex items-center gap-3">
@@ -963,11 +846,11 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                             <div className="text-sm text-muted-foreground">23 items need restocking</div>
                           </div>
                         </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
                       </div>
                       
                       <div 
-                        className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors group"
+                        className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
                         onClick={() => handleInventoryClick(selectedStore.id)}
                       >
                         <div className="flex items-center gap-3">
@@ -977,7 +860,7 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                             <div className="text-sm text-muted-foreground">8 items unavailable</div>
                           </div>
                         </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
                       </div>
                     </div>
                   </CardContent>
@@ -995,7 +878,7 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                       {selectedStore.alerts.map((alert, index) => (
                         <div 
                           key={index}
-                          className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors group"
+                          className="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
                           onClick={() => handleAlertsClick(selectedStore.id)}
                         >
                           <div className="flex items-center gap-3">
@@ -1010,7 +893,7 @@ export const StoresView = ({ onViewChange }: StoresViewProps) => {
                               <div className="text-sm text-muted-foreground">Priority: {alert.priority}</div>
                             </div>
                           </div>
-                          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                          <ArrowRight className="h-4 w-4 text-muted-foreground" />
                         </div>
                       ))}
                     </div>
