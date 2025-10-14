@@ -163,21 +163,8 @@ export const DashboardSidebar = ({
             </Button>
           )}
           <div className="relative">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500 via-green-600 to-emerald-700 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25">
-              <Building2 className="w-7 h-7 text-white" />
-            </div>
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-lg animate-pulse"></div>
+            <img src="/logo.png" alt="Houston Phone Bill Pay Logo" className="h-16 w-auto object-contain" />
           </div>
-          {!isCollapsed && (
-            <div className="flex-1">
-              <h1 className="font-bold text-xl text-gray-900 tracking-tight">WaveLength Communications</h1>
-              <p className="text-sm text-gray-600 font-medium">Management Portal</p>
-              <div className="flex items-center gap-2 mt-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-xs text-green-600 font-semibold">System Online</span>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 

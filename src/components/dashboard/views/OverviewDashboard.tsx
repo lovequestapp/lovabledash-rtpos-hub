@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   DollarSign, 
   TrendingUp, 
@@ -45,6 +46,7 @@ interface OverviewDashboardProps {
 }
 
 export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboardProps) => {
+  const [selectedAddress, setSelectedAddress] = useState("5424 Hwy 6 N Houston, TX 77084");
   const [metrics, setMetrics] = useState({
     todayRevenue: 0,
     monthlyRevenue: 0,
@@ -255,6 +257,19 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
               <Activity className="w-3 h-3" />
               Live
             </Badge>
+          </div>
+          <h2 className="text-xl lg:text-2xl font-semibold text-primary mb-2">Houston Phone Bill Pay - All Carriers</h2>
+          <div className="mb-3">
+            <Select value={selectedAddress} onValueChange={setSelectedAddress}>
+              <SelectTrigger className="w-full max-w-md">
+                <SelectValue placeholder="Select Location" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="5424 Hwy 6 N Houston, TX 77084">5424 Hwy 6 N Houston, TX 77084</SelectItem>
+                <SelectItem value="10806 S Post Oak Rd Houston, TX 77035">10806 S Post Oak Rd Houston, TX 77035</SelectItem>
+                <SelectItem value="306 N Mechanic St, El Campo TX 77437">306 N Mechanic St, El Campo TX 77437</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <p className="text-muted-foreground">
             Welcome back, {userProfile?.full_name || userProfile?.email}

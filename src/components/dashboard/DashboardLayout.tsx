@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardContent } from "./DashboardContent";
-import { WaveLengthAI } from "../ai/WaveLengthAI";
+import { HoustonPhoneBillPayAI } from "../ai/WaveLengthAI";
 
 type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation' | 'transactions';
 
@@ -139,12 +139,9 @@ export const DashboardLayout = () => {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Building2 className="w-5 h-5 text-white" />
-              </div>
+              <img src="/logo.png" alt="Houston Phone Bill Pay Logo" className="h-12 w-auto object-contain" />
               <div>
-                <h1 className="font-bold text-base leading-tight">WaveLength Communications</h1>
-                <p className="text-xs text-gray-600 capitalize flex items-center gap-1 leading-tight mt-0.5">
+                <p className="text-xs text-gray-600 capitalize flex items-center gap-1 leading-tight">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                   {currentView.replace('-', ' ')}
                 </p>
@@ -205,8 +202,8 @@ export const DashboardLayout = () => {
         </div>
       </main>
       
-      {/* WaveLength AI Assistant */}
-      <WaveLengthAI />
+      {/* Houston Phone Bill Pay AI Assistant */}
+      <HoustonPhoneBillPayAI />
     </div>
   );
 };

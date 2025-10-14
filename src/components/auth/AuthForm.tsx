@@ -114,12 +114,12 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cream-50 via-background to-sage-50 p-4 safe-area-top safe-area-bottom">
       <div className="w-full max-w-md">
         <div className="text-center mb-6 md:mb-8 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary to-navy-800 rounded-2xl md:rounded-3xl mb-4 md:mb-6 shadow-luxury">
-            <Building2 className="w-8 h-8 md:w-10 md:h-10 text-primary-foreground" />
+          <div className="flex justify-center mb-4 md:mb-6">
+            <img src="/logo.png" alt="Houston Phone Bill Pay Logo" className="h-24 md:h-32 w-auto object-contain" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight text-foreground mb-2">WaveLength Communications</h1>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight text-foreground mb-2">Houston Phone Bill Pay - All Carriers</h1>
           <p className="text-muted-foreground text-base md:text-lg font-light">
-            Multi-store management platform
+            Phone bill payment management platform
           </p>
         </div>
 
@@ -127,7 +127,7 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
           <CardHeader className="space-y-1 pb-4 md:pb-6 text-center">
             <CardTitle className="text-xl md:text-2xl font-serif text-foreground">Welcome</CardTitle>
             <CardDescription className="text-center text-muted-foreground text-sm md:text-base">
-              Access your sophisticated store management dashboard
+              Access your phone bill payment management dashboard
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 md:space-y-6">
