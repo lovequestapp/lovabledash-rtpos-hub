@@ -535,9 +535,9 @@ export const TransactionsView = ({ onViewChange }: TransactionsViewProps) => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-shadow-lg">🚀 MASTERFUL TRANSACTION MONITOR 🚀</h1>
-          <h2 className="text-xl font-semibold text-primary mt-1">Houston Phone Bill Pay - All Carriers</h2>
+          <h2 className="text-xl font-semibold text-primary mt-1">StoreManagerAI</h2>
           <p className="text-muted-foreground mt-2">
-            Real-time payment transaction monitoring and analysis across all carriers
+            Real-time transaction monitoring and analysis across all locations
           </p>
         </div>
         <div className="flex items-center space-x-2">

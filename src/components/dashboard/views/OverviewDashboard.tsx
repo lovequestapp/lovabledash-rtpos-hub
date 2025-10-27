@@ -258,7 +258,7 @@ export const OverviewDashboard = ({ userProfile, onViewChange }: OverviewDashboa
               Live
             </Badge>
           </div>
-          <h2 className="text-xl lg:text-2xl font-semibold text-primary mb-2">Houston Phone Bill Pay - All Carriers</h2>
+          <h2 className="text-xl lg:text-2xl font-semibold text-primary mb-2">StoreManagerAI</h2>
           <div className="mb-3">
             <Select value={selectedAddress} onValueChange={setSelectedAddress}>
               <SelectTrigger className="w-full max-w-md">

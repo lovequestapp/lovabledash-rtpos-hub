@@ -24,7 +24,7 @@ export const DashboardContent = ({ currentView, userProfile, onViewChange }: Das
       case 'overview':
         return <OverviewDashboard userProfile={userProfile} onViewChange={onViewChange} />;
       case 'stores':
-        return <StoresView />;
+        return <StoresView onViewChange={onViewChange} />;
       case 'employees':
         return <EmployeesView onViewChange={onViewChange} />;
       case 'inventory':
@@ -40,8 +40,9 @@ export const DashboardContent = ({ currentView, userProfile, onViewChange }: Das
       case 'customer-360':
         return <Customer360View onViewChange={onViewChange} />;
       case 'automation':
+        return <AutomationView onViewChange={onViewChange} />;
       case 'transactions':
-        return <TransactionsView onViewChange={onViewChange} />;        return <AutomationView onViewChange={onViewChange} />;
+        return <TransactionsView onViewChange={onViewChange} />;
       default:
         return <OverviewDashboard userProfile={userProfile} onViewChange={onViewChange} />;
     }

@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardContent } from "./DashboardContent";
-import { HoustonPhoneBillPayAI } from "../ai/WaveLengthAI";
+import { StoreManagerAI } from "../ai/StoreManagerAI";
 
 type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation' | 'transactions';
 
@@ -139,7 +139,7 @@ export const DashboardLayout = () => {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="Houston Phone Bill Pay Logo" className="h-12 w-auto object-contain" />
+              <img src="/logo.png" alt="StoreManagerAI Logo" className="h-12 w-auto object-contain" />
               <div>
                 <p className="text-xs text-gray-600 capitalize flex items-center gap-1 leading-tight">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
@@ -202,8 +202,8 @@ export const DashboardLayout = () => {
         </div>
       </main>
       
-      {/* Houston Phone Bill Pay AI Assistant */}
-      <HoustonPhoneBillPayAI />
+      {/* StoreManagerAI Assistant */}
+      <StoreManagerAI />
     </div>
   );
 };

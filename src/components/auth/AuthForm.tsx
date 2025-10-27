@@ -115,11 +115,11 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
       <div className="w-full max-w-md">
         <div className="text-center mb-6 md:mb-8 animate-fade-in">
           <div className="flex justify-center mb-4 md:mb-6">
-            <img src="/logo.png" alt="Houston Phone Bill Pay Logo" className="h-24 md:h-32 w-auto object-contain" />
+            <img src="/logo.png" alt="StoreManagerAI Logo" className="h-24 md:h-32 w-auto object-contain" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight text-foreground mb-2">Houston Phone Bill Pay - All Carriers</h1>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight text-foreground mb-2">StoreManagerAI</h1>
           <p className="text-muted-foreground text-base md:text-lg font-light">
-            Phone bill payment management platform
+            Intelligent Retail Management Platform
           </p>
         </div>
 

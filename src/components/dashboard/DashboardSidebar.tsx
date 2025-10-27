@@ -163,7 +163,7 @@ export const DashboardSidebar = ({
             </Button>
           )}
           <div className="relative">
-            <img src="/logo.png" alt="Houston Phone Bill Pay Logo" className="h-16 w-auto object-contain" />
+            <img src="/logo.png" alt="StoreManagerAI Logo" className="h-16 w-auto object-contain" />
           </div>
         </div>
       </div>

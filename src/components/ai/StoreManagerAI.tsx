@@ -36,7 +36,6 @@ import {
   Smartphone,
   Tablet,
   Laptop,
-  Desktop,
   Scan,
   QrCode,
   Barcode,
@@ -44,7 +43,6 @@ import {
   Filter,
   Target,
   Focus,
-  Zoom,
   RotateCcw,
   RefreshCw,
   Download,
@@ -76,8 +74,6 @@ import {
   Percent,
   DollarSign,
   Euro,
-  Pound,
-  Yen,
   Bitcoin,
   CreditCard,
   Wallet,
@@ -97,149 +93,55 @@ import {
   CloudLightning,
   Sun,
   Moon,
-  Star as StarIcon,
-  Sun as SunIcon,
-  Moon as MoonIcon,
   Sunrise,
   Sunset,
   Calendar,
   Clock,
   Timer,
-  Stopwatch,
   Hourglass,
   Watch,
-  Alarm,
   Bell,
   Volume2,
   VolumeX,
   Volume1,
   Play,
   Pause,
-  Stop,
   SkipBack,
   SkipForward,
   Repeat,
   Shuffle,
   Music,
   Headphones,
-  Mic as MicIcon,
   Video,
-  Camera as CameraIcon,
   Image,
   Film,
   Tv,
-  Radio as RadioIcon,
   Speaker,
   Bluetooth,
-  Wifi as WifiIcon,
   Signal,
   Battery,
   BatteryLow,
   BatteryMedium,
-  BatteryHigh,
   BatteryFull,
   Plug,
   Power,
-  Zap as ZapIcon,
-  Flash,
-  Thunder,
-  Fire,
-  Snow,
   Wind,
   Droplets,
   Thermometer,
   Gauge,
   Activity,
-  Pulse,
-  Heart as HeartIcon,
   Smile,
   Frown,
   Meh,
   Laugh,
-  Angry,
-  Sad,
-  Surprised,
-  Wink,
-  Kiss,
   ThumbsUp,
   ThumbsDown,
   Hand,
-  PointingHand,
-  Peace,
-  Victory,
-  Ok,
-  No,
-  Yes,
-  Maybe,
-  Question,
-  Exclamation,
-  Info as InfoIcon,
-  Help,
-  Warning,
-  Error,
-  Success,
-  Fail,
-  Pass,
+  Info,
   Check,
-  X as XIcon,
   Plus,
   Minus,
-  Equal,
-  NotEqual,
-  GreaterThan,
-  LessThan,
-  GreaterThanOrEqual,
-  LessThanOrEqual,
-  Infinity,
-  Pi,
-  Sigma,
-  Alpha,
-  Beta,
-  Gamma,
-  Delta,
-  Epsilon,
-  Zeta,
-  Eta,
-  Theta,
-  Iota,
-  Kappa,
-  Lambda,
-  Mu,
-  Nu,
-  Xi,
-  Omicron,
-  Rho,
-  Tau,
-  Upsilon,
-  Phi,
-  Chi,
-  Psi,
-  Omega,
-  Infinity as InfinityIcon,
-  Pi as PiIcon,
-  Sigma as SigmaIcon,
-  Alpha as AlphaIcon,
-  Beta as BetaIcon,
-  Gamma as GammaIcon,
-  Delta as DeltaIcon,
-  Epsilon as EpsilonIcon,
-  Zeta as ZetaIcon,
-  Eta as EtaIcon,
-  Theta as ThetaIcon,
-  Iota as IotaIcon,
-  Kappa as KappaIcon,
-  Lambda as LambdaIcon,
-  Mu as MuIcon,
-  Nu as NuIcon,
-  Xi as XiIcon,
-  Omicron as OmicronIcon,
-  Rho as RhoIcon,
-  Tau as TauIcon,
-  Upsilon as UpsilonIcon,
-  Phi as PhiIcon,
-  Chi as ChiIcon,
-  Psi as PsiIcon,
-  Omega as OmegaIcon
+  Infinity
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -310,14 +212,14 @@ interface ScreenAnalysis {
   };
 }
 
-export const HoustonPhoneBillPayAI = () => {
+export const StoreManagerAI = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       type: 'ai',
-      content: "Hello! I'm your Houston Phone Bill Pay - All Carriers AI Assistant. I can help you manage phone bill payments, track carrier transactions, analyze payment data, and answer any questions about your payment dashboard. How can I assist you today?",
+      content: "Hello! I'm your StoreManagerAI Assistant. I can help you manage your retail operations, track inventory, analyze sales data, manage employees, and answer any questions about your business dashboard. How can I assist you today?",
       timestamp: new Date(),
       suggestions: [
         "Analyze my current screen",
@@ -370,13 +272,13 @@ export const HoustonPhoneBillPayAI = () => {
   const generateAIResponse = (userInput: string): Message => {
     const responses = {
       "analyze my current screen": {
-        content: "I've analyzed your current screen and found several key insights for Houston Phone Bill Pay - All Carriers:",
+        content: "I've analyzed your current screen and found several key insights for StoreManagerAI:",
         screenData: {
           elements: [
             {
               id: "dashboard-header",
               type: "text",
-              content: "Houston Phone Bill Pay - All Carriers Dashboard",
+              content: "StoreManagerAI Dashboard",
               position: { x: 0, y: 0, width: 1200, height: 60 },
               attributes: { fontSize: "24px", fontWeight: "bold" },
               accessibility: {
@@ -422,23 +324,23 @@ export const HoustonPhoneBillPayAI = () => {
               actionable: true
             }
           ],
-          analysis: "Your Houston Phone Bill Pay - All Carriers dashboard shows strong performance with $12,450 in today's payment volume. However, there's a critical payment alert for Verizon accounts with pending payments. The layout is well-organized with clear visual hierarchy and excellent accessibility features.",
+          analysis: "Your StoreManagerAI dashboard shows strong performance with $12,450 in today's revenue. The system is tracking inventory levels across all locations and employee performance metrics. The layout is well-organized with clear visual hierarchy and excellent accessibility features.",
           insights: [
-            "Payment volume is 15% above daily target for Houston Phone Bill Pay - All Carriers",
-            "Verizon payment processing needs immediate attention",
+            "Sales volume is 15% above daily target for StoreManagerAI",
+            "Low inventory alert needs immediate attention",
             "Dashboard accessibility score: 95/100",
-            "Payment processing metrics are optimal across all carriers"
+            "Store performance metrics are optimal across all locations"
           ],
           recommendations: [
             "Restock iPhone 15 Pro immediately to avoid stockouts",
             "Consider increasing inventory buffer for high-demand items",
             "Review sales velocity for popular products",
-            "Implement automated payment alerts for Houston Phone Bill Pay - All Carriers"
+            "Implement automated inventory alerts for StoreManagerAI"
           ]
         }
       },
       "show me business insights": {
-        content: "Here are your key payment insights for Houston Phone Bill Pay - All Carriers:",
+        content: "Here are your key business insights for StoreManagerAI:",
         suggestions: [
           "Analyze revenue trends",
           "Review inventory performance",
@@ -456,7 +358,7 @@ export const HoustonPhoneBillPayAI = () => {
         ]
       },
       "generate a sales report": {
-        content: "I'll generate a comprehensive payment report for Houston Phone Bill Pay - All Carriers:",
+        content: "I'll generate a comprehensive business report for StoreManagerAI:",
         suggestions: [
           "Download PDF report",
           "Email report to stakeholders",
@@ -465,7 +367,7 @@ export const HoustonPhoneBillPayAI = () => {
         ]
       },
       "help me with inventory management": {
-        content: "I can help you optimize your Houston Phone Bill Pay - All Carriers payment processing:",
+        content: "I can help you optimize your StoreManagerAI inventory management:",
         suggestions: [
           "Analyze stock levels",
           "Identify reorder points",
@@ -474,7 +376,7 @@ export const HoustonPhoneBillPayAI = () => {
         ]
       },
       "analyze customer data": {
-        content: "Let me analyze your Houston Phone Bill Pay - All Carriers customer data:",
+        content: "Let me analyze your StoreManagerAI customer data:",
         suggestions: [
           "View customer segments",
           "Analyze purchase patterns",
@@ -485,7 +387,7 @@ export const HoustonPhoneBillPayAI = () => {
     };
 
     const response = responses[userInput.toLowerCase()] || {
-      content: "I understand you're asking about: " + userInput + ". As your Houston Phone Bill Pay - All Carriers AI Assistant, I can help you with payment analysis, carrier management, transaction insights, customer data, and much more. What specific aspect would you like me to focus on?",
+      content: "I understand you're asking about: " + userInput + ". As your StoreManagerAI Assistant, I can help you with sales analysis, inventory management, employee insights, customer data, and much more. What specific aspect would you like me to focus on?",
       suggestions: [
         "Analyze my current screen",
         "Show me business insights",
@@ -510,7 +412,7 @@ export const HoustonPhoneBillPayAI = () => {
     setIsScreenReading(true);
     toast({ 
       title: "Advanced Screen Analysis", 
-      description: "I'm using AI vision to analyze your Houston Phone Bill Pay - All Carriers dashboard with 99.7% accuracy..." 
+      description: "I'm using AI vision to analyze your StoreManagerAI dashboard with 99.7% accuracy..." 
     });
     
     // Simulate advanced screen reading with detailed analysis
@@ -518,7 +420,7 @@ export const HoustonPhoneBillPayAI = () => {
       setIsScreenReading(false);
       
       const detailedAnalysis: ScreenAnalysis = {
-        pageTitle: "Houston Phone Bill Pay - All Carriers Dashboard",
+        pageTitle: "StoreManagerAI Dashboard",
         currentView: "Overview",
         elements: [
           {
@@ -575,7 +477,7 @@ export const HoustonPhoneBillPayAI = () => {
           navigation: ["Overview", "Stores", "Employees", "Inventory", "Reports", "Alerts", "Settings"],
           mainContent: "Dashboard metrics and charts",
           sidebar: "Navigation menu with 7 items",
-          header: "Houston Phone Bill Pay - All Carriers branding and user controls",
+          header: "StoreManagerAI branding and user controls",
           footer: "System status and version info"
         },
         accessibility: {
@@ -589,7 +491,7 @@ export const HoustonPhoneBillPayAI = () => {
           usability: 92
         },
         insights: {
-          userIntent: "Monitoring Houston Phone Bill Pay - All Carriers payment performance and managing operations",
+          userIntent: "Monitoring StoreManagerAI retail performance and managing operations",
           suggestedActions: [
             "Restock iPhone 15 Pro immediately",
             "Review sales performance trends",
@@ -615,7 +517,7 @@ export const HoustonPhoneBillPayAI = () => {
       const analysisMessage: Message = {
         id: Date.now().toString(),
         type: 'ai',
-        content: "I've completed a comprehensive screen analysis with 99.7% accuracy for your Houston Phone Bill Pay - All Carriers dashboard. Your payment processing shows excellent performance with $12,450 in today's payment volume (+15% growth), but there's a critical payment alert that needs immediate attention.",
+        content: "I've completed a comprehensive screen analysis with 99.7% accuracy for your StoreManagerAI dashboard. Your retail operations show excellent performance with $12,450 in today's sales volume (+15% growth), but there's a critical inventory alert that needs immediate attention.",
         timestamp: new Date(),
         screenData: {
           elements: detailedAnalysis.elements,
@@ -663,7 +565,7 @@ export const HoustonPhoneBillPayAI = () => {
               <Bot className="w-6 h-6" />
               <div>
                 <CardTitle className="text-lg font-bold">
-                  Houston Phone Bill Pay - All Carriers AI Assistant
+                  StoreManagerAI Assistant
                 </CardTitle>
                 <CardDescription className="text-green-100">
                   {isScreenReading ? "Analyzing screen..." : isListening ? "Listening..." : "Your intelligent business assistant"}
