@@ -162,8 +162,11 @@ export const DashboardSidebar = ({
               <X className="w-5 h-5 text-gray-600" />
             </Button>
           )}
-          <div className="relative">
-            <img src="/logo.png" alt="StoreManagerAI Logo" className="h-16 w-auto object-contain" />
+          <div className="relative py-4">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent">
+              StoreManagerAI
+            </h1>
+            <p className="text-xs text-muted-foreground mt-1 tracking-wide">Retail Intelligence</p>
           </div>
         </div>
       </div>

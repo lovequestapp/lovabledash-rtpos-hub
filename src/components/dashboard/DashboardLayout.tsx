@@ -139,8 +139,10 @@ export const DashboardLayout = () => {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="StoreManagerAI Logo" className="h-12 w-auto object-contain" />
-              <div>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+                  StoreManagerAI
+                </h1>
                 <p className="text-xs text-gray-600 capitalize flex items-center gap-1 leading-tight">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                   {currentView.replace('-', ' ')}

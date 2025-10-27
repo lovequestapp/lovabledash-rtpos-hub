@@ -16,6 +16,7 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,23 +112,42 @@ export const AuthForm = ({ onBypassLogin }: AuthFormProps = {}) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cream-50 via-background to-sage-50 p-4 safe-area-top safe-area-bottom">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-6 md:mb-8 animate-fade-in">
-          <div className="flex justify-center mb-4 md:mb-6">
-            <img src="/logo.png" alt="StoreManagerAI Logo" className="h-24 md:h-32 w-auto object-contain" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4 safe-area-top safe-area-bottom relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="mb-8">
+            <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-primary via-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 tracking-tight">
+              StoreManagerAI
+            </h1>
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="h-px w-16 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                <p className="text-muted-foreground text-sm md:text-base font-semibold tracking-widest uppercase">
+                  Intelligent Retail Management
+                </p>
+                <div className="w-2 h-2 rounded-full bg-purple-600 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+              </div>
+              <div className="h-px w-16 bg-gradient-to-l from-transparent via-purple-600 to-transparent"></div>
+            </div>
+            <p className="text-sm text-muted-foreground/80 font-light">Transform your retail operations with AI-powered insights</p>
           </div>
-          <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight text-foreground mb-2">StoreManagerAI</h1>
-          <p className="text-muted-foreground text-base md:text-lg font-light">
-            Intelligent Retail Management Platform
-          </p>
         </div>
 
-        <Card className="luxury-card border-border/30 shadow-premium backdrop-blur-xl animate-slide-up">
-          <CardHeader className="space-y-1 pb-4 md:pb-6 text-center">
-            <CardTitle className="text-xl md:text-2xl font-serif text-foreground">Welcome</CardTitle>
-            <CardDescription className="text-center text-muted-foreground text-sm md:text-base">
-              Access your phone bill payment management dashboard
+        <Card className="border-2 border-primary/10 shadow-2xl backdrop-blur-xl bg-white/95 animate-scale-in hover:shadow-primary/20 transition-all duration-300">
+          <CardHeader className="space-y-2 pb-6">
+            <CardTitle className="text-2xl md:text-3xl font-bold text-center bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+              {isLogin ? 'Welcome Back' : 'Get Started'}
+            </CardTitle>
+            <CardDescription className="text-center text-base">
+              {isLogin ? 'Sign in to your account to continue' : 'Create your account to get started'}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 md:space-y-6">
