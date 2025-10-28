@@ -10,7 +10,7 @@ import { Customer360View } from "./views/Customer360View";
 import { AutomationView } from "./views/AutomationView";
 import { TransactionsView } from "./views/TransactionsView";
 
-type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation' | 'transactions';
+type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation' | 'transactions' | 'anomaly-detector';
 
 interface DashboardContentProps {
   currentView: ViewType;

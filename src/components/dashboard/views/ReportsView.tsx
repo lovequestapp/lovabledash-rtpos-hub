@@ -328,7 +328,7 @@ export const ReportsView = ({ onViewChange }: ReportsViewProps) => {
                 y={50000} 
                 stroke="#ef4444" 
                 strokeDasharray="5 5" 
-                label={{ value: "Target", position: "topRight" }}
+                label={{ value: "Target", position: "top" }}
               />
             )}
             

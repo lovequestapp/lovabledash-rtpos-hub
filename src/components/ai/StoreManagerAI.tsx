@@ -457,7 +457,7 @@ export const StoreManagerAI = () => {
           },
           {
             id: "inventory-alert",
-            type: "alert",
+            type: "card",
             content: "⚠️ Low Stock: iPhone 15 Pro (3 units)",
             position: { x: 600, y: 20, width: 300, height: 100 },
             attributes: { backgroundColor: "#f59e0b", color: "white", borderRadius: "8px" },

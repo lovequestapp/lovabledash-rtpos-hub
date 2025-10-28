@@ -212,11 +212,16 @@ export const AlertsView = ({ onViewChange }: AlertsViewProps) => {
 
     const alert = {
       id: Date.now().toString(),
-      ...newAlert,
+      type: newAlert.type,
+      title: newAlert.title,
+      message: newAlert.message,
+      severity: newAlert.severity,
+      store: newAlert.store,
+      storeCode: "STORE-001",
       createdAt: new Date().toLocaleString(),
-      status: "unread",
+      status: "unread" as const,
       acknowledged: false,
-      details: { note: newAlert.details }
+      details: newAlert.details ? JSON.parse(`{"note":"${newAlert.details}"}`) : {}
     };
 
     setAlerts([...alerts, alert]);

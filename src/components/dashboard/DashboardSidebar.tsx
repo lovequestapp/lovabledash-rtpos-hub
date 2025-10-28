@@ -58,7 +58,7 @@ interface SidebarItem {
   isNew?: boolean;
 }
 
-type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings';
+type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation' | 'transactions' | 'anomaly-detector';
 
 interface DashboardSidebarProps {
   isMobile?: boolean;

@@ -24,7 +24,7 @@ import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardContent } from "./DashboardContent";
 import { StoreManagerAI } from "../ai/StoreManagerAI";
 
-type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation' | 'transactions';
+type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation' | 'transactions' | 'anomaly-detector';
 
 export const DashboardLayout = () => {
   const [currentView, setCurrentView] = useState<ViewType>('overview');
