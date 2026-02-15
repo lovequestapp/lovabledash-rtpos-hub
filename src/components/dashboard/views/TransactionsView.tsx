@@ -534,8 +534,8 @@ export const TransactionsView = ({ onViewChange }: TransactionsViewProps) => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-shadow-lg">🚀 MASTERFUL TRANSACTION MONITOR 🚀</h1>
-          <h2 className="text-xl font-semibold text-primary mt-1">StoreManagerAI</h2>
+          <h1 className="text-3xl font-bold font-display tracking-tight">Transaction Monitor</h1>
+          <h2 className="text-xl font-display font-semibold text-primary mt-1">Cardinal POS</h2>
           <p className="text-muted-foreground mt-2">
             Real-time transaction monitoring and analysis across all locations
           </p>
