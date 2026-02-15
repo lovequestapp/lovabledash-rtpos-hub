@@ -12,7 +12,6 @@ import {
   AlertTriangle, 
   Settings, 
   LogOut,
-  Building2,
   Menu,
   X,
   Brain,
@@ -22,7 +21,7 @@ import {
 } from "lucide-react";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardContent } from "./DashboardContent";
-import { StoreManagerAI } from "../ai/StoreManagerAI";
+import { CardinalPOSAssistant } from "../ai/StoreManagerAI";
 
 type ViewType = 'overview' | 'stores' | 'employees' | 'inventory' | 'reports' | 'alerts' | 'settings' | 'ai-insights' | 'customer-360' | 'automation' | 'transactions' | 'anomaly-detector';
 
@@ -124,26 +123,28 @@ export const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen bg-background overflow-x-hidden w-full max-w-full">
-      {/* Mobile Header - Safe Area Support */}
+      {/* Mobile Header */}
       {isMobile && (
         <div 
-          className="fixed top-0 left-0 right-0 z-50 bg-white backdrop-blur-xl text-black border-b border-gray-200 shadow-lg mobile-header-safe"
+          className="fixed top-0 left-0 right-0 z-50 bg-[hsl(220,20%,10%)] text-white border-b border-[hsl(220,16%,16%)] shadow-lg"
           style={{ 
             paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)',
             paddingBottom: '1rem',
             paddingLeft: 'calc(env(safe-area-inset-left, 0px) + 1rem)',
             paddingRight: 'calc(env(safe-area-inset-right, 0px) + 1rem)',
-            backgroundColor: '#ffffff',
             minHeight: 'calc(env(safe-area-inset-top, 0px) + 5rem)'
           }}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <CreditCard className="w-4 h-4 text-white" />
+              </div>
               <div className="flex flex-col">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-                  StoreManagerAI
+                <h1 className="text-lg font-display font-bold text-white tracking-tight">
+                  Cardinal POS
                 </h1>
-                <p className="text-xs text-gray-600 capitalize flex items-center gap-1 leading-tight">
+                <p className="text-xs text-white/50 capitalize flex items-center gap-1 leading-tight">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                   {currentView.replace('-', ' ')}
                 </p>
@@ -153,7 +154,7 @@ export const DashboardLayout = () => {
               variant="ghost"
               size="sm"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="text-black hover:bg-gray-100 rounded-lg p-2 transition-all duration-200 min-h-[44px] min-w-[44px]"
+              className="text-white hover:bg-white/10 rounded-lg p-2 min-h-[44px] min-w-[44px]"
             >
               {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
@@ -204,8 +205,8 @@ export const DashboardLayout = () => {
         </div>
       </main>
       
-      {/* StoreManagerAI Assistant */}
-      <StoreManagerAI />
+      {/* Cardinal POS Assistant */}
+      <CardinalPOSAssistant />
     </div>
   );
 };

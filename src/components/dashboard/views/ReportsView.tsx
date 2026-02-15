@@ -487,7 +487,7 @@ export const ReportsView = ({ onViewChange }: ReportsViewProps) => {
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
           <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">Reports & Analytics</h1>
-          <h2 className="text-xl lg:text-2xl font-semibold text-primary mb-2">StoreManagerAI</h2>
+          <h2 className="text-xl lg:text-2xl font-display font-semibold text-primary mb-2">Cardinal POS</h2>
           <p className="text-muted-foreground">
             Comprehensive business insights and performance metrics
           </p>

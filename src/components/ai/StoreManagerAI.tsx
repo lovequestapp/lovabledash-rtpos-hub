@@ -212,14 +212,14 @@ interface ScreenAnalysis {
   };
 }
 
-export const StoreManagerAI = () => {
+export const CardinalPOSAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       type: 'ai',
-      content: "Hello! I'm your StoreManagerAI Assistant. I can help you manage your retail operations, track inventory, analyze sales data, manage employees, and answer any questions about your business dashboard. How can I assist you today?",
+      content: "Hello! I'm your Cardinal POS Assistant. I can help you manage POS transactions, track employee time, analyze revenue, manage inventory, and optimize your business operations. How can I assist you today?",
       timestamp: new Date(),
       suggestions: [
         "Analyze my current screen",
@@ -272,13 +272,13 @@ export const StoreManagerAI = () => {
   const generateAIResponse = (userInput: string): Message => {
     const responses = {
       "analyze my current screen": {
-        content: "I've analyzed your current screen and found several key insights for StoreManagerAI:",
+        content: "I've analyzed your current screen and found several key insights for Cardinal POS:",
         screenData: {
           elements: [
             {
               id: "dashboard-header",
               type: "text",
-              content: "StoreManagerAI Dashboard",
+              content: "Cardinal POS Dashboard",
               position: { x: 0, y: 0, width: 1200, height: 60 },
               attributes: { fontSize: "24px", fontWeight: "bold" },
               accessibility: {
@@ -324,9 +324,9 @@ export const StoreManagerAI = () => {
               actionable: true
             }
           ],
-          analysis: "Your StoreManagerAI dashboard shows strong performance with $12,450 in today's revenue. The system is tracking inventory levels across all locations and employee performance metrics. The layout is well-organized with clear visual hierarchy and excellent accessibility features.",
+          analysis: "Your Cardinal POS dashboard shows strong performance with $12,450 in today's revenue. The system is tracking inventory levels across all locations and employee performance metrics.",
           insights: [
-            "Sales volume is 15% above daily target for StoreManagerAI",
+            "Sales volume is 15% above daily target",
             "Low inventory alert needs immediate attention",
             "Dashboard accessibility score: 95/100",
             "Store performance metrics are optimal across all locations"
@@ -335,12 +335,12 @@ export const StoreManagerAI = () => {
             "Restock iPhone 15 Pro immediately to avoid stockouts",
             "Consider increasing inventory buffer for high-demand items",
             "Review sales velocity for popular products",
-            "Implement automated inventory alerts for StoreManagerAI"
+            "Set up automated inventory alerts"
           ]
         }
       },
       "show me business insights": {
-        content: "Here are your key business insights for StoreManagerAI:",
+        content: "Here are your key business insights for Cardinal POS:",
         suggestions: [
           "Analyze revenue trends",
           "Review inventory performance",
@@ -358,7 +358,7 @@ export const StoreManagerAI = () => {
         ]
       },
       "generate a sales report": {
-        content: "I'll generate a comprehensive business report for StoreManagerAI:",
+        content: "I'll generate a comprehensive business report for Cardinal POS:",
         suggestions: [
           "Download PDF report",
           "Email report to stakeholders",
@@ -367,7 +367,7 @@ export const StoreManagerAI = () => {
         ]
       },
       "help me with inventory management": {
-        content: "I can help you optimize your StoreManagerAI inventory management:",
+        content: "I can help you optimize your Cardinal POS inventory management:",
         suggestions: [
           "Analyze stock levels",
           "Identify reorder points",
@@ -376,7 +376,7 @@ export const StoreManagerAI = () => {
         ]
       },
       "analyze customer data": {
-        content: "Let me analyze your StoreManagerAI customer data:",
+        content: "Let me analyze your Cardinal POS customer data:",
         suggestions: [
           "View customer segments",
           "Analyze purchase patterns",
@@ -387,7 +387,7 @@ export const StoreManagerAI = () => {
     };
 
     const response = responses[userInput.toLowerCase()] || {
-      content: "I understand you're asking about: " + userInput + ". As your StoreManagerAI Assistant, I can help you with sales analysis, inventory management, employee insights, customer data, and much more. What specific aspect would you like me to focus on?",
+      content: "I understand you're asking about: " + userInput + ". As your Cardinal POS Assistant, I can help you with sales analysis, inventory management, employee insights, customer data, and much more. What specific aspect would you like me to focus on?",
       suggestions: [
         "Analyze my current screen",
         "Show me business insights",
@@ -412,7 +412,7 @@ export const StoreManagerAI = () => {
     setIsScreenReading(true);
     toast({ 
       title: "Advanced Screen Analysis", 
-      description: "I'm using AI vision to analyze your StoreManagerAI dashboard with 99.7% accuracy..." 
+      description: "Cardinal POS AI is analyzing your dashboard with 99.7% accuracy..." 
     });
     
     // Simulate advanced screen reading with detailed analysis
@@ -420,13 +420,13 @@ export const StoreManagerAI = () => {
       setIsScreenReading(false);
       
       const detailedAnalysis: ScreenAnalysis = {
-        pageTitle: "StoreManagerAI Dashboard",
+        pageTitle: "Cardinal POS Dashboard",
         currentView: "Overview",
         elements: [
           {
             id: "main-nav",
             type: "navigation",
-            content: "Houston Phone Bill Pay - All Carriers Navigation",
+            content: "Cardinal POS Navigation",
             position: { x: 0, y: 0, width: 250, height: 100 },
             attributes: { backgroundColor: "#1f2937", color: "white" },
             accessibility: {
@@ -477,7 +477,7 @@ export const StoreManagerAI = () => {
           navigation: ["Overview", "Stores", "Employees", "Inventory", "Reports", "Alerts", "Settings"],
           mainContent: "Dashboard metrics and charts",
           sidebar: "Navigation menu with 7 items",
-          header: "StoreManagerAI branding and user controls",
+          header: "Cardinal POS branding and user controls",
           footer: "System status and version info"
         },
         accessibility: {
@@ -491,7 +491,7 @@ export const StoreManagerAI = () => {
           usability: 92
         },
         insights: {
-          userIntent: "Monitoring StoreManagerAI retail performance and managing operations",
+          userIntent: "Managing Cardinal POS retail operations and business performance",
           suggestedActions: [
             "Restock iPhone 15 Pro immediately",
             "Review sales performance trends",
@@ -517,7 +517,7 @@ export const StoreManagerAI = () => {
       const analysisMessage: Message = {
         id: Date.now().toString(),
         type: 'ai',
-        content: "I've completed a comprehensive screen analysis with 99.7% accuracy for your StoreManagerAI dashboard. Your retail operations show excellent performance with $12,450 in today's sales volume (+15% growth), but there's a critical inventory alert that needs immediate attention.",
+        content: "I've completed a comprehensive screen analysis with 99.7% accuracy for your Cardinal POS dashboard. Your operations show excellent performance with $12,450 in today's sales volume (+15% growth), but there's a critical inventory alert that needs immediate attention.",
         timestamp: new Date(),
         screenData: {
           elements: detailedAnalysis.elements,
@@ -558,16 +558,16 @@ export const StoreManagerAI = () => {
     <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${
       isMinimized ? 'w-80 h-16' : 'w-96 h-[600px]'
     }`}>
-      <Card className="w-full h-full shadow-2xl border-2 border-green-200/30 bg-white/10 backdrop-blur-2xl">
-        <CardHeader className="bg-gradient-to-r from-green-500 to-green-700 text-white p-4 rounded-t-lg">
+      <Card className="w-full h-full shadow-2xl border border-border bg-card backdrop-blur-2xl">
+        <CardHeader className="bg-gradient-to-r from-primary to-[hsl(0,72%,35%)] text-white p-4 rounded-t-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Bot className="w-6 h-6" />
               <div>
-                <CardTitle className="text-lg font-bold">
-                  StoreManagerAI Assistant
+                <CardTitle className="text-lg font-bold font-display">
+                  Cardinal POS Assistant
                 </CardTitle>
-                <CardDescription className="text-green-100">
+                <CardDescription className="text-white/70">
                   {isScreenReading ? "Analyzing screen..." : isListening ? "Listening..." : "Your intelligent business assistant"}
                 </CardDescription>
               </div>
@@ -577,7 +577,7 @@ export const StoreManagerAI = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMinimized(!isMinimized)}
-                className="text-white hover:bg-green-600"
+                className="text-white hover:bg-white/20"
               >
                 {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
               </Button>
@@ -585,7 +585,7 @@ export const StoreManagerAI = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsOpen(false)}
-                className="text-white hover:bg-green-600"
+                className="text-white hover:bg-white/20"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -606,7 +606,7 @@ export const StoreManagerAI = () => {
                       <div
                         className={`max-w-[80%] p-3 rounded-lg ${
                           message.type === 'user'
-                            ? 'bg-green-500 text-white'
+                            ? 'bg-primary text-white'
                             : 'bg-gray-100 text-gray-900'
                         }`}
                       >
@@ -691,7 +691,7 @@ export const StoreManagerAI = () => {
                 <Button
                   onClick={() => handleSendMessage(inputValue)}
                   disabled={isProcessing || !inputValue.trim()}
-                  className="bg-green-500 hover:bg-green-600"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
@@ -699,7 +699,7 @@ export const StoreManagerAI = () => {
                   onClick={handleScreenCapture}
                   disabled={isScreenReading}
                   variant="outline"
-                  className="border-green-500 text-green-500 hover:bg-green-50"
+                  className="border-primary/50 text-primary hover:bg-primary/5"
                 >
                   {isScreenReading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
